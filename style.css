@@ -45,7 +45,7 @@ body {
     padding: 12px 8px;
 }
 
-/* Strict Section Visibility */
+/* Tab Views */
 .view-section {
     display: none !important;
 }
@@ -61,7 +61,7 @@ body {
     font-size: 0.95rem;
 }
 
-/* Standings Table - Fits up to Pts, swipe right for GF & GA */
+/* Standings Table - Balanced column gaps */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -70,52 +70,53 @@ body {
 
 .standings-table {
     width: 100%;
-    min-width: 460px;
+    min-width: 440px;
     border-collapse: collapse;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     text-align: center;
 }
 
+.standings-table th,
+.standings-table td {
+    padding: 10px 8px;
+    white-space: nowrap;
+    border-bottom: 1px solid #f2f2f2;
+}
+
 .standings-table th {
-    padding: 8px 6px;
     font-weight: 600;
     color: #777777;
     border-bottom: 1px solid #e5e5e5;
-    font-size: 0.70rem;
-    white-space: nowrap;
-}
-
-.standings-table td {
-    padding: 10px 6px;
-    border-bottom: 1px solid #f2f2f2;
-    white-space: nowrap;
+    font-size: 0.72rem;
 }
 
 .standings-table .col-pos {
-    width: 22px;
+    width: 28px;
     font-weight: 600;
     color: #555555;
+    padding-left: 6px;
 }
 
 .standings-table .col-team {
     text-align: left;
-    padding-left: 6px;
-    padding-right: 6px;
-    width: 80px;
+    padding-left: 8px;
+    padding-right: 12px;
+    width: auto;
 }
 
 .team-slot {
     display: inline-block;
-    width: 60px;
+    width: 75px;
     height: 12px;
     background-color: #f0f0f0;
     border-radius: 3px;
+    vertical-align: middle;
 }
 
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
-    padding-right: 12px;
+    padding-right: 14px;
 }
 
 /* Bottom Nav */
