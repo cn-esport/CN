@@ -16,7 +16,7 @@ navItems.forEach(item => {
     });
 });
 
-// App State
+// Teams & Matches State
 const MAX_TEAMS = 8;
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
@@ -53,7 +53,7 @@ const scoreAwayLabel = document.getElementById('score-away-label');
 const homeScoreInput = document.getElementById('home-score-input');
 const awayScoreInput = document.getElementById('away-score-input');
 
-// Standings Calculator based on Finished Matches
+// Standings Calculator
 function calculateStandings() {
     const tableData = teams.map(team => ({
         name: team.name,
@@ -104,7 +104,7 @@ function calculateStandings() {
     return tableData;
 }
 
-// Standings Render
+// Standings Render with Logo and GD at end
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -124,16 +124,22 @@ function renderLeagueTable() {
     tableData.forEach((team, index) => {
         const row = document.createElement('tr');
         if (index < 4) row.classList.add('top-four');
+        const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
 
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
-            <td class="col-team">${escapeHtml(team.name)}</td>
+            <td class="col-team">
+                <div class="table-team-cell">
+                    <span class="table-team-logo">${escapeHtml(teamInitial)}</span>
+                    <span>${escapeHtml(team.name)}</span>
+                </div>
+            </td>
             <td>${team.mp}</td>
             <td>${team.w}</td>
             <td>${team.d}</td>
             <td>${team.l}</td>
-            <td>${team.gd}</td>
             <td class="col-pts">${team.pts}</td>
+            <td class="col-gd">${team.gd}</td>
             <td>${team.gf}</td>
             <td>${team.ga}</td>
         `;
@@ -302,7 +308,7 @@ if (closeModalBtn) {
     });
 }
 
-// Create Match
+// Create Match (adds new matches to top using unshift)
 if (createMatchForm) {
     createMatchForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -315,7 +321,7 @@ if (createMatchForm) {
             return;
         }
 
-        matches.push({
+        matches.unshift({
             home: home,
             away: away,
             status: 'SCHEDULED',
@@ -375,6 +381,14 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Hamburger menu click listener
+const menuBtn = document.getElementById('menu-btn');
+if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+        console.log('Menu opened');
+    });
 }
 
 // Initial Run
