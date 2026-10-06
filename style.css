@@ -61,10 +61,11 @@ body {
     font-size: 1rem;
 }
 
-/* Premier League Style Standings Table */
+/* Standings Table - Allows horizontal swipe to view GF & GA */
 .table-container {
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .standings-table {
@@ -89,7 +90,7 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Position indicator (PL qualification line on left) */
+/* Position indicator */
 .standings-table .col-pos {
     width: 26px;
     font-weight: 600;
