@@ -32,7 +32,6 @@ body {
     justify-content: space-between;
 }
 
-/* 3-line hamburger menu */
 .menu-btn {
     background: none;
     border: none;
@@ -76,7 +75,7 @@ body {
     margin: 0 auto;
 }
 
-/* Side Navigation Drawer */
+/* Side Drawer */
 .drawer-backdrop {
     position: fixed;
     top: 0;
@@ -237,7 +236,7 @@ body {
     position: relative;
 }
 
-.standings-table tr.top-four .col-pos::before {
+.standings-table tr.top-qual .col-pos::before {
     content: '';
     position: absolute;
     left: 2px;
@@ -248,7 +247,6 @@ body {
     border-radius: 2px;
 }
 
-/* Club column with team logo badge */
 .standings-table .col-team {
     text-align: left;
     padding-left: 8px;
@@ -278,14 +276,13 @@ body {
     flex-shrink: 0;
 }
 
-/* Centered Pts column */
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
     text-align: center;
 }
 
-/* Matches Page Styling */
+/* Matches */
 .matches-header {
     margin-bottom: 16px;
     padding-left: 4px;
@@ -407,7 +404,6 @@ body {
     margin-top: 3px;
 }
 
-/* Floating Action Button (+) */
 .fab-btn {
     position: fixed;
     right: 20px;
@@ -533,31 +529,118 @@ body {
     cursor: pointer;
 }
 
-/* Settings Styles */
-.settings-container {
-    padding: 12px 6px;
-    max-width: 400px;
-    margin: 0 auto;
+/* LEAGUE COMMISSIONER DASHBOARD */
+.dashboard-header {
+    margin-bottom: 16px;
+    padding-left: 2px;
 }
 
-.settings-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 16px;
+.dashboard-title {
+    font-size: 1.35rem;
+    font-weight: 700;
     color: #111111;
+}
+
+.dashboard-subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+.card-desc {
+    font-size: 0.8rem;
+    color: #6c757d;
+    line-height: 1.4;
+    margin-bottom: 14px;
+}
+
+.badge-pill {
+    background-color: #eef2f6;
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.form-inline-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.form-inline-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333333;
+}
+
+.styled-select {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    font-size: 0.85rem;
+    font-family: inherit;
+    font-weight: 500;
+    outline: none;
+}
+
+.styled-input-num {
+    width: 70px;
+    padding: 8px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 600;
+    outline: none;
+}
+
+.styled-input-num:focus,
+.styled-select:focus {
+    border-color: #0066ff;
 }
 
 .team-form {
     display: flex;
     gap: 8px;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
 }
 
 .team-form input {
     flex: 1;
     padding: 10px 12px;
     border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.85rem;
     font-family: inherit;
     outline: none;
@@ -571,7 +654,7 @@ body {
     background-color: #0066ff;
     color: #ffffff;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 10px 16px;
     font-size: 0.85rem;
     font-weight: 600;
@@ -584,15 +667,8 @@ body {
 }
 
 .team-list-section {
-    border-top: 1px solid #f0f0f0;
-    padding-top: 16px;
-}
-
-.team-list-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #666666;
-    margin-bottom: 12px;
+    border-top: 1px solid #f2f2f2;
+    padding-top: 10px;
 }
 
 .team-list {
@@ -603,22 +679,139 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 12px;
-    background-color: #ffffff;
-    margin-bottom: 6px;
-    border-radius: 8px;
-    font-size: 0.85rem;
+    padding: 10px 6px;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.team-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
     font-weight: 500;
+    color: #1e2022;
+}
+
+.team-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-item-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 6px;
+}
+
+.btn-edit {
+    color: #0066ff;
 }
 
 .btn-del {
-    background: none;
-    border: none;
     color: #ff3b30;
-    font-size: 0.75rem;
+}
+
+/* Season Progress Bar */
+.progress-block {
+    margin-top: 16px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-text {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+.progress-pct {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #0066ff;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+/* Season Controls */
+.danger-card {
+    border: 1px solid #ffe3e3;
+}
+
+.danger-title {
+    color: #d32f2f;
+}
+
+.danger-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-warning {
+    background-color: #fff1f0;
+    color: #e03131;
+    border: 1px solid #ffc9c9;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    padding: 4px 8px;
+    font-family: inherit;
+    text-align: center;
+}
+
+.btn-warning:active {
+    background-color: #ffe3e3;
+}
+
+.btn-danger {
+    background-color: #ff3b30;
+    color: #ffffff;
+    border: none;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+}
+
+.btn-danger:active {
+    opacity: 0.85;
 }
 
 /* Bottom Nav */
