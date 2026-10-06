@@ -41,8 +41,6 @@ function renderLeagueTable() {
             <td>${team ? team.l : 0}</td>
             <td>${team ? team.gd : 0}</td>
             <td class="col-pts">${team ? team.pts : 0}</td>
-            <td>${team ? team.gf : 0}</td>
-            <td>${team ? team.ga : 0}</td>
         `;
         standingsBody.appendChild(row);
     }
@@ -88,9 +86,7 @@ if (addTeamForm) {
             d: 0,
             l: 0,
             gd: 0,
-            pts: 0,
-            gf: 0,
-            ga: 0
+            pts: 0
         });
 
         teamNameInput.value = '';
@@ -109,5 +105,5 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Initial render
+// Initial Render
 saveAndRefresh();
