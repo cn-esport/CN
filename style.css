@@ -44,37 +44,47 @@ body {
     padding: 12px;
 }
 
+/* Strict Tab View Hiding */
 .view-section {
-    display: none;
+    display: none !important;
 }
 
 .view-section.active {
-    display: block;
+    display: block !important;
+}
+
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: #888888;
+    font-size: 0.95rem;
 }
 
 /* Standings Table */
 .table-container {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .standings-table {
     width: 100%;
+    min-width: 480px; /* Horizontal scroll on mobile */
     border-collapse: collapse;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     text-align: center;
 }
 
 .standings-table th {
-    padding: 10px 4px;
+    padding: 10px 6px;
     font-weight: 600;
     color: #777777;
     border-bottom: 1px solid #e5e5e5;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
 }
 
 .standings-table td {
-    padding: 12px 4px;
+    padding: 12px 6px;
     border-bottom: 1px solid #f2f2f2;
 }
 
@@ -87,12 +97,12 @@ body {
 .standings-table .col-team {
     text-align: left;
     padding-left: 8px;
-    width: 45%;
+    min-width: 100px;
 }
 
 .team-slot {
     display: inline-block;
-    width: 90px;
+    width: 80px;
     height: 14px;
     background-color: #f0f0f0;
     border-radius: 4px;
@@ -100,10 +110,10 @@ body {
 
 .standings-table .col-pts {
     font-weight: 700;
-    color: #111111;
+    color: #0066ff; /* Accent color for points */
 }
 
-/* Bottom Nav */
+/* Bottom Navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
