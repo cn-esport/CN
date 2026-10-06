@@ -55,10 +55,10 @@ body {
 }
 
 .empty-state {
-    padding: 80px 20px;
+    padding: 60px 20px;
     text-align: center;
     color: #888888;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 /* Horizontal Scrollable Table */
@@ -91,7 +91,7 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Position indicator (PL qualification line on left for top 4) */
+/* Position indicator */
 .standings-table .col-pos {
     width: 26px;
     font-weight: 600;
@@ -111,7 +111,7 @@ body {
     border-radius: 2px;
 }
 
-/* Club column styling */
+/* Club column */
 .standings-table .col-team {
     text-align: left;
     padding-left: 8px;
@@ -125,13 +125,6 @@ body {
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
-}
-
-.no-teams-row {
-    padding: 40px 10px !important;
-    color: #888888;
-    font-size: 0.85rem;
-    text-align: center;
 }
 
 /* Settings Styles */
