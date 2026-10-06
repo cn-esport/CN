@@ -61,7 +61,7 @@ body {
     font-size: 1rem;
 }
 
-/* Standings Table - Allows horizontal swipe to view GF & GA */
+/* Standings Table - Allows horizontal swipe to see GF & GA */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -70,6 +70,7 @@ body {
 
 .standings-table {
     width: 100%;
+    min-width: 440px;
     border-collapse: collapse;
     font-size: 0.8rem;
     text-align: center;
