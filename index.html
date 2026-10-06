@@ -41,10 +41,11 @@
                         </tr>
                     </thead>
                     <tbody id="standings-body">
-                        <!-- Rendered strictly from team data via script.js -->
+                        <!-- Populated strictly from added teams in script.js -->
                     </tbody>
                 </table>
             </div>
+            <div id="no-teams-msg" class="empty-state" style="display: none;">No teams added yet. Add teams in Settings.</div>
         </section>
 
         <!-- Matches Section -->
@@ -63,7 +64,7 @@
                 </form>
 
                 <div class="team-list-section">
-                    <h3 class="team-list-title">Current Teams (<span id="team-count">0</span>)</h3>
+                    <h3 class="team-list-title">Current Teams (<span id="team-count">0</span>/8)</h3>
                     <ul id="team-list" class="team-list"></ul>
                 </div>
             </div>
@@ -81,7 +82,7 @@
             <span class="nav-label">League</span>
         </button>
         <button class="nav-item" data-target="matches-view">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></line><line x1="15" y1="11" x2="15.01" y2="11"></line><line x1="18" y1="13" x2="18.01" y2="13"></line></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="11" x2="15.01" y2="11"></line><line x1="18" y1="13" x2="18.01" y2="13"></line></svg>
             <span class="nav-label">Matches</span>
         </button>
         <button class="nav-item" data-target="settings-view">
