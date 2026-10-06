@@ -20,7 +20,7 @@ navItems.forEach(item => {
 const MAX_TEAMS = 8;
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 
-// Ensure all teams have clean numeric values including GF and GA
+// Ensure all teams have clean numeric values including gf & ga
 let teams = rawTeams.map(t => ({
     name: t.name || 'Team',
     mp: Number(t.mp) || 0,
@@ -50,7 +50,7 @@ function renderLeagueTable() {
         const team = teams[i];
         const row = document.createElement('tr');
         
-        // Qualification indicator
+        // Premier League qualification accent on top 4
         if (i < 4 && team) {
             row.classList.add('top-four');
         }
