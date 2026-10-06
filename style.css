@@ -104,6 +104,8 @@ body {
     padding-left: 10px;
     padding-right: 8px;
     width: 700%;
+    font-weight: 500;
+    color: #111111;
 }
 
 .team-slot {
@@ -119,6 +121,92 @@ body {
     font-weight: 700;
     color: #0066ff;
     padding-right: 10px;
+}
+
+/* Settings Styles */
+.settings-container {
+    padding: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.settings-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111111;
+}
+
+.team-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.team-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+}
+
+.team-form input:focus {
+    border-color: #0066ff;
+}
+
+.btn-accent {
+    background-color: #0066ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.btn-accent:active {
+    opacity: 0.85;
+}
+
+.team-list-section {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+}
+
+.team-list-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666666;
+    margin-bottom: 12px;
+}
+
+.team-list {
+    list-style: none;
+}
+
+.team-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f6f6f6;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.btn-del {
+    background: none;
+    border: none;
+    color: #ff3b30;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
 }
 
 /* Bottom Nav */
