@@ -72,28 +72,61 @@
                             <th>W</th>
                             <th>D</th>
                             <th>L</th>
+                            <th class="col-pts">Pts</th>
                             <th>GF</th>
                             <th>GA</th>
-                            <th class="col-pts">Pts</th>
-                            <th class="col-gd">GD</th>
+                            <th>GD</th>
                             <th class="col-form">Last 5</th>
                         </tr>
                     </thead>
                     <tbody id="standings-body">
-                        <!-- Dynamic standings -->
+                        <!-- Populated dynamically via script.js -->
                     </tbody>
                 </table>
             </div>
-            
-            <!-- Standalone Legend below table -->
-            <div class="table-legend-card">
-                <div class="legend-item">
-                    <span class="legend-box-blue"></span>
-                    <span class="legend-text">UEFA Champions League Qualification</span>
-                </div>
-            </div>
 
             <div id="no-teams-msg" class="empty-state" style="display: none;">No teams added yet. Add teams in Settings.</div>
+
+            <!-- Legends Container -->
+            <div id="league-legends-container" class="legends-wrapper">
+                <!-- Qualification Legend Card -->
+                <div class="legend-card">
+                    <h4 class="legend-card-title">Qualification / Relegation</h4>
+                    <div class="legend-row">
+                        <span class="legend-square uefa-square"></span>
+                        <span class="legend-text">UEFA Champions League Qualification</span>
+                    </div>
+                </div>
+
+                <!-- Last 5 Matches Form Legend Card -->
+                <div class="legend-card">
+                    <h4 class="legend-card-title">Last 5 matches</h4>
+                    <div class="legend-item-list">
+                        <div class="legend-form-row">
+                            <span class="form-circle form-win">
+                                <svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <span class="legend-text">Win</span>
+                        </div>
+                        <div class="legend-form-row">
+                            <span class="form-circle form-draw">
+                                <svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
+                            </span>
+                            <span class="legend-text">Draw</span>
+                        </div>
+                        <div class="legend-form-row">
+                            <span class="form-circle form-loss">
+                                <svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
+                            </span>
+                            <span class="legend-text">Loss</span>
+                        </div>
+                        <div class="legend-form-row">
+                            <span class="form-circle form-empty"></span>
+                            <span class="legend-text">Not played</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Matches Section -->
@@ -154,7 +187,7 @@
             </div>
         </section>
 
-        <!-- Settings: League Commissioner Dashboard -->
+        <!-- Settings Section -->
         <section id="settings-view" class="view-section">
             <div class="dashboard-header">
                 <h2 class="dashboard-title">League Commissioner</h2>
@@ -162,6 +195,7 @@
             </div>
 
             <div class="dashboard-container">
+                <!-- Section 1: Team Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Team Management</h3>
@@ -190,6 +224,7 @@
                     </div>
                 </div>
 
+                <!-- Section 2: Qualification Zone -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
@@ -207,6 +242,7 @@
                     </div>
                 </div>
 
+                <!-- Section 3: Season Settings & Progress -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Settings</h3>
@@ -231,6 +267,7 @@
                     </div>
                 </div>
 
+                <!-- Section 4: Season Controls -->
                 <div class="dashboard-card danger-card">
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
