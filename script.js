@@ -27,6 +27,7 @@ const teamList = document.getElementById('team-list');
 const teamCount = document.getElementById('team-count');
 
 function renderLeagueTable() {
+    if (!standingsBody) return;
     standingsBody.innerHTML = '';
     for (let i = 0; i < MAX_TEAMS; i++) {
         const team = teams[i];
@@ -48,6 +49,7 @@ function renderLeagueTable() {
 }
 
 function renderSettingsList() {
+    if (!teamList || !teamCount) return;
     teamList.innerHTML = '';
     teamCount.textContent = teams.length;
 
@@ -68,31 +70,33 @@ function saveAndRefresh() {
     renderSettingsList();
 }
 
-addTeamForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = teamNameInput.value.trim();
-    if (!name) return;
+if (addTeamForm) {
+    addTeamForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = teamNameInput.value.trim();
+        if (!name) return;
 
-    if (teams.length >= MAX_TEAMS) {
-        alert('Maximum of 8 teams reached.');
-        return;
-    }
+        if (teams.length >= MAX_TEAMS) {
+            alert('Maximum of 8 teams reached.');
+            return;
+        }
 
-    teams.push({
-        name: name,
-        mp: 0,
-        w: 0,
-        d: 0,
-        l: 0,
-        gd: 0,
-        pts: 0,
-        gf: 0,
-        ga: 0
+        teams.push({
+            name: name,
+            mp: 0,
+            w: 0,
+            d: 0,
+            l: 0,
+            gd: 0,
+            pts: 0,
+            gf: 0,
+            ga: 0
+        });
+
+        teamNameInput.value = '';
+        saveAndRefresh();
     });
-
-    teamNameInput.value = '';
-    saveAndRefresh();
-});
+}
 
 window.deleteTeam = function(index) {
     teams.splice(index, 1);
@@ -105,5 +109,5 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Initial Render
+// Initial render
 saveAndRefresh();
