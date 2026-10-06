@@ -61,7 +61,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Horizontal Scrollable Table */
+/* Standings Table */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -164,6 +164,12 @@ body {
 .team-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
     gap: 12px;
 }
 
@@ -183,40 +189,66 @@ body {
 
 .team-name {
     font-size: 0.98rem;
+    font-weight: 500;
+    color: #1e2022;
+}
+
+/* Score display with arrow */
+.team-score-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.15rem;
     font-weight: 600;
     color: #1e2022;
+    padding-right: 8px;
+    min-width: 32px;
+    justify-content: flex-end;
+}
+
+.winner-arrow {
+    display: inline-block;
+    font-size: 0.65rem;
+    color: #111111;
+    transform: scaleY(1.2);
 }
 
 .match-divider {
     width: 1px;
-    height: 48px;
+    height: 52px;
     background-color: #edf0f2;
     margin: 0 16px;
 }
 
+/* Right Clickable Status Column */
 .match-action-col {
-    width: 65px;
+    min-width: 54px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 0;
 }
 
 .match-vs-tag {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: #8c98a4;
+    color: #0066ff;
     text-transform: uppercase;
 }
 
-.btn-delete-match {
-    background: none;
-    border: none;
-    color: #ff3b30;
-    font-size: 0.72rem;
-    cursor: pointer;
-    font-weight: 500;
+.match-ft-tag {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e2022;
+}
+
+.click-hint {
+    font-size: 0.62rem;
+    color: #8c98a4;
+    margin-top: 3px;
 }
 
 /* Floating Action Button (+) */
@@ -245,7 +277,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Modal Popup */
+/* Modals */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -268,7 +300,7 @@ body {
     border-radius: 16px;
     width: 88%;
     max-width: 360px;
-    padding: 20px;
+    padding: 22px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
@@ -298,6 +330,35 @@ body {
     font-size: 0.9rem;
     background-color: #fafafa;
     outline: none;
+}
+
+.score-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.score-team-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e2022;
+    flex: 1;
+}
+
+.score-input-row input {
+    width: 65px;
+    padding: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-weight: 600;
+    outline: none;
+}
+
+.score-input-row input:focus {
+    border-color: #0066ff;
 }
 
 .modal-actions {
