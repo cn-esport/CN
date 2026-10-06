@@ -41,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody id="standings-body">
-                        <!-- Populated strictly from added teams in script.js -->
+                        <!-- Rendered dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -50,7 +50,38 @@
 
         <!-- Matches Section -->
         <section id="matches-view" class="view-section">
-            <div class="empty-state">Matches Content</div>
+            <div class="matches-header">
+                <h2 class="matches-title">Matches</h2>
+            </div>
+
+            <div id="matches-list" class="matches-container">
+                <!-- Match cards populated via script.js -->
+            </div>
+            <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
+
+            <!-- Floating Add Match Button -->
+            <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
+
+            <!-- Add Match Modal -->
+            <div id="match-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3 class="modal-title">Create Match</h3>
+                    <form id="create-match-form">
+                        <div class="form-group">
+                            <label for="home-team-select">Home Team</label>
+                            <select id="home-team-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="away-team-select">Away Team</label>
+                            <select id="away-team-select" required></select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" id="close-modal-btn" class="btn-cancel">Cancel</button>
+                            <button type="submit" class="btn-accent">Add Match</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <!-- Settings Section -->
