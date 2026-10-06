@@ -72,10 +72,11 @@
                             <th>W</th>
                             <th>D</th>
                             <th>L</th>
-                            <th class="col-pts">Pts</th>
-                            <th class="col-gd">GD</th>
                             <th>GF</th>
                             <th>GA</th>
+                            <th class="col-pts">Pts</th>
+                            <th class="col-gd">GD</th>
+                            <th class="col-form">Last 5</th>
                         </tr>
                     </thead>
                     <tbody id="standings-body">
@@ -83,6 +84,15 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Standalone Legend below table -->
+            <div class="table-legend-card">
+                <div class="legend-item">
+                    <span class="legend-box-blue"></span>
+                    <span class="legend-text">UEFA Champions League Qualification</span>
+                </div>
+            </div>
+
             <div id="no-teams-msg" class="empty-state" style="display: none;">No teams added yet. Add teams in Settings.</div>
         </section>
 
@@ -152,7 +162,6 @@
             </div>
 
             <div class="dashboard-container">
-                <!-- Section 1: Team Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Team Management</h3>
@@ -181,7 +190,6 @@
                     </div>
                 </div>
 
-                <!-- Section 2: Qualification Zone -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
@@ -199,7 +207,6 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Season Settings & Progress -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Settings</h3>
@@ -224,7 +231,6 @@
                     </div>
                 </div>
 
-                <!-- Section 4: Season Controls -->
                 <div class="dashboard-card danger-card">
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
