@@ -16,7 +16,8 @@ navItems.forEach(item => {
     });
 });
 
-// Dynamic Team Data
+// League Standings & Team Management
+const MAX_TEAMS = 8;
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 
 let teams = rawTeams.map(t => ({
@@ -32,6 +33,8 @@ let teams = rawTeams.map(t => ({
 }));
 
 const standingsBody = document.getElementById('standings-body');
+const standingsTable = document.querySelector('.standings-table');
+const noTeamsMsg = document.getElementById('no-teams-msg');
 const addTeamForm = document.getElementById('add-team-form');
 const teamNameInput = document.getElementById('team-name-input');
 const teamList = document.getElementById('team-list');
@@ -41,24 +44,24 @@ function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
 
-    // If no teams exist, show helper row
+    // Show empty message if no teams are added
     if (teams.length === 0) {
-        standingsBody.innerHTML = `
-            <tr>
-                <td colspan="10" class="no-teams-row">No teams added yet. Add teams in Settings.</td>
-            </tr>
-        `;
+        if (standingsTable) standingsTable.style.display = 'none';
+        if (noTeamsMsg) noTeamsMsg.style.display = 'block';
         return;
     }
 
-    // Sort by Points, GD, then GF
+    if (standingsTable) standingsTable.style.display = 'table';
+    if (noTeamsMsg) noTeamsMsg.style.display = 'none';
+
+    // Sort by Points, GD, GF
     teams.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
-    // Only render rows for teams that actually exist
+    // Only render the exact count of teams existing in array
     teams.forEach((team, index) => {
         const row = document.createElement('tr');
-
-        // Qualification indicator for top positions (up to top 4)
+        
+        // Qualification accent on top 4
         if (index < 4) {
             row.classList.add('top-four');
         }
@@ -106,6 +109,11 @@ if (addTeamForm) {
         e.preventDefault();
         const name = teamNameInput.value.trim();
         if (!name) return;
+
+        if (teams.length >= MAX_TEAMS) {
+            alert('Maximum of 8 teams reached.');
+            return;
+        }
 
         teams.push({
             name: name,
