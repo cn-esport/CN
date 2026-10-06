@@ -42,7 +42,7 @@ body {
 }
 
 .content {
-    padding: 20px 16px;
+    padding: 8px 6px;
 }
 
 /* Tab Views */
@@ -61,9 +61,83 @@ body {
     font-size: 1rem;
 }
 
+/* Premier League Style Standings Table */
+.table-container {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.standings-table th,
+.standings-table td {
+    padding: 10px 4px;
+    white-space: nowrap;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.standings-table th {
+    font-weight: 600;
+    color: #888888;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 0.70rem;
+    letter-spacing: 0.02em;
+}
+
+/* Position indicator (PL qualification line on left) */
+.standings-table .col-pos {
+    width: 26px;
+    font-weight: 600;
+    color: #555555;
+    padding-left: 8px;
+    position: relative;
+}
+
+.standings-table tr.top-four .col-pos::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    background-color: #0066ff;
+    border-radius: 2px;
+}
+
+/* Club column styling */
+.standings-table .col-team {
+    text-align: left;
+    padding-left: 8px;
+    padding-right: 10px;
+    font-weight: 600;
+    color: #111111;
+    width: 40%;
+}
+
+.team-slot {
+    display: inline-block;
+    width: 65px;
+    height: 12px;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+/* Points column highlight */
+.standings-table .col-pts {
+    font-weight: 700;
+    color: #0066ff;
+    padding-right: 8px;
+}
+
 /* Settings Styles */
 .settings-container {
-    padding: 8px 4px;
+    padding: 12px 6px;
     max-width: 400px;
     margin: 0 auto;
 }
@@ -147,7 +221,7 @@ body {
     padding: 4px 8px;
 }
 
-/* Bottom Navigation */
+/* Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
