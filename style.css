@@ -1,1 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
+body {
+    background-color: #ffffff;
+    color: #111111;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 75px;
+}
+
+/* Top Website Name Header */
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 18px 20px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.brand-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #111111;
+    margin-bottom: 6px;
+}
+
+.underline {
+    width: 140px;
+    height: 1.5px;
+    background-color: #111111;
+    margin: 0 auto;
+    opacity: 0.8;
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background-color: #ffffff;
+    border-top: 1px solid #eeeeee;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Nav Item Button */
+.nav-item {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #888888;
+    flex: 1;
+    padding: 8px 0;
+    transition: color 0.15s ease;
+}
+
+/* Nav Icon */
+.nav-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+/* Nav Label */
+.nav-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+/* Active State */
+.nav-item.active {
+    color: #0066ff;
+}
+
+.nav-item.active .nav-label {
+    font-weight: 600;
+}
