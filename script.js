@@ -111,7 +111,7 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Standings Calculation
+// Standings & Form Calculator
 function calculateStandings() {
     const tableData = teams.map(team => ({
         name: team.name,
@@ -122,44 +122,73 @@ function calculateStandings() {
         gf: 0,
         ga: 0,
         gd: 0,
-        pts: 0
+        pts: 0,
+        form: [] // Last 5 match outcomes ('W', 'D', 'L')
     }));
 
-    matches.forEach(m => {
-        if (m.status === 'FT') {
-            const home = tableData.find(t => t.name === m.home);
-            const away = tableData.find(t => t.name === m.away);
+    // Iterate matches in chronological order to compute progressive form
+    const finishedMatches = matches.filter(m => m.status === 'FT');
 
-            if (home && away) {
-                home.mp += 1;
-                away.mp += 1;
-                home.gf += m.homeScore;
-                home.ga += m.awayScore;
-                away.gf += m.awayScore;
-                away.ga += m.homeScore;
+    finishedMatches.forEach(m => {
+        const home = tableData.find(t => t.name === m.home);
+        const away = tableData.find(t => t.name === m.away);
 
-                if (m.homeScore > m.awayScore) {
-                    home.w += 1;
-                    home.pts += 3;
-                    away.l += 1;
-                } else if (m.homeScore < m.awayScore) {
-                    away.w += 1;
-                    away.pts += 3;
-                    home.l += 1;
-                } else {
-                    home.d += 1;
-                    home.pts += 1;
-                    away.d += 1;
-                    away.pts += 1;
-                }
+        if (home && away) {
+            home.mp += 1;
+            away.mp += 1;
+            home.gf += m.homeScore;
+            home.ga += m.awayScore;
+            away.gf += m.awayScore;
+            away.ga += m.homeScore;
 
-                home.gd = home.gf - home.ga;
-                away.gd = away.gf - away.ga;
+            if (m.homeScore > m.awayScore) {
+                home.w += 1;
+                home.pts += 3;
+                away.l += 1;
+                home.form.push('W');
+                away.form.push('L');
+            } else if (m.homeScore < m.awayScore) {
+                away.w += 1;
+                away.pts += 3;
+                home.l += 1;
+                away.form.push('W');
+                home.form.push('L');
+            } else {
+                home.d += 1;
+                home.pts += 1;
+                away.d += 1;
+                away.pts += 1;
+                home.form.push('D');
+                away.form.push('D');
             }
+
+            home.gd = home.gf - home.ga;
+            away.gd = away.gf - away.ga;
         }
     });
 
     return tableData;
+}
+
+// Generate Last 5 visual circle icons (Green Check, Grey Dash, Red X)
+function renderFormBadges(formHistory) {
+    const last5 = formHistory.slice(-5);
+    if (last5.length === 0) {
+        return '<span style="color:#adb5bd; font-size:0.75rem;">—</span>';
+    }
+
+    let html = '<div class="form-badges-container">';
+    last5.forEach(result => {
+        if (result === 'W') {
+            html += `<span class="form-badge win" title="Win">&#10003;</span>`;
+        } else if (result === 'D') {
+            html += `<span class="form-badge draw" title="Draw">&#8211;</span>`;
+        } else if (result === 'L') {
+            html += `<span class="form-badge loss" title="Loss">&#10005;</span>`;
+        }
+    });
+    html += '</div>';
+    return html;
 }
 
 // Standings Render
@@ -201,10 +230,11 @@ function renderLeagueTable() {
             <td>${team.w}</td>
             <td>${team.d}</td>
             <td>${team.l}</td>
-            <td class="col-pts">${team.pts}</td>
-            <td class="col-gd">${team.gd}</td>
             <td>${team.gf}</td>
             <td>${team.ga}</td>
+            <td class="col-pts">${team.pts}</td>
+            <td class="col-gd">${team.gd}</td>
+            <td class="col-form">${renderFormBadges(team.form)}</td>
         `;
         standingsBody.appendChild(row);
     });
@@ -289,7 +319,6 @@ function updateSeasonProgress() {
     const totalTeams = teams.length;
     const matchesPerTeam = Number(leagueConfig.matchesPerTeam) || 14;
 
-    // Total matches scheduled in a balanced season = (N * MatchesPerTeam) / 2
     const totalScheduledTarget = totalTeams > 1 ? Math.floor((totalTeams * matchesPerTeam) / 2) : 0;
 
     let percentage = 0;
@@ -388,7 +417,6 @@ window.renameTeam = function(index) {
     const newName = prompt('Enter new team name:', currentName);
     if (newName && newName.trim() && newName.trim() !== currentName) {
         const cleanName = newName.trim();
-        // Update references in all matches
         matches.forEach(m => {
             if (m.home === currentName) m.home = cleanName;
             if (m.away === currentName) m.away = cleanName;
