@@ -1,20 +1,80 @@
-// Navigation Switcher
+// Navigation & Views Switcher
 const navItems = document.querySelectorAll('.nav-item');
+const drawerLinks = document.querySelectorAll('.drawer-link');
 const views = document.querySelectorAll('.view-section');
 
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        views.forEach(view => view.classList.remove('active'));
+// Side Drawer Elements
+const menuBtn = document.getElementById('menu-btn');
+const sideDrawer = document.getElementById('side-drawer');
+const sideDrawerBackdrop = document.getElementById('side-drawer-backdrop');
+const closeDrawerBtn = document.getElementById('close-drawer-btn');
 
-        item.classList.add('active');
-        const targetId = item.getAttribute('data-target');
-        const targetView = document.getElementById(targetId);
-        if (targetView) {
-            targetView.classList.add('active');
+function switchTab(targetId) {
+    // Update view visibility
+    views.forEach(view => view.classList.remove('active'));
+    const targetView = document.getElementById(targetId);
+    if (targetView) {
+        targetView.classList.add('active');
+    }
+
+    // Update bottom nav active state
+    navItems.forEach(nav => {
+        if (nav.getAttribute('data-target') === targetId) {
+            nav.classList.add('active');
+        } else {
+            nav.classList.remove('active');
         }
     });
+
+    // Update side drawer links active state
+    drawerLinks.forEach(link => {
+        if (link.getAttribute('data-target') === targetId) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// Bottom nav clicks
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const targetId = item.getAttribute('data-target');
+        switchTab(targetId);
+    });
 });
+
+// Drawer link clicks
+drawerLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        const targetId = link.getAttribute('data-target');
+        switchTab(targetId);
+        closeDrawer();
+    });
+});
+
+// Drawer Open / Close Handlers
+function openDrawer() {
+    sideDrawer.classList.add('active');
+    sideDrawerBackdrop.classList.add('active');
+}
+
+function closeDrawer() {
+    sideDrawer.classList.remove('active');
+    sideDrawerBackdrop.classList.remove('active');
+}
+
+if (menuBtn) {
+    menuBtn.addEventListener('click', openDrawer);
+}
+
+if (closeDrawerBtn) {
+    closeDrawerBtn.addEventListener('click', closeDrawer);
+}
+
+if (sideDrawerBackdrop) {
+    sideDrawerBackdrop.addEventListener('click', closeDrawer);
+}
 
 // Teams & Matches State
 const MAX_TEAMS = 8;
@@ -381,14 +441,6 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-
-// Hamburger menu click listener
-const menuBtn = document.getElementById('menu-btn');
-if (menuBtn) {
-    menuBtn.addEventListener('click', () => {
-        console.log('Menu opened');
-    });
 }
 
 // Initial Run
