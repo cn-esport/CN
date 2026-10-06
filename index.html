@@ -22,9 +22,27 @@
             <div class="empty-state">Home Content</div>
         </section>
 
-        <!-- League Section (Clean default state) -->
+        <!-- League Section (Premier League Style Standings) -->
         <section id="league-view" class="view-section active">
-            <div class="empty-state">League Content</div>
+            <div class="table-container">
+                <table class="standings-table">
+                    <thead>
+                        <tr>
+                            <th class="col-pos">#</th>
+                            <th class="col-team">Club</th>
+                            <th>MP</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GD</th>
+                            <th class="col-pts">Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Rendered dynamically by script.js -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <!-- Matches Section -->
