@@ -16,21 +16,13 @@ navItems.forEach(item => {
     });
 });
 
-// Teams & Matches State
+// App State
 const MAX_TEAMS = 8;
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
 
 let teams = rawTeams.map(t => ({
-    name: t.name || 'Team',
-    mp: Number(t.mp) || 0,
-    w: Number(t.w) || 0,
-    d: Number(t.d) || 0,
-    l: Number(t.l) || 0,
-    gd: Number(t.gd) || 0,
-    pts: Number(t.pts) || 0,
-    gf: Number(t.gf) || 0,
-    ga: Number(t.ga) || 0
+    name: t.name || 'Team'
 }));
 
 // DOM Elements
@@ -51,6 +43,67 @@ const createMatchForm = document.getElementById('create-match-form');
 const homeTeamSelect = document.getElementById('home-team-select');
 const awayTeamSelect = document.getElementById('away-team-select');
 
+// Score Modal Elements
+const scoreModal = document.getElementById('score-modal');
+const closeScoreModalBtn = document.getElementById('close-score-modal-btn');
+const enterScoreForm = document.getElementById('enter-score-form');
+const scoreMatchIndexInput = document.getElementById('score-match-index');
+const scoreHomeLabel = document.getElementById('score-home-label');
+const scoreAwayLabel = document.getElementById('score-away-label');
+const homeScoreInput = document.getElementById('home-score-input');
+const awayScoreInput = document.getElementById('away-score-input');
+
+// Standings Calculator based on Finished Matches
+function calculateStandings() {
+    const tableData = teams.map(team => ({
+        name: team.name,
+        mp: 0,
+        w: 0,
+        d: 0,
+        l: 0,
+        gf: 0,
+        ga: 0,
+        gd: 0,
+        pts: 0
+    }));
+
+    matches.forEach(m => {
+        if (m.status === 'FT') {
+            const home = tableData.find(t => t.name === m.home);
+            const away = tableData.find(t => t.name === m.away);
+
+            if (home && away) {
+                home.mp += 1;
+                away.mp += 1;
+                home.gf += m.homeScore;
+                home.ga += m.awayScore;
+                away.gf += m.awayScore;
+                away.ga += m.homeScore;
+
+                if (m.homeScore > m.awayScore) {
+                    home.w += 1;
+                    home.pts += 3;
+                    away.l += 1;
+                } else if (m.homeScore < m.awayScore) {
+                    away.w += 1;
+                    away.pts += 3;
+                    home.l += 1;
+                } else {
+                    home.d += 1;
+                    home.pts += 1;
+                    away.d += 1;
+                    away.pts += 1;
+                }
+
+                home.gd = home.gf - home.ga;
+                away.gd = away.gf - away.ga;
+            }
+        }
+    });
+
+    return tableData;
+}
+
 // Standings Render
 function renderLeagueTable() {
     if (!standingsBody) return;
@@ -65,9 +118,10 @@ function renderLeagueTable() {
     if (standingsTable) standingsTable.style.display = 'table';
     if (noTeamsMsg) noTeamsMsg.style.display = 'none';
 
-    teams.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
+    const tableData = calculateStandings();
+    tableData.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
-    teams.forEach((team, index) => {
+    tableData.forEach((team, index) => {
         const row = document.createElement('tr');
         if (index < 4) row.classList.add('top-four');
 
@@ -101,24 +155,61 @@ function renderMatches() {
     matches.forEach((match, index) => {
         const homeInitial = match.home ? match.home.charAt(0).toUpperCase() : 'H';
         const awayInitial = match.away ? match.away.charAt(0).toUpperCase() : 'A';
+        const isFinished = match.status === 'FT';
+
+        let homeScoreHtml = '';
+        let awayScoreHtml = '';
+        let rightColumnHtml = '';
+
+        if (isFinished) {
+            const homeWon = match.homeScore > match.awayScore;
+            const awayWon = match.awayScore > match.homeScore;
+
+            homeScoreHtml = `
+                <div class="team-score-slot">
+                    <span>${match.homeScore}</span>
+                    ${homeWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
+                </div>
+            `;
+            awayScoreHtml = `
+                <div class="team-score-slot">
+                    <span>${match.awayScore}</span>
+                    ${awayWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
+                </div>
+            `;
+
+            rightColumnHtml = `
+                <span class="match-ft-tag">FT</span>
+            `;
+        } else {
+            rightColumnHtml = `
+                <span class="match-vs-tag">VS</span>
+                <span class="click-hint">Add Score</span>
+            `;
+        }
 
         const card = document.createElement('div');
         card.className = 'match-card';
         card.innerHTML = `
             <div class="match-teams">
                 <div class="team-row">
-                    <span class="team-badge-circle">${escapeHtml(homeInitial)}</span>
-                    <span class="team-name">${escapeHtml(match.home)}</span>
+                    <div class="team-info">
+                        <span class="team-badge-circle">${escapeHtml(homeInitial)}</span>
+                        <span class="team-name">${escapeHtml(match.home)}</span>
+                    </div>
+                    ${homeScoreHtml}
                 </div>
                 <div class="team-row">
-                    <span class="team-badge-circle">${escapeHtml(awayInitial)}</span>
-                    <span class="team-name">${escapeHtml(match.away)}</span>
+                    <div class="team-info">
+                        <span class="team-badge-circle">${escapeHtml(awayInitial)}</span>
+                        <span class="team-name">${escapeHtml(match.away)}</span>
+                    </div>
+                    ${awayScoreHtml}
                 </div>
             </div>
             <div class="match-divider"></div>
-            <div class="match-action-col">
-                <span class="match-vs-tag">VS</span>
-                <button class="btn-delete-match" onclick="deleteMatch(${index})">Remove</button>
+            <div class="match-action-col" onclick="openScoreModal(${index})">
+                ${rightColumnHtml}
             </div>
         `;
         matchesList.appendChild(card);
@@ -182,7 +273,7 @@ if (addTeamForm) {
             return;
         }
 
-        teams.push({ name: name, mp: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0, gf: 0, ga: 0 });
+        teams.push({ name: name });
         teamNameInput.value = '';
         saveAndRefresh();
     });
@@ -194,7 +285,7 @@ window.deleteTeam = function(index) {
     saveAndRefresh();
 };
 
-// Modal Open / Close
+// Add Match Modal Open / Close
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
         if (teams.length < 2) {
@@ -224,17 +315,61 @@ if (createMatchForm) {
             return;
         }
 
-        matches.push({ home: home, away: away });
+        matches.push({
+            home: home,
+            away: away,
+            status: 'SCHEDULED',
+            homeScore: 0,
+            awayScore: 0
+        });
+
         matchModal.classList.remove('active');
         createMatchForm.reset();
         saveAndRefresh();
     });
 }
 
-window.deleteMatch = function(index) {
-    matches.splice(index, 1);
-    saveAndRefresh();
+// Open Score Modal
+window.openScoreModal = function(index) {
+    const match = matches[index];
+    if (!match) return;
+
+    scoreMatchIndexInput.value = index;
+    scoreHomeLabel.textContent = match.home;
+    scoreAwayLabel.textContent = match.away;
+    homeScoreInput.value = match.status === 'FT' ? match.homeScore : '';
+    awayScoreInput.value = match.status === 'FT' ? match.awayScore : '';
+
+    scoreModal.classList.add('active');
 };
+
+if (closeScoreModalBtn) {
+    closeScoreModalBtn.addEventListener('click', () => {
+        scoreModal.classList.remove('active');
+    });
+}
+
+// Submit Score & Recalculate
+if (enterScoreForm) {
+    enterScoreForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const index = parseInt(scoreMatchIndexInput.value, 10);
+        const homeScore = parseInt(homeScoreInput.value, 10);
+        const awayScore = parseInt(awayScoreInput.value, 10);
+
+        if (isNaN(homeScore) || isNaN(awayScore) || homeScore < 0 || awayScore < 0) {
+            alert('Please enter valid scores.');
+            return;
+        }
+
+        matches[index].homeScore = homeScore;
+        matches[index].awayScore = awayScore;
+        matches[index].status = 'FT';
+
+        scoreModal.classList.remove('active');
+        saveAndRefresh();
+    });
+}
 
 function escapeHtml(text) {
     const div = document.createElement('div');
