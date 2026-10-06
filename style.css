@@ -101,9 +101,9 @@ body {
 /* Clean gap between Club and MP */
 .standings-table .col-team {
     text-align: left;
-    padding-left: 4px;
+    padding-left: 10px;
     padding-right: 8px;
-    width: 90%;
+    width: 100%;
 }
 
 .team-slot {
