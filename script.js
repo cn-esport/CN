@@ -3,21 +3,18 @@ const navItems = document.querySelectorAll('.nav-item');
 const drawerLinks = document.querySelectorAll('.drawer-link');
 const views = document.querySelectorAll('.view-section');
 
-// Side Drawer Elements
 const menuBtn = document.getElementById('menu-btn');
 const sideDrawer = document.getElementById('side-drawer');
 const sideDrawerBackdrop = document.getElementById('side-drawer-backdrop');
 const closeDrawerBtn = document.getElementById('close-drawer-btn');
 
 function switchTab(targetId) {
-    // Update view visibility
     views.forEach(view => view.classList.remove('active'));
     const targetView = document.getElementById(targetId);
     if (targetView) {
         targetView.classList.add('active');
     }
 
-    // Update bottom nav active state
     navItems.forEach(nav => {
         if (nav.getAttribute('data-target') === targetId) {
             nav.classList.add('active');
@@ -26,7 +23,6 @@ function switchTab(targetId) {
         }
     });
 
-    // Update side drawer links active state
     drawerLinks.forEach(link => {
         if (link.getAttribute('data-target') === targetId) {
             link.classList.add('active');
@@ -36,24 +32,17 @@ function switchTab(targetId) {
     });
 }
 
-// Bottom nav clicks
 navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        const targetId = item.getAttribute('data-target');
-        switchTab(targetId);
-    });
+    item.addEventListener('click', () => switchTab(item.getAttribute('data-target')));
 });
 
-// Drawer link clicks
 drawerLinks.forEach(link => {
     link.addEventListener('click', () => {
-        const targetId = link.getAttribute('data-target');
-        switchTab(targetId);
+        switchTab(link.getAttribute('data-target'));
         closeDrawer();
     });
 });
 
-// Drawer Open / Close Handlers
 function openDrawer() {
     sideDrawer.classList.add('active');
     sideDrawerBackdrop.classList.add('active');
@@ -64,36 +53,29 @@ function closeDrawer() {
     sideDrawerBackdrop.classList.remove('active');
 }
 
-if (menuBtn) {
-    menuBtn.addEventListener('click', openDrawer);
-}
+if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+if (sideDrawerBackdrop) sideDrawerBackdrop.addEventListener('click', closeDrawer);
 
-if (closeDrawerBtn) {
-    closeDrawerBtn.addEventListener('click', closeDrawer);
-}
-
-if (sideDrawerBackdrop) {
-    sideDrawerBackdrop.addEventListener('click', closeDrawer);
-}
-
-// Teams & Matches State
-const MAX_TEAMS = 8;
+// APP STATE & CONFIGURATION
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
+let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
+    maxTeams: 8,
+    qualSpots: 4,
+    matchesPerTeam: 14
+};
 
 let teams = rawTeams.map(t => ({
     name: t.name || 'Team'
 }));
 
-// DOM Elements
+// DOM Elements: League
 const standingsBody = document.getElementById('standings-body');
 const standingsTable = document.querySelector('.standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
-const addTeamForm = document.getElementById('add-team-form');
-const teamNameInput = document.getElementById('team-name-input');
-const teamList = document.getElementById('team-list');
-const teamCount = document.getElementById('team-count');
 
+// DOM Elements: Matches
 const matchesList = document.getElementById('matches-list');
 const noMatchesMsg = document.getElementById('no-matches-msg');
 const openModalBtn = document.getElementById('open-match-modal-btn');
@@ -103,7 +85,7 @@ const createMatchForm = document.getElementById('create-match-form');
 const homeTeamSelect = document.getElementById('home-team-select');
 const awayTeamSelect = document.getElementById('away-team-select');
 
-// Score Modal Elements
+// DOM Elements: Score Modal
 const scoreModal = document.getElementById('score-modal');
 const closeScoreModalBtn = document.getElementById('close-score-modal-btn');
 const enterScoreForm = document.getElementById('enter-score-form');
@@ -113,7 +95,23 @@ const scoreAwayLabel = document.getElementById('score-away-label');
 const homeScoreInput = document.getElementById('home-score-input');
 const awayScoreInput = document.getElementById('away-score-input');
 
-// Standings Calculator
+// DOM Elements: Commissioner Dashboard
+const addTeamForm = document.getElementById('add-team-form');
+const teamNameInput = document.getElementById('team-name-input');
+const teamList = document.getElementById('team-list');
+const teamCount = document.getElementById('team-count');
+const teamMaxDisplay = document.getElementById('team-max-display');
+const maxTeamsSelect = document.getElementById('max-teams-select');
+const qualZoneSelect = document.getElementById('qual-zone-select');
+const matchesPerTeamInput = document.getElementById('matches-per-team-input');
+const seasonProgressFill = document.getElementById('season-progress-fill');
+const seasonProgressPct = document.getElementById('season-progress-pct');
+const progressPlayedCount = document.getElementById('progress-played-count');
+const progressTargetCount = document.getElementById('progress-target-count');
+const endSeasonBtn = document.getElementById('end-season-btn');
+const deleteEverythingBtn = document.getElementById('delete-everything-btn');
+
+// Standings Calculation
 function calculateStandings() {
     const tableData = teams.map(team => ({
         name: team.name,
@@ -164,7 +162,7 @@ function calculateStandings() {
     return tableData;
 }
 
-// Standings Render with Logo and GD at end
+// Standings Render
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -181,9 +179,14 @@ function renderLeagueTable() {
     const tableData = calculateStandings();
     tableData.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
+    const qualSpots = Number(leagueConfig.qualSpots) || 4;
+
     tableData.forEach((team, index) => {
         const row = document.createElement('tr');
-        if (index < 4) row.classList.add('top-four');
+        if (index < qualSpots) {
+            row.classList.add('top-qual');
+        }
+
         const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
 
         row.innerHTML = `
@@ -244,9 +247,7 @@ function renderMatches() {
                 </div>
             `;
 
-            rightColumnHtml = `
-                <span class="match-ft-tag">FT</span>
-            `;
+            rightColumnHtml = `<span class="match-ft-tag">FT</span>`;
         } else {
             rightColumnHtml = `
                 <span class="match-vs-tag">VS</span>
@@ -282,7 +283,57 @@ function renderMatches() {
     });
 }
 
-// Modal Team Options
+// Season Progress Calculation
+function updateSeasonProgress() {
+    const matchesPlayed = matches.filter(m => m.status === 'FT').length;
+    const totalTeams = teams.length;
+    const matchesPerTeam = Number(leagueConfig.matchesPerTeam) || 14;
+
+    // Total matches scheduled in a balanced season = (N * MatchesPerTeam) / 2
+    const totalScheduledTarget = totalTeams > 1 ? Math.floor((totalTeams * matchesPerTeam) / 2) : 0;
+
+    let percentage = 0;
+    if (totalScheduledTarget > 0) {
+        percentage = Math.min(100, Math.round((matchesPlayed / totalScheduledTarget) * 100));
+    }
+
+    if (seasonProgressFill) seasonProgressFill.style.width = `${percentage}%`;
+    if (seasonProgressPct) seasonProgressPct.textContent = `${percentage}%`;
+    if (progressPlayedCount) progressPlayedCount.textContent = matchesPlayed;
+    if (progressTargetCount) progressTargetCount.textContent = totalScheduledTarget;
+}
+
+// Commissioner Dashboard Render
+function renderSettingsDashboard() {
+    if (!teamList) return;
+    teamList.innerHTML = '';
+
+    const max = Number(leagueConfig.maxTeams) || 8;
+    teamCount.textContent = teams.length;
+    teamMaxDisplay.textContent = max;
+    maxTeamsSelect.value = max;
+    qualZoneSelect.value = leagueConfig.qualSpots || 4;
+    matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
+
+    teams.forEach((team, index) => {
+        const li = document.createElement('li');
+        li.className = 'team-list-item';
+        li.innerHTML = `
+            <div class="team-item-left">
+                <span>${index + 1}.</span>
+                <strong>${escapeHtml(team.name)}</strong>
+            </div>
+            <div class="team-item-actions">
+                <button class="btn-item-action btn-edit" onclick="renameTeam(${index})">Rename</button>
+                <button class="btn-item-action btn-del" onclick="deleteTeam(${index})">Delete</button>
+            </div>
+        `;
+        teamList.appendChild(li);
+    });
+
+    updateSeasonProgress();
+}
+
 function updateTeamSelects() {
     if (!homeTeamSelect || !awayTeamSelect) return;
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
@@ -301,29 +352,14 @@ function updateTeamSelects() {
     });
 }
 
-// Settings Render
-function renderSettingsList() {
-    if (!teamList || !teamCount) return;
-    teamList.innerHTML = '';
-    teamCount.textContent = teams.length;
-
-    teams.forEach((team, index) => {
-        const li = document.createElement('li');
-        li.className = 'team-list-item';
-        li.innerHTML = `
-            <span>${index + 1}. ${escapeHtml(team.name)}</span>
-            <button class="btn-del" onclick="deleteTeam(${index})">Remove</button>
-        `;
-        teamList.appendChild(li);
-    });
-}
-
 function saveAndRefresh() {
     localStorage.setItem('ccnn_teams', JSON.stringify(teams));
     localStorage.setItem('ccnn_matches', JSON.stringify(matches));
+    localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
+
     renderLeagueTable();
     renderMatches();
-    renderSettingsList();
+    renderSettingsDashboard();
     updateTeamSelects();
 }
 
@@ -334,8 +370,9 @@ if (addTeamForm) {
         const name = teamNameInput.value.trim();
         if (!name) return;
 
-        if (teams.length >= MAX_TEAMS) {
-            alert('Maximum of 8 teams reached.');
+        const max = Number(leagueConfig.maxTeams) || 8;
+        if (teams.length >= max) {
+            alert(`Maximum limit of ${max} teams reached. Increase capacity in settings if needed.`);
             return;
         }
 
@@ -345,17 +382,105 @@ if (addTeamForm) {
     });
 }
 
-window.deleteTeam = function(index) {
-    const deleted = teams.splice(index, 1)[0];
-    matches = matches.filter(m => m.home !== deleted.name && m.away !== deleted.name);
-    saveAndRefresh();
+// Rename Team
+window.renameTeam = function(index) {
+    const currentName = teams[index].name;
+    const newName = prompt('Enter new team name:', currentName);
+    if (newName && newName.trim() && newName.trim() !== currentName) {
+        const cleanName = newName.trim();
+        // Update references in all matches
+        matches.forEach(m => {
+            if (m.home === currentName) m.home = cleanName;
+            if (m.away === currentName) m.away = cleanName;
+        });
+        teams[index].name = cleanName;
+        saveAndRefresh();
+    }
 };
 
-// Add Match Modal Open / Close
+// Delete Team
+window.deleteTeam = function(index) {
+    const target = teams[index].name;
+    if (confirm(`Delete team "${target}"? All their matches will also be removed.`)) {
+        teams.splice(index, 1);
+        matches = matches.filter(m => m.home !== target && m.away !== target);
+        saveAndRefresh();
+    }
+};
+
+// Configuration Change Handlers
+if (maxTeamsSelect) {
+    maxTeamsSelect.addEventListener('change', (e) => {
+        const newMax = parseInt(e.target.value, 10);
+        if (teams.length > newMax) {
+            alert(`You currently have ${teams.length} teams. Please delete teams down to ${newMax} before reducing capacity.`);
+            maxTeamsSelect.value = leagueConfig.maxTeams;
+            return;
+        }
+        leagueConfig.maxTeams = newMax;
+        saveAndRefresh();
+    });
+}
+
+if (qualZoneSelect) {
+    qualZoneSelect.addEventListener('change', (e) => {
+        leagueConfig.qualSpots = parseInt(e.target.value, 10);
+        saveAndRefresh();
+    });
+}
+
+if (matchesPerTeamInput) {
+    matchesPerTeamInput.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val >= 1 && val <= 100) {
+            leagueConfig.matchesPerTeam = val;
+            saveAndRefresh();
+        }
+    });
+}
+
+// Season Control: End Season / Reset Data
+if (endSeasonBtn) {
+    endSeasonBtn.addEventListener('click', () => {
+        const confirmed = confirm(
+            'Are you sure you want to End the Season?\n\n' +
+            'This will clear all match results and standings scores to 0, but your teams list will remain intact.'
+        );
+        if (confirmed) {
+            matches = [];
+            saveAndRefresh();
+            alert('Season has ended. Match data and standings have been reset.');
+        }
+    });
+}
+
+// Season Control: Delete Everything
+if (deleteEverythingBtn) {
+    deleteEverythingBtn.addEventListener('click', () => {
+        const confirmed = confirm(
+            '⚠️ WARNING: Delete Everything?\n\n' +
+            'This will permanently delete all teams, matches, scores, and commissioner settings.'
+        );
+        if (confirmed) {
+            localStorage.removeItem('ccnn_teams');
+            localStorage.removeItem('ccnn_matches');
+            localStorage.removeItem('ccnn_config');
+
+            teams = [];
+            matches = [];
+            leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14 };
+
+            saveAndRefresh();
+            alert('All data has been cleared.');
+        }
+    });
+}
+
+// Match Scheduling Handlers
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
         if (teams.length < 2) {
-            alert('You need at least 2 teams in Settings to schedule a match.');
+            alert('You need at least 2 teams to schedule a match.');
             return;
         }
         matchModal.classList.add('active');
@@ -368,7 +493,6 @@ if (closeModalBtn) {
     });
 }
 
-// Create Match (adds new matches to top using unshift)
 if (createMatchForm) {
     createMatchForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -395,7 +519,7 @@ if (createMatchForm) {
     });
 }
 
-// Open Score Modal
+// Enter Score Modal Handlers
 window.openScoreModal = function(index) {
     const match = matches[index];
     if (!match) return;
@@ -415,7 +539,6 @@ if (closeScoreModalBtn) {
     });
 }
 
-// Submit Score & Recalculate
 if (enterScoreForm) {
     enterScoreForm.addEventListener('submit', (e) => {
         e.preventDefault();
