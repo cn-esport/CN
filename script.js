@@ -16,11 +16,9 @@ navItems.forEach(item => {
     });
 });
 
-// League Standings & Team Management
-const MAX_TEAMS = 8;
+// Dynamic Team Data
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 
-// Ensure all teams have clean numeric values including gf & ga
 let teams = rawTeams.map(t => ({
     name: t.name || 'Team',
     mp: Number(t.mp) || 0,
@@ -43,32 +41,42 @@ function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
 
-    // Sort by Points, then GD, then GF
+    // If no teams exist, show helper row
+    if (teams.length === 0) {
+        standingsBody.innerHTML = `
+            <tr>
+                <td colspan="10" class="no-teams-row">No teams added yet. Add teams in Settings.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Sort by Points, GD, then GF
     teams.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
-    for (let i = 0; i < MAX_TEAMS; i++) {
-        const team = teams[i];
+    // Only render rows for teams that actually exist
+    teams.forEach((team, index) => {
         const row = document.createElement('tr');
-        
-        // Premier League qualification accent on top 4
-        if (i < 4 && team) {
+
+        // Qualification indicator for top positions (up to top 4)
+        if (index < 4) {
             row.classList.add('top-four');
         }
 
         row.innerHTML = `
-            <td class="col-pos">${i + 1}</td>
-            <td class="col-team">${team ? escapeHtml(team.name) : '<span class="team-slot"></span>'}</td>
-            <td>${team ? team.mp : 0}</td>
-            <td>${team ? team.w : 0}</td>
-            <td>${team ? team.d : 0}</td>
-            <td>${team ? team.l : 0}</td>
-            <td>${team ? team.gd : 0}</td>
-            <td class="col-pts">${team ? team.pts : 0}</td>
-            <td>${team ? team.gf : 0}</td>
-            <td>${team ? team.ga : 0}</td>
+            <td class="col-pos">${index + 1}</td>
+            <td class="col-team">${escapeHtml(team.name)}</td>
+            <td>${team.mp}</td>
+            <td>${team.w}</td>
+            <td>${team.d}</td>
+            <td>${team.l}</td>
+            <td>${team.gd}</td>
+            <td class="col-pts">${team.pts}</td>
+            <td>${team.gf}</td>
+            <td>${team.ga}</td>
         `;
         standingsBody.appendChild(row);
-    }
+    });
 }
 
 function renderSettingsList() {
@@ -98,11 +106,6 @@ if (addTeamForm) {
         e.preventDefault();
         const name = teamNameInput.value.trim();
         if (!name) return;
-
-        if (teams.length >= MAX_TEAMS) {
-            alert('Maximum of 8 teams reached.');
-            return;
-        }
 
         teams.push({
             name: name,
