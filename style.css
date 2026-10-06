@@ -21,9 +21,44 @@ body {
     left: 0;
     width: 100%;
     background-color: #ffffff;
-    padding: 16px 20px 12px;
-    text-align: center;
+    padding: 14px 16px 10px;
     z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 3-line hamburger menu */
+.menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 22px;
+    height: 16px;
+    padding: 0;
+}
+
+.menu-btn span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: #111111;
+    border-radius: 2px;
+}
+
+.header-brand {
+    text-align: center;
+}
+
+.header-spacer {
+    width: 22px; /* Mirrors hamburger button width for balanced title centering */
 }
 
 .brand-title {
@@ -31,7 +66,7 @@ body {
     font-weight: 700;
     letter-spacing: 0.05em;
     color: #111111;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 .underline {
@@ -73,7 +108,7 @@ body {
 
 .standings-table {
     width: 100%;
-    min-width: 470px;
+    min-width: 480px;
     border-collapse: collapse;
     font-size: 0.8rem;
     text-align: center;
@@ -113,6 +148,7 @@ body {
     border-radius: 2px;
 }
 
+/* Club column with team logo badge */
 .standings-table .col-team {
     text-align: left;
     padding-left: 8px;
@@ -122,9 +158,31 @@ body {
     width: auto;
 }
 
+.table-team-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.table-team-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #f1f3f5;
+    color: #495057;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Centered Pts column */
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
+    text-align: center;
 }
 
 /* Matches Page Styling */
@@ -193,7 +251,6 @@ body {
     color: #1e2022;
 }
 
-/* Score display with arrow */
 .team-score-slot {
     display: flex;
     align-items: center;
@@ -220,7 +277,6 @@ body {
     margin: 0 16px;
 }
 
-/* Right Clickable Status Column */
 .match-action-col {
     min-width: 54px;
     display: flex;
