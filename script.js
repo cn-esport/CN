@@ -7,7 +7,10 @@ navItems.forEach(item => {
         views.forEach(view => view.classList.remove('active'));
 
         item.classList.add('active');
-        const targetView = document.getElementById(item.getAttribute('data-target'));
-        if (targetView) targetView.classList.add('active');
+        const targetId = item.getAttribute('data-target');
+        const targetView = document.getElementById(targetId);
+        if (targetView) {
+            targetView.classList.add('active');
+        }
     });
 });
