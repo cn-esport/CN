@@ -82,6 +82,28 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Enter Match Score Modal -->
+            <div id="score-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3 class="modal-title">Enter Score</h3>
+                    <form id="enter-score-form">
+                        <input type="hidden" id="score-match-index">
+                        <div class="score-input-row">
+                            <label id="score-home-label" class="score-team-label">Home</label>
+                            <input type="number" id="home-score-input" min="0" max="99" required placeholder="0">
+                        </div>
+                        <div class="score-input-row">
+                            <label id="score-away-label" class="score-team-label">Away</label>
+                            <input type="number" id="away-score-input" min="0" max="99" required placeholder="0">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" id="close-score-modal-btn" class="btn-cancel">Cancel</button>
+                            <button type="submit" class="btn-accent">Save Result</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <!-- Settings Section -->
