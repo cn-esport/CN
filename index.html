@@ -41,14 +41,7 @@
                         </tr>
                     </thead>
                     <tbody id="standings-body">
-                        <tr class="top-four"><td class="col-pos">1</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr class="top-four"><td class="col-pos">2</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr class="top-four"><td class="col-pos">3</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr class="top-four"><td class="col-pos">4</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr><td class="col-pos">5</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr><td class="col-pos">6</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr><td class="col-pos">7</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
-                        <tr><td class="col-pos">8</td><td class="col-team"><span class="team-slot"></span></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="col-pts">0</td><td>0</td><td>0</td></tr>
+                        <!-- Rendered strictly from team data via script.js -->
                     </tbody>
                 </table>
             </div>
@@ -70,7 +63,7 @@
                 </form>
 
                 <div class="team-list-section">
-                    <h3 class="team-list-title">Current Teams (<span id="team-count">0</span>/8)</h3>
+                    <h3 class="team-list-title">Current Teams (<span id="team-count">0</span>)</h3>
                     <ul id="team-list" class="team-list"></ul>
                 </div>
             </div>
@@ -92,7 +85,7 @@
             <span class="nav-label">Matches</span>
         </button>
         <button class="nav-item" data-target="settings-view">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             <span class="nav-label">Settings</span>
         </button>
     </nav>
