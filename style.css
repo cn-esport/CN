@@ -42,7 +42,7 @@ body {
 }
 
 .content {
-    padding: 12px 6px;
+    padding: 8px 4px;
 }
 
 /* Tab Views */
@@ -61,7 +61,7 @@ body {
     font-size: 0.95rem;
 }
 
-/* Standings Table - Tightened gaps */
+/* Standings Table - Exact matching layout from screenshot */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -70,46 +70,47 @@ body {
 
 .standings-table {
     width: 100%;
-    min-width: 410px;
+    min-width: 420px;
     border-collapse: collapse;
     font-size: 0.8rem;
     text-align: center;
 }
 
-.standings-table th,
-.standings-table td {
-    padding: 10px 5px;
-    white-space: nowrap;
-    border-bottom: 1px solid #f2f2f2;
-}
-
 .standings-table th {
+    padding: 8px 4px;
     font-weight: 600;
     color: #777777;
     border-bottom: 1px solid #e5e5e5;
-    font-size: 0.72rem;
+    font-size: 0.70rem;
+    white-space: nowrap;
+}
+
+.standings-table td {
+    padding: 10px 4px;
+    border-bottom: 1px solid #f2f2f2;
+    white-space: nowrap;
 }
 
 .standings-table .col-pos {
     width: 22px;
     font-weight: 600;
     color: #555555;
-    padding-left: 4px;
+    padding-left: 6px;
 }
 
-/* Tighter club column */
+/* Clean gap between Club and MP */
 .standings-table .col-team {
     text-align: left;
-    padding-left: 4px;
-    padding-right: 6px;
-    width: auto;
+    padding-left: 6px;
+    padding-right: 28px;
+    width: 32%;
 }
 
 .team-slot {
     display: inline-block;
-    width: 60px;
-    height: 12px;
-    background-color: #f0f0f0;
+    width: 65px;
+    height: 13px;
+    background-color: #ebebeb;
     border-radius: 3px;
     vertical-align: middle;
 }
@@ -117,7 +118,7 @@ body {
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
-    padding-right: 8px;
+    padding-right: 10px;
 }
 
 /* Bottom Nav */
