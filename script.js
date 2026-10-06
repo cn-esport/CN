@@ -57,7 +57,7 @@ if (menuBtn) menuBtn.addEventListener('click', openDrawer);
 if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
 if (sideDrawerBackdrop) sideDrawerBackdrop.addEventListener('click', closeDrawer);
 
-// APP STATE & CONFIGURATION
+// APP STATE
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
 let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
@@ -74,6 +74,7 @@ let teams = rawTeams.map(t => ({
 const standingsBody = document.getElementById('standings-body');
 const standingsTable = document.querySelector('.standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
+const leagueLegendsContainer = document.getElementById('league-legends-container');
 
 // DOM Elements: Matches
 const matchesList = document.getElementById('matches-list');
@@ -111,7 +112,7 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Standings & Form Calculator
+// Calculate Standings & Form History
 function calculateStandings() {
     const tableData = teams.map(team => ({
         name: team.name,
@@ -123,75 +124,95 @@ function calculateStandings() {
         ga: 0,
         gd: 0,
         pts: 0,
-        form: [] // Last 5 match outcomes ('W', 'D', 'L')
+        form: [] // stores 'W', 'D', 'L'
     }));
 
-    // Iterate matches in chronological order to compute progressive form
-    const finishedMatches = matches.filter(m => m.status === 'FT');
+    // Evaluate matches chronologically (reversed because new matches unshift to top)
+    const chronologicalMatches = [...matches].reverse();
 
-    finishedMatches.forEach(m => {
-        const home = tableData.find(t => t.name === m.home);
-        const away = tableData.find(t => t.name === m.away);
+    chronologicalMatches.forEach(m => {
+        if (m.status === 'FT') {
+            const home = tableData.find(t => t.name === m.home);
+            const away = tableData.find(t => t.name === m.away);
 
-        if (home && away) {
-            home.mp += 1;
-            away.mp += 1;
-            home.gf += m.homeScore;
-            home.ga += m.awayScore;
-            away.gf += m.awayScore;
-            away.ga += m.homeScore;
+            if (home && away) {
+                home.mp += 1;
+                away.mp += 1;
+                home.gf += m.homeScore;
+                home.ga += m.awayScore;
+                away.gf += m.awayScore;
+                away.ga += m.homeScore;
 
-            if (m.homeScore > m.awayScore) {
-                home.w += 1;
-                home.pts += 3;
-                away.l += 1;
-                home.form.push('W');
-                away.form.push('L');
-            } else if (m.homeScore < m.awayScore) {
-                away.w += 1;
-                away.pts += 3;
-                home.l += 1;
-                away.form.push('W');
-                home.form.push('L');
-            } else {
-                home.d += 1;
-                home.pts += 1;
-                away.d += 1;
-                away.pts += 1;
-                home.form.push('D');
-                away.form.push('D');
+                if (m.homeScore > m.awayScore) {
+                    home.w += 1;
+                    home.pts += 3;
+                    home.form.push('W');
+                    away.l += 1;
+                    away.form.push('L');
+                } else if (m.homeScore < m.awayScore) {
+                    away.w += 1;
+                    away.pts += 3;
+                    away.form.push('W');
+                    home.l += 1;
+                    home.form.push('L');
+                } else {
+                    home.d += 1;
+                    home.pts += 1;
+                    home.form.push('D');
+                    away.d += 1;
+                    away.pts += 1;
+                    away.form.push('D');
+                }
+
+                home.gd = home.gf - home.ga;
+                away.gd = away.gf - away.ga;
             }
-
-            home.gd = home.gf - home.ga;
-            away.gd = away.gf - away.ga;
         }
     });
 
     return tableData;
 }
 
-// Generate Last 5 visual circle icons (Green Check, Grey Dash, Red X)
-function renderFormBadges(formHistory) {
-    const last5 = formHistory.slice(-5);
-    if (last5.length === 0) {
-        return '<span style="color:#adb5bd; font-size:0.75rem;">—</span>';
-    }
+// Generate Last 5 Circles HTML
+function generateFormCirclesHtml(formArray) {
+    // Take the most recent 5 results
+    const recent = formArray.slice(-5);
+    let html = '<div class="form-circles-group">';
 
-    let html = '<div class="form-badges-container">';
-    last5.forEach(result => {
+    // Render played circles
+    recent.forEach(result => {
         if (result === 'W') {
-            html += `<span class="form-badge win" title="Win">&#10003;</span>`;
+            html += `
+                <span class="form-circle form-win" title="Win">
+                    <svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+            `;
         } else if (result === 'D') {
-            html += `<span class="form-badge draw" title="Draw">&#8211;</span>`;
+            html += `
+                <span class="form-circle form-draw" title="Draw">
+                    <svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </span>
+            `;
         } else if (result === 'L') {
-            html += `<span class="form-badge loss" title="Loss">&#10005;</span>`;
+            html += `
+                <span class="form-circle form-loss" title="Loss">
+                    <svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </span>
+            `;
         }
     });
+
+    // Fill remaining unplayed slots with empty circle outlines up to 5 total
+    const unplayedCount = Math.max(0, 5 - recent.length);
+    for (let i = 0; i < unplayedCount; i++) {
+        html += '<span class="form-circle form-empty" title="Not played"></span>';
+    }
+
     html += '</div>';
     return html;
 }
 
-// Standings Render
+// Render Standings
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -199,11 +220,13 @@ function renderLeagueTable() {
     if (teams.length === 0) {
         if (standingsTable) standingsTable.style.display = 'none';
         if (noTeamsMsg) noTeamsMsg.style.display = 'block';
+        if (leagueLegendsContainer) leagueLegendsContainer.style.display = 'none';
         return;
     }
 
     if (standingsTable) standingsTable.style.display = 'table';
     if (noTeamsMsg) noTeamsMsg.style.display = 'none';
+    if (leagueLegendsContainer) leagueLegendsContainer.style.display = 'flex';
 
     const tableData = calculateStandings();
     tableData.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
@@ -217,7 +240,9 @@ function renderLeagueTable() {
         }
 
         const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
+        const formHtml = generateFormCirclesHtml(team.form);
 
+        // Exact column order: #, Club, MP, W, D, L, Pts, GF, GA, GD, Last 5
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
             <td class="col-team">
@@ -230,11 +255,11 @@ function renderLeagueTable() {
             <td>${team.w}</td>
             <td>${team.d}</td>
             <td>${team.l}</td>
+            <td class="col-pts">${team.pts}</td>
             <td>${team.gf}</td>
             <td>${team.ga}</td>
-            <td class="col-pts">${team.pts}</td>
-            <td class="col-gd">${team.gd}</td>
-            <td class="col-form">${renderFormBadges(team.form)}</td>
+            <td>${team.gd}</td>
+            <td class="col-form">${formHtml}</td>
         `;
         standingsBody.appendChild(row);
     });
@@ -313,7 +338,7 @@ function renderMatches() {
     });
 }
 
-// Season Progress Calculation
+// Season Progress
 function updateSeasonProgress() {
     const matchesPlayed = matches.filter(m => m.status === 'FT').length;
     const totalTeams = teams.length;
@@ -436,7 +461,7 @@ window.deleteTeam = function(index) {
     }
 };
 
-// Configuration Change Handlers
+// Config changes
 if (maxTeamsSelect) {
     maxTeamsSelect.addEventListener('change', (e) => {
         const newMax = parseInt(e.target.value, 10);
@@ -467,12 +492,12 @@ if (matchesPerTeamInput) {
     });
 }
 
-// Season Control: End Season / Reset Data
+// Reset Season
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const confirmed = confirm(
             'Are you sure you want to End the Season?\n\n' +
-            'This will clear all match results and standings scores to 0, but your teams list will remain intact.'
+            'This will clear all match results and reset points to 0. Your team names will be preserved.'
         );
         if (confirmed) {
             matches = [];
@@ -482,7 +507,7 @@ if (endSeasonBtn) {
     });
 }
 
-// Season Control: Delete Everything
+// Delete Everything
 if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
         const confirmed = confirm(
@@ -504,7 +529,7 @@ if (deleteEverythingBtn) {
     });
 }
 
-// Match Scheduling Handlers
+// Match Scheduling Modal
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
         if (teams.length < 2) {
@@ -547,7 +572,7 @@ if (createMatchForm) {
     });
 }
 
-// Enter Score Modal Handlers
+// Score Input Modal
 window.openScoreModal = function(index) {
     const match = matches[index];
     if (!match) return;
