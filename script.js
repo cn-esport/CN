@@ -1,15 +1,13 @@
-// Switch active button when tapped
 const navItems = document.querySelectorAll('.nav-item');
+const views = document.querySelectorAll('.view-section');
 
 navItems.forEach(item => {
     item.addEventListener('click', () => {
-        // Remove active class from all buttons
         navItems.forEach(nav => nav.classList.remove('active'));
-        
-        // Add active class to the tapped button
-        item.classList.add('active');
+        views.forEach(view => view.classList.remove('active'));
 
-        const sectionName = item.getAttribute('data-target');
-        console.log(`Switched to: ${sectionName}`);
+        item.classList.add('active');
+        const targetView = document.getElementById(item.getAttribute('data-target'));
+        if (targetView) targetView.classList.add('active');
     });
 });
