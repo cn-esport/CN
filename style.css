@@ -91,7 +91,7 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Position indicator (PL qualification line on left) */
+/* Position indicator (PL qualification line on left for top 4) */
 .standings-table .col-pos {
     width: 26px;
     font-weight: 600;
@@ -121,19 +121,17 @@ body {
     width: auto;
 }
 
-.team-slot {
-    display: inline-block;
-    width: 65px;
-    height: 12px;
-    background-color: #eeeeee;
-    border-radius: 3px;
-    vertical-align: middle;
-}
-
 /* Points column highlight */
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
+}
+
+.no-teams-row {
+    padding: 40px 10px !important;
+    color: #888888;
+    font-size: 0.85rem;
+    text-align: center;
 }
 
 /* Settings Styles */
