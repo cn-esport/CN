@@ -18,7 +18,20 @@ navItems.forEach(item => {
 
 // League Standings & Team Management
 const MAX_TEAMS = 8;
-let teams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
+let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
+
+// Ensure all teams have numeric values including gf and ga
+let teams = rawTeams.map(t => ({
+    name: t.name || 'Team',
+    mp: Number(t.mp) || 0,
+    w: Number(t.w) || 0,
+    d: Number(t.d) || 0,
+    l: Number(t.l) || 0,
+    gd: Number(t.gd) || 0,
+    pts: Number(t.pts) || 0,
+    gf: Number(t.gf) || 0,
+    ga: Number(t.ga) || 0
+}));
 
 const standingsBody = document.getElementById('standings-body');
 const addTeamForm = document.getElementById('add-team-form');
@@ -30,14 +43,14 @@ function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
 
-    // Sort by Points, then Goal Difference
-    teams.sort((a, b) => (b.pts || 0) - (a.pts || 0) || (b.gd || 0) - (a.gd || 0));
+    // Sort by Points, then GD, then GF
+    teams.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
     for (let i = 0; i < MAX_TEAMS; i++) {
         const team = teams[i];
         const row = document.createElement('tr');
         
-        // Highlights top 4 qualification spots like Premier League
+        // Premier League style qualification accent on top 4
         if (i < 4 && team) {
             row.classList.add('top-four');
         }
@@ -45,12 +58,14 @@ function renderLeagueTable() {
         row.innerHTML = `
             <td class="col-pos">${i + 1}</td>
             <td class="col-team">${team ? escapeHtml(team.name) : '<span class="team-slot"></span>'}</td>
-            <td>${team ? (team.mp || 0) : 0}</td>
-            <td>${team ? (team.w || 0) : 0}</td>
-            <td>${team ? (team.d || 0) : 0}</td>
-            <td>${team ? (team.l || 0) : 0}</td>
-            <td>${team ? (team.gd || 0) : 0}</td>
-            <td class="col-pts">${team ? (team.pts || 0) : 0}</td>
+            <td>${team ? team.mp : 0}</td>
+            <td>${team ? team.w : 0}</td>
+            <td>${team ? team.d : 0}</td>
+            <td>${team ? team.l : 0}</td>
+            <td>${team ? team.gd : 0}</td>
+            <td class="col-pts">${team ? team.pts : 0}</td>
+            <td>${team ? team.gf : 0}</td>
+            <td>${team ? team.ga : 0}</td>
         `;
         standingsBody.appendChild(row);
     }
@@ -96,7 +111,9 @@ if (addTeamForm) {
             d: 0,
             l: 0,
             gd: 0,
-            pts: 0
+            pts: 0,
+            gf: 0,
+            ga: 0
         });
 
         teamNameInput.value = '';
