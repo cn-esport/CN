@@ -16,35 +16,14 @@ navItems.forEach(item => {
     });
 });
 
-// Team Management & Local Storage
+// Team Management
 const MAX_TEAMS = 8;
 let teams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 
-const standingsBody = document.getElementById('standings-body');
 const addTeamForm = document.getElementById('add-team-form');
 const teamNameInput = document.getElementById('team-name-input');
 const teamList = document.getElementById('team-list');
 const teamCount = document.getElementById('team-count');
-
-function renderLeagueTable() {
-    if (!standingsBody) return;
-    standingsBody.innerHTML = '';
-    for (let i = 0; i < MAX_TEAMS; i++) {
-        const team = teams[i];
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="col-pos">${i + 1}</td>
-            <td class="col-team">${team ? escapeHtml(team.name) : '<span class="team-slot"></span>'}</td>
-            <td>${team ? team.mp : 0}</td>
-            <td>${team ? team.w : 0}</td>
-            <td>${team ? team.d : 0}</td>
-            <td>${team ? team.l : 0}</td>
-            <td>${team ? team.gd : 0}</td>
-            <td class="col-pts">${team ? team.pts : 0}</td>
-        `;
-        standingsBody.appendChild(row);
-    }
-}
 
 function renderSettingsList() {
     if (!teamList || !teamCount) return;
@@ -64,7 +43,6 @@ function renderSettingsList() {
 
 function saveAndRefresh() {
     localStorage.setItem('ccnn_teams', JSON.stringify(teams));
-    renderLeagueTable();
     renderSettingsList();
 }
 
@@ -79,16 +57,7 @@ if (addTeamForm) {
             return;
         }
 
-        teams.push({
-            name: name,
-            mp: 0,
-            w: 0,
-            d: 0,
-            l: 0,
-            gd: 0,
-            pts: 0
-        });
-
+        teams.push({ name: name });
         teamNameInput.value = '';
         saveAndRefresh();
     });
@@ -105,5 +74,5 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Initial Render
+// Initial render
 saveAndRefresh();
