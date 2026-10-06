@@ -144,19 +144,96 @@
             </div>
         </section>
 
-        <!-- Settings Section -->
+        <!-- Settings: League Commissioner Dashboard -->
         <section id="settings-view" class="view-section">
-            <div class="settings-container">
-                <h2 class="settings-title">Manage Teams</h2>
-                
-                <form id="add-team-form" class="team-form">
-                    <input type="text" id="team-name-input" placeholder="Enter team name" maxlength="20" required autocomplete="off">
-                    <button type="submit" class="btn-accent">Add Team</button>
-                </form>
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">League Commissioner</h2>
+                <p class="dashboard-subtitle">Configure rules, manage teams, and oversee the season.</p>
+            </div>
 
-                <div class="team-list-section">
-                    <h3 class="team-list-title">Current Teams (<span id="team-count">0</span>/8)</h3>
-                    <ul id="team-list" class="team-list"></ul>
+            <div class="dashboard-container">
+                <!-- Section 1: Team Management -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Team Management</h3>
+                        <span class="badge-pill"><span id="team-count">0</span> / <span id="team-max-display">8</span></span>
+                    </div>
+
+                    <div class="form-inline-group">
+                        <label for="max-teams-select">League Capacity</label>
+                        <select id="max-teams-select" class="styled-select">
+                            <option value="4">4 Teams</option>
+                            <option value="6">6 Teams</option>
+                            <option value="8">8 Teams</option>
+                            <option value="10">10 Teams</option>
+                            <option value="12">12 Teams</option>
+                            <option value="16">16 Teams</option>
+                        </select>
+                    </div>
+
+                    <form id="add-team-form" class="team-form">
+                        <input type="text" id="team-name-input" placeholder="Enter team name" maxlength="20" required autocomplete="off">
+                        <button type="submit" class="btn-accent">Add Team</button>
+                    </form>
+
+                    <div class="team-list-section">
+                        <ul id="team-list" class="team-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Section 2: Qualification Zone -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Qualification Zone</h3>
+                    </div>
+                    <p class="card-desc">Set how many top teams show the blue qualification line on the League table.</p>
+                    <div class="form-inline-group">
+                        <label for="qual-zone-select">Promoted / Top Spots</label>
+                        <select id="qual-zone-select" class="styled-select">
+                            <option value="1">Top 1 (Champion)</option>
+                            <option value="2">Top 2</option>
+                            <option value="3">Top 3</option>
+                            <option value="4">Top 4 (Champions League)</option>
+                            <option value="6">Top 6</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 3: Season Settings & Progress -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Season Settings</h3>
+                    </div>
+                    <div class="form-inline-group">
+                        <label for="matches-per-team-input">Matches Per Team</label>
+                        <input type="number" id="matches-per-team-input" class="styled-input-num" min="1" max="50" value="14">
+                    </div>
+
+                    <div class="progress-block">
+                        <div class="progress-labels">
+                            <span class="progress-text">Season Progress</span>
+                            <span id="season-progress-pct" class="progress-pct">0%</span>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div id="season-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>Completed: <strong id="progress-played-count">0</strong></span>
+                            <span>Target: <strong id="progress-target-count">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Season Controls -->
+                <div class="dashboard-card danger-card">
+                    <div class="card-header">
+                        <h3 class="card-title danger-title">Season Controls</h3>
+                    </div>
+                    <p class="card-desc">Reset season match results or completely erase league data.</p>
+                    <div class="danger-actions">
+                        <button id="end-season-btn" class="btn-warning">End Season / Reset Match Data</button>
+                        <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
+                    </div>
                 </div>
             </div>
         </section>
