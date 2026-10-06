@@ -8,41 +8,102 @@
 body {
     background-color: #ffffff;
     color: #111111;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
-    padding-top: 80px;
+    padding-top: 70px;
     padding-bottom: 75px;
 }
 
-/* Top Website Name Header */
 .top-header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background-color: #ffffff;
-    padding: 18px 20px;
+    padding: 16px 20px 12px;
     text-align: center;
     z-index: 1000;
 }
 
 .brand-title {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     color: #111111;
     margin-bottom: 6px;
 }
 
 .underline {
-    width: 140px;
+    width: 120px;
     height: 1.5px;
     background-color: #111111;
     margin: 0 auto;
-    opacity: 0.8;
 }
 
-/* Bottom Navigation Bar */
+.content {
+    padding: 12px;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}
+
+/* Standings Table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.standings-table th {
+    padding: 10px 4px;
+    font-weight: 600;
+    color: #777777;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 0.75rem;
+}
+
+.standings-table td {
+    padding: 12px 4px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.standings-table .col-pos {
+    width: 28px;
+    font-weight: 600;
+    color: #555555;
+}
+
+.standings-table .col-team {
+    text-align: left;
+    padding-left: 8px;
+    width: 45%;
+}
+
+.team-slot {
+    display: inline-block;
+    width: 90px;
+    height: 14px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.standings-table .col-pts {
+    font-weight: 700;
+    color: #111111;
+}
+
+/* Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -57,7 +118,6 @@ body {
     z-index: 1000;
 }
 
-/* Nav Item Button */
 .nav-item {
     background: none;
     border: none;
@@ -71,24 +131,18 @@ body {
     color: #888888;
     flex: 1;
     padding: 8px 0;
-    transition: color 0.15s ease;
 }
 
-/* Nav Icon */
 .nav-icon {
     width: 22px;
     height: 22px;
-    display: block;
 }
 
-/* Nav Label */
 .nav-label {
     font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.01em;
 }
 
-/* Active State */
 .nav-item.active {
     color: #0066ff;
 }
