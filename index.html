@@ -143,10 +143,9 @@
             <div id="matches-list" class="matches-container"></div>
             <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
 
-            <!-- Floating Add Match Button -->
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
-            <!-- Add Match Modal (With Tournament Type Selector) -->
+            <!-- Add Match Modal -->
             <div id="match-modal" class="modal-overlay">
                 <div class="modal-content">
                     <h3 class="modal-title">Create Match</h3>
@@ -197,7 +196,7 @@
             </div>
         </section>
 
-        <!-- UCL Section -->
+        <!-- UCL Section (No Last 5 Column) -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title">UEFA Champions League</h2>
@@ -217,7 +216,6 @@
                             <th>GF</th>
                             <th>GA</th>
                             <th>GD</th>
-                            <th class="col-form">Last 5</th>
                         </tr>
                     </thead>
                     <tbody id="ucl-standings-body"></tbody>
@@ -276,9 +274,18 @@
                         </select>
                     </div>
 
-                    <form id="add-team-form" class="team-form">
-                        <input type="text" id="team-name-input" placeholder="Enter team name" maxlength="20" required autocomplete="off">
-                        <button type="submit" class="btn-accent">Add Team</button>
+                    <form id="add-team-form" class="team-management-form">
+                        <div class="form-field-block">
+                            <input type="text" id="team-name-input" placeholder="Team name" maxlength="20" required autocomplete="off">
+                        </div>
+                        <div class="form-field-block">
+                            <input type="url" id="team-logo-url-input" placeholder="Paste Logo Image URL (optional)">
+                        </div>
+                        <div class="logo-file-row">
+                            <label class="file-label" for="team-logo-file-input">Or Upload Logo File:</label>
+                            <input type="file" id="team-logo-file-input" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn-accent btn-full">Add Team</button>
                     </form>
 
                     <div class="team-list-section">
