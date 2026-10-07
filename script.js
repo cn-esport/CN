@@ -124,10 +124,9 @@ function calculateStandings() {
         ga: 0,
         gd: 0,
         pts: 0,
-        form: [] // stores 'W', 'D', 'L'
+        form: []
     }));
 
-    // Evaluate matches chronologically (reversed because new matches unshift to top)
     const chronologicalMatches = [...matches].reverse();
 
     chronologicalMatches.forEach(m => {
@@ -175,11 +174,9 @@ function calculateStandings() {
 
 // Generate Last 5 Circles HTML
 function generateFormCirclesHtml(formArray) {
-    // Take the most recent 5 results
     const recent = formArray.slice(-5);
     let html = '<div class="form-circles-group">';
 
-    // Render played circles
     recent.forEach(result => {
         if (result === 'W') {
             html += `
@@ -202,7 +199,6 @@ function generateFormCirclesHtml(formArray) {
         }
     });
 
-    // Fill remaining unplayed slots with empty circle outlines up to 5 total
     const unplayedCount = Math.max(0, 5 - recent.length);
     for (let i = 0; i < unplayedCount; i++) {
         html += '<span class="form-circle form-empty" title="Not played"></span>';
@@ -242,7 +238,6 @@ function renderLeagueTable() {
         const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
         const formHtml = generateFormCirclesHtml(team.form);
 
-        // Exact column order: #, Club, MP, W, D, L, Pts, GF, GA, GD, Last 5
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
             <td class="col-team">
