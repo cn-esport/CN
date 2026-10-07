@@ -62,6 +62,7 @@ let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let uclTeams = JSON.parse(localStorage.getItem('ccnn_ucl_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
 let managers = JSON.parse(localStorage.getItem('ccnn_managers')) || {};
+let playStyles = JSON.parse(localStorage.getItem('ccnn_playstyles')) || {};
 let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     maxTeams: 8,
     qualSpots: 4,
@@ -70,10 +71,11 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
 };
 
 let teams = rawTeams.map(t => ({
-    name: t.name || 'Team'
+    name: t.name || 'Team',
+    logo: t.logo || ''
 }));
 
-// Apply Dark Mode Preference
+// Dark Mode Toggle
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 function applyTheme(isDark) {
     if (isDark) {
@@ -132,6 +134,8 @@ const noManagersMsg = document.getElementById('no-managers-msg');
 // DOM Elements: Commissioner Dashboard
 const addTeamForm = document.getElementById('add-team-form');
 const teamNameInput = document.getElementById('team-name-input');
+const teamLogoUrlInput = document.getElementById('team-logo-url-input');
+const teamLogoFileInput = document.getElementById('team-logo-file-input');
 const teamList = document.getElementById('team-list');
 const teamCount = document.getElementById('team-count');
 const teamMaxDisplay = document.getElementById('team-max-display');
@@ -145,10 +149,41 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Standings Calculator for specific tournament type ('League' or 'UCL')
+// Logo Rendering Helper
+function getTeamLogoHtml(teamName, customLogo = '') {
+    const cleanName = teamName || 'Team';
+    const initial = cleanName.charAt(0).toUpperCase();
+
+    // Find saved team logo if customLogo not passed
+    if (!customLogo) {
+        const found = teams.find(t => t.name === cleanName) || uclTeams.find(u => u.name === cleanName);
+        if (found && found.logo) {
+            customLogo = found.logo;
+        }
+    }
+
+    if (customLogo) {
+        return `<img src="${customLogo}" alt="${escapeHtml(cleanName)}" class="table-team-logo" onerror="this.outerHTML='<span class=\\'table-team-logo\\'>${escapeHtml(initial)}</span>'">`;
+    }
+    return `<span class="table-team-logo">${escapeHtml(initial)}</span>`;
+}
+
+function getCardBadgeHtml(teamName) {
+    const cleanName = teamName || 'Team';
+    const initial = cleanName.charAt(0).toUpperCase();
+    const found = teams.find(t => t.name === cleanName) || uclTeams.find(u => u.name === cleanName);
+
+    if (found && found.logo) {
+        return `<img src="${found.logo}" alt="${escapeHtml(cleanName)}" class="team-badge-circle" onerror="this.outerHTML='<span class=\\'team-badge-circle\\'>${escapeHtml(initial)}</span>'">`;
+    }
+    return `<span class="team-badge-circle">${escapeHtml(initial)}</span>`;
+}
+
+// Standings Calculator for 'League' or 'UCL'
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
+        logo: team.logo || '',
         mp: 0,
         w: 0,
         d: 0,
@@ -242,7 +277,7 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
-// Render League Standings
+// Render League Standings (With Last 5 Column)
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -267,14 +302,14 @@ function renderLeagueTable() {
             row.classList.add('top-qual');
         }
 
-        const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
+        const logoHtml = getTeamLogoHtml(team.name, team.logo);
         const formHtml = generateFormCirclesHtml(team.form);
 
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
             <td class="col-team">
                 <div class="table-team-cell">
-                    <span class="table-team-logo">${escapeHtml(teamInitial)}</span>
+                    ${logoHtml}
                     <span>${escapeHtml(team.name)}</span>
                 </div>
             </td>
@@ -292,7 +327,7 @@ function renderLeagueTable() {
     });
 }
 
-// Render UCL Standings
+// Render UCL Standings (NO Last 5 Column)
 function renderUclTable() {
     if (!uclStandingsBody) return;
     uclStandingsBody.innerHTML = '';
@@ -310,14 +345,13 @@ function renderUclTable() {
 
     tableData.forEach((team, index) => {
         const row = document.createElement('tr');
-        const teamInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
-        const formHtml = generateFormCirclesHtml(team.form);
+        const logoHtml = getTeamLogoHtml(team.name, team.logo);
 
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
             <td class="col-team">
                 <div class="table-team-cell">
-                    <span class="table-team-logo">${escapeHtml(teamInitial)}</span>
+                    ${logoHtml}
                     <span>${escapeHtml(team.name)}</span>
                 </div>
             </td>
@@ -329,7 +363,6 @@ function renderUclTable() {
             <td>${team.gf}</td>
             <td>${team.ga}</td>
             <td>${team.gd}</td>
-            <td class="col-form">${formHtml}</td>
         `;
         uclStandingsBody.appendChild(row);
     });
@@ -347,8 +380,8 @@ function renderMatches() {
     if (noMatchesMsg) noMatchesMsg.style.display = 'none';
 
     matches.forEach((match, index) => {
-        const homeInitial = match.home ? match.home.charAt(0).toUpperCase() : 'H';
-        const awayInitial = match.away ? match.away.charAt(0).toUpperCase() : 'A';
+        const homeBadgeHtml = getCardBadgeHtml(match.home);
+        const awayBadgeHtml = getCardBadgeHtml(match.away);
         const isFinished = match.status === 'FT';
         const matchType = match.type || 'League';
 
@@ -388,14 +421,14 @@ function renderMatches() {
             <div class="match-teams">
                 <div class="team-row">
                     <div class="team-info">
-                        <span class="team-badge-circle">${escapeHtml(homeInitial)}</span>
+                        ${homeBadgeHtml}
                         <span class="team-name">${escapeHtml(match.home)}</span>
                     </div>
                     ${homeScoreHtml}
                 </div>
                 <div class="team-row">
                     <div class="team-info">
-                        <span class="team-badge-circle">${escapeHtml(awayInitial)}</span>
+                        ${awayBadgeHtml}
                         <span class="team-name">${escapeHtml(match.away)}</span>
                     </div>
                     ${awayScoreHtml}
@@ -410,7 +443,7 @@ function renderMatches() {
     });
 }
 
-// Render Managers
+// Render Managers Tab with Play Style & Queue Count
 function renderManagers() {
     if (!managersList) return;
     managersList.innerHTML = '';
@@ -423,14 +456,39 @@ function renderManagers() {
 
     teams.forEach(team => {
         const mgrName = managers[team.name] || 'Not Appointed';
+        const styleInfo = playStyles[team.name] || { position: 'Gaming', queueCount: '3' };
+        const logoHtml = getTeamLogoHtml(team.name, team.logo);
+
         const card = document.createElement('div');
         card.className = 'manager-card';
         card.innerHTML = `
-            <div>
-                <div class="manager-team-name">${escapeHtml(team.name)}</div>
-                <div class="manager-person-name">Manager: <strong>${escapeHtml(mgrName)}</strong></div>
+            <div class="manager-card-top">
+                <div class="manager-team-row">
+                    ${logoHtml}
+                    <div>
+                        <div class="manager-team-name">${escapeHtml(team.name)}</div>
+                        <div class="manager-person-name">Manager: <strong>${escapeHtml(mgrName)}</strong></div>
+                    </div>
+                </div>
+                <button class="btn-item-action btn-edit" onclick="setManager('${escapeHtml(team.name)}')">Change</button>
             </div>
-            <button class="btn-item-action btn-edit" onclick="setManager('${escapeHtml(team.name)}')">Assign</button>
+
+            <!-- Play Style Section -->
+            <div class="play-style-box">
+                <div class="play-style-title">Play Style &amp; Setup</div>
+                <div class="play-style-grid">
+                    <div class="play-style-item">
+                        <span class="play-style-label">Position</span>
+                        <span class="play-style-value">${escapeHtml(styleInfo.position)}</span>
+                        <button class="btn-edit-style" onclick="editPosition('${escapeHtml(team.name)}')">Edit</button>
+                    </div>
+                    <div class="play-style-item">
+                        <span class="play-style-label">Queue Count</span>
+                        <span class="play-style-value">${escapeHtml(styleInfo.queueCount)}</span>
+                        <button class="btn-edit-style" onclick="editQueueCount('${escapeHtml(team.name)}')">Edit</button>
+                    </div>
+                </div>
+            </div>
         `;
         managersList.appendChild(card);
     });
@@ -441,6 +499,26 @@ window.setManager = function(teamName) {
     const name = prompt(`Enter manager name for ${teamName}:`, current);
     if (name !== null) {
         managers[teamName] = name.trim() || 'Not Appointed';
+        saveAndRefresh();
+    }
+};
+
+window.editPosition = function(teamName) {
+    const current = (playStyles[teamName] && playStyles[teamName].position) || 'Gaming';
+    const newPos = prompt(`Edit Position for ${teamName}:`, current);
+    if (newPos !== null && newPos.trim()) {
+        if (!playStyles[teamName]) playStyles[teamName] = { position: 'Gaming', queueCount: '3' };
+        playStyles[teamName].position = newPos.trim();
+        saveAndRefresh();
+    }
+};
+
+window.editQueueCount = function(teamName) {
+    const current = (playStyles[teamName] && playStyles[teamName].queueCount) || '3';
+    const newCount = prompt(`Edit Queue Count for ${teamName}:`, current);
+    if (newCount !== null && newCount.trim()) {
+        if (!playStyles[teamName]) playStyles[teamName] = { position: 'Gaming', queueCount: '3' };
+        playStyles[teamName].queueCount = newCount.trim();
         saveAndRefresh();
     }
 };
@@ -477,15 +555,17 @@ function renderSettingsDashboard() {
     matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
 
     teams.forEach((team, index) => {
+        const logoHtml = getTeamLogoHtml(team.name, team.logo);
         const li = document.createElement('li');
         li.className = 'team-list-item';
         li.innerHTML = `
             <div class="team-item-left">
                 <span>${index + 1}.</span>
+                ${logoHtml}
                 <strong>${escapeHtml(team.name)}</strong>
             </div>
             <div class="team-item-actions">
-                <button class="btn-item-action btn-edit" onclick="renameTeam(${index})">Rename</button>
+                <button class="btn-item-action btn-edit" onclick="editTeamDetails(${index})">Edit</button>
                 <button class="btn-item-action btn-del" onclick="deleteTeam(${index})">Delete</button>
             </div>
         `;
@@ -495,7 +575,6 @@ function renderSettingsDashboard() {
     updateSeasonProgress();
 }
 
-// Update Match Creation Dropdown with Available Teams based on Match Type
 function updateTeamSelects() {
     if (!homeTeamSelect || !awayTeamSelect || !matchTypeSelect) return;
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
@@ -525,6 +604,7 @@ function saveAndRefresh() {
     localStorage.setItem('ccnn_ucl_teams', JSON.stringify(uclTeams));
     localStorage.setItem('ccnn_matches', JSON.stringify(matches));
     localStorage.setItem('ccnn_managers', JSON.stringify(managers));
+    localStorage.setItem('ccnn_playstyles', JSON.stringify(playStyles));
     localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
 
     renderLeagueTable();
@@ -535,9 +615,19 @@ function saveAndRefresh() {
     updateTeamSelects();
 }
 
-// Add Team
+// Convert uploaded file to Base64 String
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
+// Add Team (with Logo File or URL)
 if (addTeamForm) {
-    addTeamForm.addEventListener('submit', (e) => {
+    addTeamForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = teamNameInput.value.trim();
         if (!name) return;
@@ -548,31 +638,61 @@ if (addTeamForm) {
             return;
         }
 
-        teams.push({ name: name });
+        let logoData = teamLogoUrlInput.value.trim();
+        if (teamLogoFileInput.files && teamLogoFileInput.files[0]) {
+            try {
+                logoData = await fileToBase64(teamLogoFileInput.files[0]);
+            } catch (err) {
+                console.error('File conversion failed', err);
+            }
+        }
+
+        teams.push({ name: name, logo: logoData });
         teamNameInput.value = '';
+        teamLogoUrlInput.value = '';
+        teamLogoFileInput.value = '';
         saveAndRefresh();
     });
 }
 
-window.renameTeam = function(index) {
-    const currentName = teams[index].name;
-    const newName = prompt('Enter new team name:', currentName);
-    if (newName && newName.trim() && newName.trim() !== currentName) {
-        const cleanName = newName.trim();
-        matches.forEach(m => {
-            if (m.home === currentName) m.home = cleanName;
-            if (m.away === currentName) m.away = cleanName;
-        });
-        uclTeams.forEach(u => {
-            if (u.name === currentName) u.name = cleanName;
-        });
-        if (managers[currentName]) {
-            managers[cleanName] = managers[currentName];
-            delete managers[currentName];
+// Edit Team Name and Logo
+window.editTeamDetails = async function(index) {
+    const current = teams[index];
+    const newName = prompt('Edit Team Name:', current.name);
+    if (newName === null) return;
+
+    const cleanName = newName.trim() || current.name;
+    const newLogo = prompt('Edit Logo Image URL (leave blank to keep current):', current.logo);
+    
+    const finalLogo = (newLogo !== null && newLogo.trim() !== '') ? newLogo.trim() : current.logo;
+
+    // Synchronize updates across other collections
+    const oldName = current.name;
+    matches.forEach(m => {
+        if (m.home === oldName) m.home = cleanName;
+        if (m.away === oldName) m.away = cleanName;
+    });
+
+    uclTeams.forEach(u => {
+        if (u.name === oldName) {
+            u.name = cleanName;
+            u.logo = finalLogo;
         }
-        teams[index].name = cleanName;
-        saveAndRefresh();
+    });
+
+    if (managers[oldName]) {
+        managers[cleanName] = managers[oldName];
+        delete managers[oldName];
     }
+
+    if (playStyles[oldName]) {
+        playStyles[cleanName] = playStyles[oldName];
+        delete playStyles[oldName];
+    }
+
+    teams[index].name = cleanName;
+    teams[index].logo = finalLogo;
+    saveAndRefresh();
 };
 
 window.deleteTeam = function(index) {
@@ -582,6 +702,7 @@ window.deleteTeam = function(index) {
         matches = matches.filter(m => m.home !== target && m.away !== target);
         uclTeams = uclTeams.filter(u => u.name !== target);
         delete managers[target];
+        delete playStyles[target];
         saveAndRefresh();
     }
 };
@@ -617,23 +738,24 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season: Qualify top teams to UCL and reset scores
+// End Season: Qualify top teams to UCL (preserving logos) and reset scores
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const confirmed = confirm(
             'End Season & Qualify to UCL?\n\n' +
             '• Teams currently inside the blue qualification line will qualify for the UCL tab.\n' +
             '• League match results will be cleared for the next season.\n' +
-            '• Teams list will remain intact.'
+            '• Teams list and Logos will remain intact.'
         );
         if (confirmed) {
-            // Find qualified teams
             const finalLeagueStandings = calculateTableStats(teams, 'League');
             const qualSpots = Number(leagueConfig.qualSpots) || 4;
-            const qualified = finalLeagueStandings.slice(0, qualSpots).map(t => ({ name: t.name }));
+            const qualified = finalLeagueStandings.slice(0, qualSpots).map(t => ({
+                name: t.name,
+                logo: t.logo || ''
+            }));
 
             uclTeams = qualified;
-            // Clear league matches, keep UCL matches or start fresh
             matches = matches.filter(m => m.type === 'UCL');
 
             saveAndRefresh();
@@ -647,7 +769,7 @@ if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
         const confirmed = confirm(
             '⚠️ Delete Everything?\n\n' +
-            'This will permanently delete all teams, UCL entries, match results, and configurations.'
+            'This will permanently delete all teams, logos, UCL entries, match results, managers, and configurations.'
         );
         if (confirmed) {
             localStorage.clear();
@@ -655,6 +777,7 @@ if (deleteEverythingBtn) {
             uclTeams = [];
             matches = [];
             managers = {};
+            playStyles = {};
             leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false };
             applyTheme(false);
             saveAndRefresh();
