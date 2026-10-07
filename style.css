@@ -5,13 +5,42 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+:root {
+    --bg-page: #F8F9FA;
+    --bg-card: #FFFFFF;
+    --text-main: #111111;
+    --text-muted: #6C757D;
+    --border-subtle: #F0F2F5;
+    --border-line: #E5E5E5;
+    --header-bg: #FFFFFF;
+    --shadow-card: rgba(0, 0, 0, 0.04);
+    --badge-bg: #EEF2F6;
+    --badge-text: #334155;
+    --progress-track: #E9ECEF;
+}
+
+body.dark-theme {
+    --bg-page: #121316;
+    --bg-card: #1C1E22;
+    --text-main: #F1F3F5;
+    --text-muted: #909296;
+    --border-subtle: #2C2E33;
+    --border-line: #2C2E33;
+    --header-bg: #1A1B1E;
+    --shadow-card: rgba(0, 0, 0, 0.25);
+    --badge-bg: #25262B;
+    --badge-text: #C1C2C5;
+    --progress-track: #2C2E33;
+}
+
 body {
-    background-color: #F8F9FA;
-    color: #111111;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;
     padding-top: 70px;
     padding-bottom: 85px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Header */
@@ -20,10 +49,10 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--header-bg);
     padding: 14px 16px 10px;
     z-index: 1000;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .header-inner {
@@ -48,7 +77,7 @@ body {
     display: block;
     height: 2px;
     width: 100%;
-    background-color: #111111;
+    background-color: var(--text-main);
     border-radius: 2px;
 }
 
@@ -64,14 +93,14 @@ body {
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 0.05em;
-    color: #111111;
+    color: var(--text-main);
     margin-bottom: 5px;
 }
 
 .underline {
     width: 120px;
     height: 1.5px;
-    background-color: #111111;
+    background-color: var(--text-main);
     margin: 0 auto;
 }
 
@@ -82,7 +111,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.45);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 2500;
     opacity: 0;
     pointer-events: none;
@@ -101,11 +130,11 @@ body {
     width: 260px;
     max-width: 80vw;
     height: 100%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     z-index: 2600;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
 }
@@ -119,20 +148,20 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 20px 18px 16px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .drawer-title {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #111111;
+    color: var(--text-main);
 }
 
 .close-drawer-btn {
     background: none;
     border: none;
     font-size: 1.8rem;
-    color: #888888;
+    color: var(--text-muted);
     line-height: 1;
     cursor: pointer;
     padding: 0 4px;
@@ -153,7 +182,7 @@ body {
     gap: 14px;
     padding: 12px 14px;
     border-radius: 10px;
-    color: #495057;
+    color: var(--text-muted);
     font-size: 0.95rem;
     font-weight: 500;
     font-family: inherit;
@@ -164,7 +193,18 @@ body {
 
 .drawer-link:active,
 .drawer-link.active {
-    background-color: #f0f6ff;
+    background-color: rgba(0, 102, 255, 0.1);
+    color: #0066ff;
+    font-weight: 600;
+}
+
+.drawer-divider {
+    height: 1px;
+    background-color: var(--border-subtle);
+    margin: 8px 6px;
+}
+
+.drawer-settings-btn {
     color: #0066ff;
     font-weight: 600;
 }
@@ -179,7 +219,6 @@ body {
     padding: 12px 14px;
 }
 
-/* Tab Views */
 .view-section {
     display: none !important;
 }
@@ -191,18 +230,18 @@ body {
 .empty-state {
     padding: 60px 20px;
     text-align: center;
-    color: #888888;
+    color: var(--text-muted);
     font-size: 0.9rem;
 }
 
-/* Standings Table with Scroll */
+/* Standings Table */
 .table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 8px var(--shadow-card);
 }
 
 .standings-table {
@@ -217,13 +256,14 @@ body {
 .standings-table td {
     padding: 10px 6px;
     white-space: nowrap;
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-main);
 }
 
 .standings-table th {
     font-weight: 600;
-    color: #888888;
-    border-bottom: 1px solid #e5e5e5;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-line);
     font-size: 0.70rem;
     letter-spacing: 0.02em;
 }
@@ -231,7 +271,7 @@ body {
 .standings-table .col-pos {
     width: 26px;
     font-weight: 600;
-    color: #555555;
+    color: var(--text-muted);
     padding-left: 8px;
     position: relative;
 }
@@ -252,7 +292,7 @@ body {
     padding-left: 8px;
     padding-right: 14px;
     font-weight: 600;
-    color: #111111;
+    color: var(--text-main);
     width: auto;
 }
 
@@ -266,8 +306,8 @@ body {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #f1f3f5;
-    color: #495057;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
     font-size: 0.65rem;
     font-weight: 700;
     display: inline-flex;
@@ -276,7 +316,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Centered Pts */
 .standings-table .col-pts {
     font-weight: 700;
     color: #0066ff;
@@ -284,7 +323,6 @@ body {
     padding: 10px 10px;
 }
 
-/* Last 5 Matches Column */
 .standings-table .col-form {
     padding-left: 10px;
     padding-right: 14px;
@@ -334,7 +372,7 @@ body {
     border: 2px solid #8c98a4;
 }
 
-/* Dual Legends Styling */
+/* Legends */
 .legends-wrapper {
     display: flex;
     flex-direction: column;
@@ -343,17 +381,17 @@ body {
 }
 
 .legend-card {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 14px;
     padding: 14px 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f0f2f5;
+    box-shadow: 0 2px 10px var(--shadow-card);
+    border: 1px solid var(--border-subtle);
 }
 
 .legend-card-title {
     font-size: 0.84rem;
     font-weight: 700;
-    color: #212529;
+    color: var(--text-main);
     margin-bottom: 10px;
 }
 
@@ -377,7 +415,7 @@ body {
 .legend-text {
     font-size: 0.82rem;
     font-weight: 500;
-    color: #495057;
+    color: var(--text-muted);
 }
 
 .legend-item-list {
@@ -392,7 +430,7 @@ body {
     gap: 10px;
 }
 
-/* Matches */
+/* Matches Page */
 .matches-header {
     margin-bottom: 16px;
     padding-left: 4px;
@@ -401,7 +439,7 @@ body {
 .matches-title {
     font-size: 1.45rem;
     font-weight: 700;
-    color: #111111;
+    color: var(--text-main);
 }
 
 .matches-container {
@@ -411,12 +449,26 @@ body {
 }
 
 .match-card {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 10px var(--shadow-card);
     display: flex;
     align-items: center;
     padding: 18px 16px;
+    position: relative;
+}
+
+.match-type-badge {
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: var(--badge-bg);
+    color: #0066ff;
 }
 
 .match-teams {
@@ -442,8 +494,8 @@ body {
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    background-color: #f1f3f5;
-    color: #495057;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
     font-size: 0.72rem;
     font-weight: 700;
     display: flex;
@@ -455,7 +507,7 @@ body {
 .team-name {
     font-size: 0.98rem;
     font-weight: 500;
-    color: #1e2022;
+    color: var(--text-main);
 }
 
 .team-score-slot {
@@ -464,7 +516,7 @@ body {
     gap: 6px;
     font-size: 1.15rem;
     font-weight: 600;
-    color: #1e2022;
+    color: var(--text-main);
     padding-right: 8px;
     min-width: 32px;
     justify-content: flex-end;
@@ -473,14 +525,14 @@ body {
 .winner-arrow {
     display: inline-block;
     font-size: 0.65rem;
-    color: #111111;
+    color: var(--text-main);
     transform: scaleY(1.2);
 }
 
 .match-divider {
     width: 1px;
     height: 52px;
-    background-color: #edf0f2;
+    background-color: var(--border-subtle);
     margin: 0 16px;
 }
 
@@ -505,12 +557,12 @@ body {
 .match-ft-tag {
     font-size: 1rem;
     font-weight: 600;
-    color: #1e2022;
+    color: var(--text-main);
 }
 
 .click-hint {
     font-size: 0.62rem;
-    color: #8c98a4;
+    color: var(--text-muted);
     margin-top: 3px;
 }
 
@@ -539,6 +591,35 @@ body {
     transform: scale(0.95);
 }
 
+/* Managers List */
+.managers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.manager-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 10px var(--shadow-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.manager-team-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.manager-person-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
 /* Modals */
 .modal-overlay {
     position: fixed;
@@ -546,7 +627,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.5);
     display: none;
     align-items: center;
     justify-content: center;
@@ -558,12 +639,13 @@ body {
 }
 
 .modal-content {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 16px;
     width: 88%;
     max-width: 360px;
     padding: 22px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    color: var(--text-main);
 }
 
 .modal-title {
@@ -579,7 +661,7 @@ body {
 .form-group label {
     display: block;
     font-size: 0.8rem;
-    color: #666666;
+    color: var(--text-muted);
     margin-bottom: 6px;
     font-weight: 500;
 }
@@ -587,10 +669,11 @@ body {
 .form-group select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-line);
     border-radius: 8px;
     font-size: 0.9rem;
-    background-color: #fafafa;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     outline: none;
 }
 
@@ -604,7 +687,7 @@ body {
 .score-team-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #1e2022;
+    color: var(--text-main);
     flex: 1;
 }
 
@@ -613,9 +696,11 @@ body {
     padding: 8px;
     font-size: 1.1rem;
     text-align: center;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-line);
     border-radius: 8px;
     font-weight: 600;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     outline: none;
 }
 
@@ -633,7 +718,7 @@ body {
 .btn-cancel {
     background: none;
     border: none;
-    color: #666666;
+    color: var(--text-muted);
     font-weight: 600;
     padding: 8px 14px;
     cursor: pointer;
@@ -648,12 +733,12 @@ body {
 .dashboard-title {
     font-size: 1.35rem;
     font-weight: 700;
-    color: #111111;
+    color: var(--text-main);
 }
 
 .dashboard-subtitle {
     font-size: 0.8rem;
-    color: #6c757d;
+    color: var(--text-muted);
     margin-top: 4px;
 }
 
@@ -664,10 +749,10 @@ body {
 }
 
 .dashboard-card {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 16px;
     padding: 18px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 10px var(--shadow-card);
 }
 
 .card-header {
@@ -680,19 +765,19 @@ body {
 .card-title {
     font-size: 1rem;
     font-weight: 700;
-    color: #111111;
+    color: var(--text-main);
 }
 
 .card-desc {
     font-size: 0.8rem;
-    color: #6c757d;
+    color: var(--text-muted);
     line-height: 1.4;
     margin-bottom: 14px;
 }
 
 .badge-pill {
-    background-color: #eef2f6;
-    color: #334155;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 4px 10px;
@@ -710,14 +795,15 @@ body {
 .form-inline-group label {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #333333;
+    color: var(--text-main);
 }
 
 .styled-select {
     padding: 8px 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-line);
     border-radius: 8px;
-    background-color: #f8f9fa;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     font-size: 0.85rem;
     font-family: inherit;
     font-weight: 500;
@@ -727,8 +813,10 @@ body {
 .styled-input-num {
     width: 70px;
     padding: 8px 10px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-line);
     border-radius: 8px;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     text-align: center;
     font-size: 0.88rem;
     font-weight: 600;
@@ -749,8 +837,10 @@ body {
 .team-form input {
     flex: 1;
     padding: 10px 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-line);
     border-radius: 8px;
+    background-color: var(--bg-page);
+    color: var(--text-main);
     font-size: 0.85rem;
     font-family: inherit;
     outline: none;
@@ -777,7 +867,7 @@ body {
 }
 
 .team-list-section {
-    border-top: 1px solid #f2f2f2;
+    border-top: 1px solid var(--border-subtle);
     padding-top: 10px;
 }
 
@@ -790,7 +880,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 6px;
-    border-bottom: 1px solid #f8f9fa;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .team-item-left {
@@ -799,7 +889,7 @@ body {
     gap: 8px;
     font-size: 0.88rem;
     font-weight: 500;
-    color: #1e2022;
+    color: var(--text-main);
 }
 
 .team-item-actions {
@@ -825,10 +915,62 @@ body {
     color: #ff3b30;
 }
 
-/* Season Progress Bar */
+/* Switch Toggle (Dark/Light mode) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background-color: #0066ff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Season Progress */
 .progress-block {
     margin-top: 16px;
-    background-color: #f8f9fa;
+    background-color: var(--bg-page);
     border-radius: 12px;
     padding: 14px;
 }
@@ -843,7 +985,7 @@ body {
 .progress-text {
     font-size: 0.82rem;
     font-weight: 600;
-    color: #333333;
+    color: var(--text-main);
 }
 
 .progress-pct {
@@ -855,7 +997,7 @@ body {
 .progress-bar-track {
     width: 100%;
     height: 8px;
-    background-color: #e9ecef;
+    background-color: var(--progress-track);
     border-radius: 6px;
     overflow: hidden;
 }
@@ -871,13 +1013,17 @@ body {
     display: flex;
     justify-content: space-between;
     font-size: 0.74rem;
-    color: #6c757d;
+    color: var(--text-muted);
     margin-top: 10px;
 }
 
-/* Season Controls */
+/* Season Danger Card */
 .danger-card {
     border: 1px solid #ffe3e3;
+}
+
+body.dark-theme .danger-card {
+    border-color: #5c1d1d;
 }
 
 .danger-title {
@@ -903,8 +1049,14 @@ body {
     text-align: center;
 }
 
+body.dark-theme .btn-warning {
+    background-color: #2b1d1e;
+    border-color: #61282a;
+    color: #ff8787;
+}
+
 .btn-warning:active {
-    background-color: #ffe3e3;
+    opacity: 0.85;
 }
 
 .btn-danger {
@@ -924,15 +1076,15 @@ body {
     opacity: 0.85;
 }
 
-/* Bottom Nav */
+/* Bottom Nav (Home, League, Matches, UCL, Managers) */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 64px;
-    background-color: #ffffff;
-    border-top: 1px solid #eeeeee;
+    background-color: var(--header-bg);
+    border-top: 1px solid var(--border-line);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -949,7 +1101,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    color: #888888;
+    color: var(--text-muted);
     flex: 1;
     padding: 8px 0;
 }
@@ -960,7 +1112,7 @@ body {
 }
 
 .nav-label {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     font-weight: 500;
 }
 
