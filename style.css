@@ -18,8 +18,44 @@
     --badge-text: #334155;
     --progress-track: #E9ECEF;
     --placeholder-box: #F1F3F5;
+
+    /* Dynamic Brand & Accent Colors */
+    --brand-primary: #0066FF;
+    --brand-secondary: #0052CC;
+    --brand-underline: #111111;
+    --brand-active-glow: rgba(0, 102, 255, 0.1);
 }
 
+/* League Branding Themes */
+body[data-league="premier-league"] {
+    --brand-primary: #38003C;
+    --brand-secondary: #00FF85;
+    --brand-underline: #38003C;
+    --brand-active-glow: rgba(56, 0, 60, 0.12);
+}
+
+body[data-league="la-liga"] {
+    --brand-primary: #FF4B44;
+    --brand-secondary: #141414;
+    --brand-underline: #FF4B44;
+    --brand-active-glow: rgba(255, 75, 68, 0.12);
+}
+
+body[data-league="serie-a"] {
+    --brand-primary: #024486;
+    --brand-secondary: #008FD7;
+    --brand-underline: #024486;
+    --brand-active-glow: rgba(2, 68, 134, 0.12);
+}
+
+body[data-league="ccnn"] {
+    --brand-primary: #0066FF;
+    --brand-secondary: #0052CC;
+    --brand-underline: #111111;
+    --brand-active-glow: rgba(0, 102, 255, 0.1);
+}
+
+/* Dark Theme Overrides */
 body.dark-theme {
     --bg-page: #121316;
     --bg-card: #1C1E22;
@@ -33,6 +69,35 @@ body.dark-theme {
     --badge-text: #C1C2C5;
     --progress-track: #2C2E33;
     --placeholder-box: #25262B;
+    --brand-underline: #FFFFFF;
+}
+
+body.dark-theme[data-league="premier-league"] {
+    --brand-primary: #00FF85;
+    --brand-secondary: #38003C;
+    --brand-underline: #00FF85;
+    --brand-active-glow: rgba(0, 255, 133, 0.15);
+}
+
+body.dark-theme[data-league="la-liga"] {
+    --brand-primary: #FF4B44;
+    --brand-secondary: #FF6E67;
+    --brand-underline: #FF4B44;
+    --brand-active-glow: rgba(255, 75, 68, 0.15);
+}
+
+body.dark-theme[data-league="serie-a"] {
+    --brand-primary: #00A3E0;
+    --brand-secondary: #024486;
+    --brand-underline: #00A3E0;
+    --brand-active-glow: rgba(0, 163, 224, 0.15);
+}
+
+body.dark-theme[data-league="ccnn"] {
+    --brand-primary: #3385FF;
+    --brand-secondary: #0066FF;
+    --brand-underline: #3385FF;
+    --brand-active-glow: rgba(51, 133, 255, 0.15);
 }
 
 body {
@@ -97,13 +162,15 @@ body {
     letter-spacing: 0.05em;
     color: var(--text-main);
     margin-bottom: 5px;
+    transition: color 0.2s ease;
 }
 
 .underline {
     width: 120px;
-    height: 1.5px;
-    background-color: var(--text-main);
+    height: 2px;
+    background-color: var(--brand-underline);
     margin: 0 auto;
+    transition: background-color 0.2s ease;
 }
 
 /* Side Drawer */
@@ -195,8 +262,8 @@ body {
 
 .drawer-link:active,
 .drawer-link.active {
-    background-color: rgba(0, 102, 255, 0.1);
-    color: #0066ff;
+    background-color: var(--brand-active-glow);
+    color: var(--brand-primary);
     font-weight: 600;
 }
 
@@ -207,7 +274,7 @@ body {
 }
 
 .drawer-settings-btn {
-    color: #0066ff;
+    color: var(--brand-primary);
     font-weight: 600;
 }
 
@@ -285,7 +352,7 @@ body {
     top: 20%;
     bottom: 20%;
     width: 3px;
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
     border-radius: 2px;
 }
 
@@ -304,7 +371,6 @@ body {
     gap: 8px;
 }
 
-/* Universal Team Logo styling across tables, cards & lists */
 .table-team-logo {
     width: 22px;
     height: 22px;
@@ -322,7 +388,7 @@ body {
 
 .standings-table .col-pts {
     font-weight: 700;
-    color: #0066ff;
+    color: var(--brand-primary);
     text-align: center;
     padding: 10px 10px;
 }
@@ -413,7 +479,7 @@ body {
 }
 
 .uefa-square {
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
 }
 
 .legend-text {
@@ -472,7 +538,7 @@ body {
     padding: 2px 6px;
     border-radius: 4px;
     background-color: var(--badge-bg);
-    color: #0066ff;
+    color: var(--brand-primary);
 }
 
 .match-teams {
@@ -555,7 +621,7 @@ body {
 .match-vs-tag {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #0066ff;
+    color: var(--brand-primary);
     text-transform: uppercase;
 }
 
@@ -578,7 +644,7 @@ body {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
     color: #ffffff;
     border: none;
     font-size: 1.8rem;
@@ -596,7 +662,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Managers List with Playstyle & Trophy Placeholder */
+/* Managers List */
 .managers-container {
     display: flex;
     flex-direction: column;
@@ -643,7 +709,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Empty rounded box placeholder for future trophies */
 .trophy-placeholder-box {
     width: 100%;
     height: 48px;
@@ -747,7 +812,7 @@ body {
 }
 
 .score-input-row input:focus {
-    border-color: #0066ff;
+    border-color: var(--brand-primary);
 }
 
 .modal-actions {
@@ -868,7 +933,7 @@ body {
 .styled-input-num:focus,
 .styled-select:focus,
 .styled-text-input:focus {
-    border-color: #0066ff;
+    border-color: var(--brand-primary);
 }
 
 .team-creation-form {
@@ -879,7 +944,7 @@ body {
 }
 
 .btn-accent {
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -888,6 +953,7 @@ body {
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
+    transition: opacity 0.15s ease;
 }
 
 .btn-accent:active {
@@ -936,7 +1002,7 @@ body {
 }
 
 .btn-edit {
-    color: #0066ff;
+    color: var(--brand-primary);
 }
 
 .btn-del {
@@ -980,7 +1046,7 @@ body {
 }
 
 input:checked + .slider {
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
 }
 
 input:checked + .slider:before {
@@ -1019,7 +1085,7 @@ input:checked + .slider:before {
 .progress-pct {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #0066ff;
+    color: var(--brand-primary);
 }
 
 .progress-bar-track {
@@ -1032,7 +1098,7 @@ input:checked + .slider:before {
 
 .progress-bar-fill {
     height: 100%;
-    background-color: #0066ff;
+    background-color: var(--brand-primary);
     border-radius: 6px;
     transition: width 0.4s ease;
 }
@@ -1104,7 +1170,7 @@ body.dark-theme .btn-warning {
     opacity: 0.85;
 }
 
-/* Bottom Nav (Home, League, Matches, UCL, Managers) */
+/* Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -1145,7 +1211,7 @@ body.dark-theme .btn-warning {
 }
 
 .nav-item.active {
-    color: #0066ff;
+    color: var(--brand-primary);
 }
 
 .nav-item.active .nav-label {
