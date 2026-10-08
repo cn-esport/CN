@@ -67,7 +67,8 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     qualSpots: 4,
     matchesPerTeam: 14,
     darkMode: false,
-    selectedLeague: 'ccnn'
+    selectedLeague: 'ccnn',
+    selectedTournament: 'ucl'
 };
 
 // Normalize team object structure with logo property
@@ -76,27 +77,33 @@ let teams = rawTeams.map(t => ({
     logo: t.logo || ''
 }));
 
-// League Branding Definitions
+// Feature 2: League Branding & Header Logo Definitions
 const LEAGUE_BRANDING = {
     'ccnn': {
         name: 'CCNN ESPORTS',
-        short: 'CCNN'
+        short: 'CCNN',
+        logo: null
     },
     'premier-league': {
         name: 'PREMIER LEAGUE',
-        short: 'Premier League'
+        short: 'Premier League',
+        logo: '/CN/images/premier-league.webp'
     },
     'la-liga': {
-        name: 'LALIGA EA SPORTS',
-        short: 'La Liga'
+        name: 'LALIGA',
+        short: 'La Liga',
+        logo: '/CN/images/la-liga.webp'
     },
     'serie-a': {
-        name: 'SERIE A TIM',
-        short: 'Serie A'
+        name: 'SERIE A',
+        short: 'Serie A',
+        logo: '/CN/images/serie-a.webp'
     }
 };
 
-const headerBrandTitle = document.getElementById('header-brand-title');
+const headerCcnnBrand = document.getElementById('header-ccnn-brand');
+const headerCollabBrand = document.getElementById('header-collab-brand');
+const headerLeagueLogo = document.getElementById('header-league-logo');
 const currentLeagueBadge = document.getElementById('current-league-badge');
 const leagueSelectionDropdown = document.getElementById('league-selection-dropdown');
 
@@ -105,9 +112,23 @@ function applyLeagueBranding(leagueKey) {
     document.body.setAttribute('data-league', key);
 
     const brand = LEAGUE_BRANDING[key];
-    if (headerBrandTitle) {
-        headerBrandTitle.textContent = brand.name;
+
+    if (key === 'ccnn' || !brand.logo) {
+        // CCNN (Custom) League: show CCNN ESPORTS centered only, no logo, no 'x'
+        if (headerCcnnBrand) headerCcnnBrand.style.display = 'block';
+        if (headerCollabBrand) headerCollabBrand.style.display = 'none';
+    } else {
+        // Official Leagues: 3-part layout [CCNN] × [League Logo]
+        if (headerCcnnBrand) headerCcnnBrand.style.display = 'none';
+        if (headerCollabBrand) {
+            headerCollabBrand.style.display = 'inline-flex';
+            if (headerLeagueLogo) {
+                headerLeagueLogo.src = brand.logo;
+                headerLeagueLogo.alt = brand.short;
+            }
+        }
     }
+
     if (currentLeagueBadge) {
         currentLeagueBadge.textContent = brand.short;
     }
@@ -121,6 +142,60 @@ if (leagueSelectionDropdown) {
     leagueSelectionDropdown.addEventListener('change', (e) => {
         leagueConfig.selectedLeague = e.target.value;
         applyLeagueBranding(leagueConfig.selectedLeague);
+        saveAndRefresh();
+    });
+}
+
+// Feature 1: Tournament Definitions & Tab Customization
+const TOURNAMENT_DEFINITIONS = {
+    'ucl': {
+        title: 'UEFA Champions League',
+        tabLabel: 'UCL',
+        badge: 'UCL'
+    },
+    'world-cup': {
+        title: 'FIFA World Cup',
+        tabLabel: 'World Cup',
+        badge: 'World Cup'
+    },
+    'euro': {
+        title: 'UEFA Euro',
+        tabLabel: 'Euro',
+        badge: 'Euro'
+    },
+    'asian-cup': {
+        title: 'AFC Asian Cup',
+        tabLabel: 'Asian Cup',
+        badge: 'Asian Cup'
+    }
+};
+
+const tournamentSelectionDropdown = document.getElementById('tournament-selection-dropdown');
+const currentTournamentBadge = document.getElementById('current-tournament-badge');
+const bottomUclLabel = document.getElementById('bottom-ucl-label');
+const drawerUclLabel = document.getElementById('drawer-ucl-label');
+const uclSectionTitle = document.getElementById('ucl-section-title');
+const legendQualLabel = document.getElementById('legend-qual-label');
+const matchTypeTournamentOption = document.getElementById('match-type-tournament-option');
+
+function applyTournamentSettings(tournKey) {
+    const key = TOURNAMENT_DEFINITIONS[tournKey] ? tournKey : 'ucl';
+    const tournament = TOURNAMENT_DEFINITIONS[key];
+
+    if (currentTournamentBadge) currentTournamentBadge.textContent = tournament.badge;
+    if (bottomUclLabel) bottomUclLabel.textContent = tournament.tabLabel;
+    if (drawerUclLabel) drawerUclLabel.textContent = tournament.tabLabel;
+    if (uclSectionTitle) uclSectionTitle.textContent = tournament.title;
+    if (legendQualLabel) legendQualLabel.textContent = `${tournament.title} Qualification`;
+    if (matchTypeTournamentOption) matchTypeTournamentOption.textContent = tournament.title;
+    if (tournamentSelectionDropdown) tournamentSelectionDropdown.value = key;
+}
+applyTournamentSettings(leagueConfig.selectedTournament);
+
+if (tournamentSelectionDropdown) {
+    tournamentSelectionDropdown.addEventListener('change', (e) => {
+        leagueConfig.selectedTournament = e.target.value;
+        applyTournamentSettings(leagueConfig.selectedTournament);
         saveAndRefresh();
     });
 }
@@ -151,7 +226,7 @@ const standingsTable = document.querySelector('#league-view .standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
 const leagueLegendsContainer = document.getElementById('league-legends-container');
 
-// DOM Elements: UCL
+// DOM Elements: Tournament
 const uclStandingsBody = document.getElementById('ucl-standings-body');
 const uclStandingsTable = document.querySelector('#ucl-view .standings-table');
 const noUclTeamsMsg = document.getElementById('no-ucl-teams-msg');
@@ -225,7 +300,7 @@ function renderLogoMarkup(teamName, className = 'table-team-logo') {
     return `<span class="${className}">${escapeHtml(initial)}</span>`;
 }
 
-// Standings Calculator for specific tournament type ('League' or 'UCL')
+// Standings Calculator for specific tournament type ('League' or 'Tournament')
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
@@ -241,7 +316,16 @@ function calculateTableStats(teamArray, tournamentType) {
         form: []
     }));
 
-    const chronologicalMatches = [...matches].reverse().filter(m => (m.type || 'League') === tournamentType);
+    // Support both 'Tournament' and legacy 'UCL' records
+    const isTournamentMatch = (type) => type === 'Tournament' || type === 'UCL';
+
+    const chronologicalMatches = [...matches].reverse().filter(m => {
+        const type = m.type || 'League';
+        if (tournamentType === 'League') {
+            return type === 'League';
+        }
+        return isTournamentMatch(type);
+    });
 
     chronologicalMatches.forEach(m => {
         if (m.status === 'FT') {
@@ -373,7 +457,7 @@ function renderLeagueTable() {
     });
 }
 
-// Render UCL Standings
+// Render Tournament Standings (UCL / World Cup / Euro / Asian Cup)
 function renderUclTable() {
     if (!uclStandingsBody) return;
     uclStandingsBody.innerHTML = '';
@@ -387,7 +471,7 @@ function renderUclTable() {
     if (uclStandingsTable) uclStandingsTable.style.display = 'table';
     if (noUclTeamsMsg) noUclTeamsMsg.style.display = 'none';
 
-    const tableData = calculateTableStats(uclTeams, 'UCL');
+    const tableData = calculateTableStats(uclTeams, 'Tournament');
 
     tableData.forEach((team, index) => {
         const row = document.createElement('tr');
@@ -427,9 +511,12 @@ function renderMatches() {
     }
     if (noMatchesMsg) noMatchesMsg.style.display = 'none';
 
+    const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
+
     matches.forEach((match, index) => {
         const isFinished = match.status === 'FT';
-        const matchType = match.type || 'League';
+        const rawType = match.type || 'League';
+        const displayType = (rawType === 'Tournament' || rawType === 'UCL') ? tournDef.tabLabel : 'League';
 
         const homeLogoHtml = renderLogoMarkup(match.home, 'team-badge-circle');
         const awayLogoHtml = renderLogoMarkup(match.away, 'team-badge-circle');
@@ -466,7 +553,7 @@ function renderMatches() {
         const card = document.createElement('div');
         card.className = 'match-card';
         card.innerHTML = `
-            <span class="match-type-badge">${escapeHtml(matchType)}</span>
+            <span class="match-type-badge">${escapeHtml(displayType)}</span>
             <div class="match-teams">
                 <div class="team-row">
                     <div class="team-info">
@@ -683,7 +770,8 @@ function updateTeamSelects() {
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
     awayTeamSelect.innerHTML = '<option value="" disabled selected>Select Away Team</option>';
 
-    const sourceTeams = matchTypeSelect.value === 'UCL' ? uclTeams : teams;
+    const isTournament = matchTypeSelect.value === 'Tournament' || matchTypeSelect.value === 'UCL';
+    const sourceTeams = isTournament ? uclTeams : teams;
 
     sourceTeams.forEach(team => {
         const opt1 = document.createElement('option');
@@ -763,7 +851,7 @@ if (addTeamForm) {
 // Delete Team
 window.deleteTeam = function(index) {
     const target = teams[index].name;
-    if (confirm(`Delete team "${target}"? All their matches and UCL entries will be removed.`)) {
+    if (confirm(`Delete team "${target}"? All their matches and tournament entries will be removed.`)) {
         teams.splice(index, 1);
         matches = matches.filter(m => m.home !== target && m.away !== target);
         uclTeams = uclTeams.filter(u => u.name !== target);
@@ -803,14 +891,15 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season: Qualify top teams to UCL and reset scores
+// End Season: Qualify top teams to the secondary tournament and reset scores
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
+        const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
         const confirmed = confirm(
-            'End Season & Qualify to UCL?\n\n' +
-            '• Teams currently inside the qualification line will qualify for the UCL tab.\n' +
-            '• League match results will be cleared for the next season.\n' +
-            '• Teams list and logos will remain intact.'
+            `End Season & Qualify to ${tournDef.title}?\n\n` +
+            `• Teams currently inside the qualification line will qualify for the ${tournDef.tabLabel} tab.\n` +
+            `• League match results will be cleared for the next season.\n` +
+            `• Teams list and logos will remain intact.`
         );
         if (confirmed) {
             const finalLeagueStandings = calculateTableStats(teams, 'League');
@@ -821,10 +910,11 @@ if (endSeasonBtn) {
             }));
 
             uclTeams = qualified;
-            matches = matches.filter(m => m.type === 'UCL');
+            // Retain tournament matches, clear league matches
+            matches = matches.filter(m => m.type === 'Tournament' || m.type === 'UCL');
 
             saveAndRefresh();
-            alert(`Season ended! ${qualified.length} team(s) have qualified to the UCL tab.`);
+            alert(`Season ended! ${qualified.length} team(s) have qualified to ${tournDef.title}.`);
         }
     });
 }
@@ -834,7 +924,7 @@ if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
         const confirmed = confirm(
             '⚠️ Delete Everything?\n\n' +
-            'This will permanently delete all teams, logos, UCL entries, match results, and configurations.'
+            'This will permanently delete all teams, logos, tournament entries, match results, and configurations.'
         );
         if (confirmed) {
             localStorage.clear();
@@ -842,9 +932,10 @@ if (deleteEverythingBtn) {
             uclTeams = [];
             matches = [];
             clubLeadership = {};
-            leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false, selectedLeague: 'ccnn' };
+            leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false, selectedLeague: 'ccnn', selectedTournament: 'ucl' };
             applyTheme(false);
             applyLeagueBranding('ccnn');
+            applyTournamentSettings('ucl');
             saveAndRefresh();
             alert('All league data has been erased.');
         }
@@ -854,10 +945,11 @@ if (deleteEverythingBtn) {
 // Match Scheduling
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
-        const isUcl = matchTypeSelect.value === 'UCL';
-        const source = isUcl ? uclTeams : teams;
+        const isTournament = matchTypeSelect.value === 'Tournament' || matchTypeSelect.value === 'UCL';
+        const source = isTournament ? uclTeams : teams;
+        const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
         if (source.length < 2) {
-            alert(`You need at least 2 ${isUcl ? 'qualified UCL' : ''} teams to create a match.`);
+            alert(`You need at least 2 ${isTournament ? `qualified ${tournDef.tabLabel}` : ''} teams to create a match.`);
             return;
         }
         matchModal.classList.add('active');
@@ -873,7 +965,7 @@ if (closeModalBtn) {
 if (createMatchForm) {
     createMatchForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const type = matchTypeSelect.value;
+        const type = matchTypeSelect.value === 'League' ? 'League' : 'Tournament';
         const home = homeTeamSelect.value;
         const away = awayTeamSelect.value;
 
