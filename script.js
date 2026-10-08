@@ -69,7 +69,8 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     darkMode: false,
     selectedLeague: 'ccnn',
     selectedTournament: 'ucl',
-    seasonChampion: null
+    seasonEnded: false,
+    championTeam: null
 };
 
 // Normalize team object structure with logo property
@@ -78,41 +79,31 @@ let teams = rawTeams.map(t => ({
     logo: t.logo || ''
 }));
 
-// Available Trophies for Showcase & Cabinet
-const AVAILABLE_TROPHIES = [
-    { id: 'ccnn', name: 'CCNN Trophy', img: '/CN/images/trophies/ccnn.webp' },
-    { id: 'premier-league', name: 'Premier League', img: '/CN/images/trophies/premier-league.webp' },
-    { id: 'la-liga', name: 'La Liga', img: '/CN/images/trophies/la-liga.webp' },
-    { id: 'serie-a', name: 'Serie A', img: '/CN/images/trophies/serie-a.webp' },
-    { id: 'ucl', name: 'Champions League', img: '/CN/images/trophies/ucl.webp' },
-    { id: 'world-cup', name: 'World Cup', img: '/CN/images/trophies/world-cup.webp' }
-];
-
-// League Branding Definitions
+// League Branding & Header Logo & Trophy Definitions
 const LEAGUE_BRANDING = {
     'ccnn': {
         name: 'CCNN ESPORTS',
         short: 'CCNN',
         logo: null,
-        trophyImg: '/CN/images/trophies/ccnn.webp'
+        trophy: '/CN/images/trophies/ccnn-trophy.webp'
     },
     'premier-league': {
         name: 'PREMIER LEAGUE',
         short: 'Premier League',
         logo: '/CN/images/premier-league.webp',
-        trophyImg: '/CN/images/trophies/premier-league.webp'
+        trophy: '/CN/images/trophies/premier-league-trophy.webp'
     },
     'la-liga': {
         name: 'LALIGA',
         short: 'La Liga',
         logo: '/CN/images/la-liga.webp',
-        trophyImg: '/CN/images/trophies/la-liga.webp'
+        trophy: '/CN/images/trophies/la-liga-trophy.webp'
     },
     'serie-a': {
         name: 'SERIE A',
         short: 'Serie A',
         logo: '/CN/images/serie-a.webp',
-        trophyImg: '/CN/images/trophies/serie-a.webp'
+        trophy: '/CN/images/trophies/serie-a-trophy.webp'
     }
 };
 
@@ -121,6 +112,10 @@ const headerCollabBrand = document.getElementById('header-collab-brand');
 const headerLeagueLogo = document.getElementById('header-league-logo');
 const currentLeagueBadge = document.getElementById('current-league-badge');
 const leagueSelectionDropdown = document.getElementById('league-selection-dropdown');
+const leagueTrophyImg = document.getElementById('league-trophy-img');
+const leagueTrophyStatus = document.getElementById('league-trophy-status');
+const leagueTrophyWinnerDetails = document.getElementById('league-trophy-winner-details');
+const leagueTrophyWinnerName = document.getElementById('league-trophy-winner-name');
 
 function applyLeagueBranding(leagueKey) {
     const key = LEAGUE_BRANDING[leagueKey] ? leagueKey : 'ccnn';
@@ -148,8 +143,9 @@ function applyLeagueBranding(leagueKey) {
     if (leagueSelectionDropdown) {
         leagueSelectionDropdown.value = key;
     }
-
-    renderLeagueTrophySection();
+    if (leagueTrophyImg) {
+        leagueTrophyImg.src = brand.trophy;
+    }
 }
 applyLeagueBranding(leagueConfig.selectedLeague);
 
@@ -161,7 +157,7 @@ if (leagueSelectionDropdown) {
     });
 }
 
-// Tournament Definitions
+// Tournament Definitions & Tab Customization
 const TOURNAMENT_DEFINITIONS = {
     'ucl': {
         title: 'UEFA Champions League',
@@ -215,7 +211,7 @@ if (tournamentSelectionDropdown) {
     });
 }
 
-// Dark Mode Toggle
+// Apply Dark Mode Preference
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 function applyTheme(isDark) {
     if (isDark) {
@@ -240,12 +236,6 @@ const standingsBody = document.getElementById('standings-body');
 const standingsTable = document.querySelector('#league-view .standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
 const leagueLegendsContainer = document.getElementById('league-legends-container');
-
-// League Trophy DOM Elements
-const leagueTrophyImg = document.getElementById('league-trophy-img');
-const leagueTrophyStatusBadge = document.getElementById('league-trophy-status-badge');
-const leagueTrophyHeading = document.getElementById('league-trophy-heading');
-const leagueTrophySubtext = document.getElementById('league-trophy-subtext');
 
 // DOM Elements: Tournament
 const uclStandingsBody = document.getElementById('ucl-standings-body');
@@ -282,10 +272,12 @@ const editManagerForm = document.getElementById('edit-manager-form');
 const editManagerTeamKey = document.getElementById('edit-manager-team-key');
 const editManagerNameInput = document.getElementById('edit-manager-name-input');
 const editPlaystyleInput = document.getElementById('edit-playstyle-input');
-const managerTrophySelectors = document.getElementById('manager-trophy-selectors');
 
-// Active modal trophy counter tracker
-let currentEditingTrophies = {};
+const trophyCountLeague = document.getElementById('trophy-count-league');
+const trophyCountUcl = document.getElementById('trophy-count-ucl');
+const trophyCountWorldcup = document.getElementById('trophy-count-worldcup');
+const trophyCountEuro = document.getElementById('trophy-count-euro');
+const trophyCountAsiancup = document.getElementById('trophy-count-asiancup');
 
 // DOM Elements: Edit Team Modal
 const editTeamModal = document.getElementById('edit-team-modal');
@@ -314,7 +306,7 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Logo Helper
+// Logo Helper: returns <img> tag if custom logo exists, or fallback initial circle
 function renderLogoMarkup(teamName, className = 'table-team-logo') {
     const teamObj = teams.find(t => t.name === teamName) || uclTeams.find(t => t.name === teamName);
     const initial = teamName ? teamName.charAt(0).toUpperCase() : 'T';
@@ -325,7 +317,7 @@ function renderLogoMarkup(teamName, className = 'table-team-logo') {
     return `<span class="${className}">${escapeHtml(initial)}</span>`;
 }
 
-// Standings Calculator
+// Standings Calculator for specific tournament type ('League' or 'Tournament')
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
@@ -431,30 +423,7 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
-// Feature 1: Render League Trophy Showcase
-function renderLeagueTrophySection() {
-    if (!leagueTrophyImg) return;
-
-    const brand = LEAGUE_BRANDING[leagueConfig.selectedLeague] || LEAGUE_BRANDING['ccnn'];
-    leagueTrophyImg.src = brand.trophyImg;
-    leagueTrophyImg.alt = `${brand.short} Trophy`;
-
-    if (leagueConfig.seasonChampion) {
-        const champ = leagueConfig.seasonChampion;
-        if (leagueTrophyStatusBadge) leagueTrophyStatusBadge.textContent = 'CHAMPIONS';
-        if (leagueTrophyHeading) leagueTrophyHeading.textContent = 'League Champions';
-        if (leagueTrophySubtext) {
-            const logoHtml = renderLogoMarkup(champ.name, 'trophy-champion-logo');
-            leagueTrophySubtext.innerHTML = `${logoHtml} <strong>${escapeHtml(champ.name)}</strong>`;
-        }
-    } else {
-        if (leagueTrophyStatusBadge) leagueTrophyStatusBadge.textContent = 'SEASON STATUS';
-        if (leagueTrophyHeading) leagueTrophyHeading.textContent = 'Season in Progress';
-        if (leagueTrophySubtext) leagueTrophySubtext.textContent = 'Compete to lift the official silverware';
-    }
-}
-
-// Render League Standings
+// Render League Standings & Trophy Section
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -503,10 +472,20 @@ function renderLeagueTable() {
         standingsBody.appendChild(row);
     });
 
-    renderLeagueTrophySection();
+    // Feature 1: Render League Trophy Card Status
+    if (leagueTrophyStatus && leagueTrophyWinnerDetails && leagueTrophyWinnerName) {
+        if (leagueConfig.seasonEnded && leagueConfig.championTeam) {
+            leagueTrophyStatus.textContent = 'League Champions';
+            leagueTrophyWinnerName.textContent = leagueConfig.championTeam;
+            leagueTrophyWinnerDetails.style.display = 'flex';
+        } else {
+            leagueTrophyStatus.textContent = 'Season in Progress';
+            leagueTrophyWinnerDetails.style.display = 'none';
+        }
+    }
 }
 
-// Render Tournament Standings
+// Render Tournament Standings (UCL / World Cup / Euro / Asian Cup)
 function renderUclTable() {
     if (!uclStandingsBody) return;
     uclStandingsBody.innerHTML = '';
@@ -628,7 +607,44 @@ function renderMatches() {
     });
 }
 
-// Feature 2: Render Managers Tab with Showcase Cabinet
+// Feature 2: Helper to render Manager Trophy Cabinet badges
+function renderTrophyShowcaseHtml(trophiesObj) {
+    if (!trophiesObj) {
+        return `<div class="trophy-showcase-empty">No trophies won yet</div>`;
+    }
+
+    const trophiesConfig = [
+        { key: 'league', icon: '🏆', title: 'League' },
+        { key: 'ucl', icon: '⭐', title: 'Champions League' },
+        { key: 'worldcup', icon: '🌍', title: 'World Cup' },
+        { key: 'euro', icon: '🛡️', title: 'Euro' },
+        { key: 'asiancup', icon: '🌏', title: 'Asian Cup' }
+    ];
+
+    let itemsHtml = '';
+    let totalCount = 0;
+
+    trophiesConfig.forEach(t => {
+        const count = Number(trophiesObj[t.key]) || 0;
+        if (count > 0) {
+            totalCount += count;
+            itemsHtml += `
+                <div class="trophy-badge-item" title="${t.title}">
+                    <span class="trophy-badge-icon">${t.icon}</span>
+                    <span class="trophy-badge-count">x${count}</span>
+                </div>
+            `;
+        }
+    });
+
+    if (totalCount === 0) {
+        return `<div class="trophy-showcase-empty">No trophies won yet</div>`;
+    }
+
+    return itemsHtml;
+}
+
+// Render Managers Tab with Playstyle and Expanded Trophy Showcase
 function renderManagers() {
     if (!managersList) return;
     managersList.innerHTML = '';
@@ -643,31 +659,10 @@ function renderManagers() {
         const leadership = clubLeadership[team.name] || {
             manager: 'Not Appointed',
             playstyle: 'Default / Balanced',
-            trophies: {}
+            trophies: { league: 0, ucl: 0, worldcup: 0, euro: 0, asiancup: 0 }
         };
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
-
-        // Build showcase trophies markup
-        let trophiesHtml = '';
-        const wonTrophies = leadership.trophies || {};
-        let totalCount = 0;
-
-        AVAILABLE_TROPHIES.forEach(t => {
-            const count = wonTrophies[t.id] || 0;
-            if (count > 0) {
-                totalCount += count;
-                trophiesHtml += `
-                    <div class="trophy-showcase-item" title="${escapeHtml(t.name)}">
-                        <img src="${t.img}" alt="${escapeHtml(t.name)}" class="trophy-showcase-img">
-                        <span class="trophy-showcase-count">&times;${count}</span>
-                    </div>
-                `;
-            }
-        });
-
-        if (totalCount === 0) {
-            trophiesHtml = '<span class="trophy-empty-msg">No trophies won yet</span>';
-        }
+        const trophyCabinetHtml = renderTrophyShowcaseHtml(leadership.trophies);
 
         const card = document.createElement('div');
         card.className = 'manager-card';
@@ -683,62 +678,44 @@ function renderManagers() {
                 </div>
                 <button class="btn-item-action btn-edit" onclick="openManagerModal('${escapeHtml(team.name)}')">Edit</button>
             </div>
-            <div class="trophy-showcase-cabinet">
-                ${trophiesHtml}
+            <div class="trophy-placeholder-box">
+                ${trophyCabinetHtml}
             </div>
         `;
         managersList.appendChild(card);
     });
 }
 
-// Open Manager Modal & Build Trophy Selector Controls
+// Step Trophy Counter (+ / -) in Manager Modal
+window.stepTrophy = function(trophyKey, step) {
+    const input = document.getElementById(`trophy-count-${trophyKey}`);
+    if (input) {
+        let val = parseInt(input.value, 10) || 0;
+        val = Math.max(0, val + step);
+        input.value = val;
+    }
+};
+
+// Open Manager & Playstyle & Trophy Modal
 window.openManagerModal = function(teamName) {
     const leadership = clubLeadership[teamName] || {
         manager: '',
         playstyle: '',
-        trophies: {}
+        trophies: { league: 0, ucl: 0, worldcup: 0, euro: 0, asiancup: 0 }
     };
-
+    
     editManagerTeamKey.value = teamName;
     editManagerNameInput.value = leadership.manager && leadership.manager !== 'Not Appointed' ? leadership.manager : '';
     editPlaystyleInput.value = leadership.playstyle && leadership.playstyle !== 'Default / Balanced' ? leadership.playstyle : '';
 
-    currentEditingTrophies = { ...(leadership.trophies || {}) };
+    const t = leadership.trophies || {};
+    if (trophyCountLeague) trophyCountLeague.value = t.league || 0;
+    if (trophyCountUcl) trophyCountUcl.value = t.ucl || 0;
+    if (trophyCountWorldcup) trophyCountWorldcup.value = t.worldcup || 0;
+    if (trophyCountEuro) trophyCountEuro.value = t.euro || 0;
+    if (trophyCountAsiancup) trophyCountAsiancup.value = t.asiancup || 0;
 
-    renderModalTrophySelectors();
     managerModal.classList.add('active');
-};
-
-function renderModalTrophySelectors() {
-    if (!managerTrophySelectors) return;
-    managerTrophySelectors.innerHTML = '';
-
-    AVAILABLE_TROPHIES.forEach(t => {
-        const count = currentEditingTrophies[t.id] || 0;
-        const row = document.createElement('div');
-        row.className = 'trophy-selector-row';
-        row.innerHTML = `
-            <div class="trophy-selector-left">
-                <img src="${t.img}" alt="${escapeHtml(t.name)}" class="trophy-selector-img">
-                <span class="trophy-selector-name">${escapeHtml(t.name)}</span>
-            </div>
-            <div class="trophy-counter-controls">
-                <button type="button" class="btn-counter" onclick="adjustTrophyCount('${t.id}', -1)">&minus;</button>
-                <span class="trophy-count-value" id="trophy-val-${t.id}">${count}</span>
-                <button type="button" class="btn-counter" onclick="adjustTrophyCount('${t.id}', 1)">&#43;</button>
-            </div>
-        `;
-        managerTrophySelectors.appendChild(row);
-    });
-}
-
-window.adjustTrophyCount = function(trophyId, delta) {
-    const current = currentEditingTrophies[trophyId] || 0;
-    const nextVal = Math.max(0, current + delta);
-    currentEditingTrophies[trophyId] = nextVal;
-
-    const el = document.getElementById(`trophy-val-${trophyId}`);
-    if (el) el.textContent = nextVal;
 };
 
 if (closeManagerModalBtn) {
@@ -754,10 +731,18 @@ if (editManagerForm) {
         const managerName = editManagerNameInput.value.trim() || 'Not Appointed';
         const playstyleName = editPlaystyleInput.value.trim() || 'Default / Balanced';
 
+        const trophies = {
+            league: parseInt(trophyCountLeague.value, 10) || 0,
+            ucl: parseInt(trophyCountUcl.value, 10) || 0,
+            worldcup: parseInt(trophyCountWorldcup.value, 10) || 0,
+            euro: parseInt(trophyCountEuro.value, 10) || 0,
+            asiancup: parseInt(trophyCountAsiancup.value, 10) || 0
+        };
+
         clubLeadership[teamName] = {
             manager: managerName,
             playstyle: playstyleName,
-            trophies: { ...currentEditingTrophies }
+            trophies: trophies
         };
 
         managerModal.classList.remove('active');
@@ -836,7 +821,7 @@ if (closeEditTeamModalBtn) {
     });
 }
 
-// Save Edit Team Changes
+// Save Edit Team Changes (Name & Logo)
 if (editTeamForm) {
     editTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -864,9 +849,8 @@ if (editTeamForm) {
                 if (oldName !== newName) delete clubLeadership[oldName];
             }
 
-            if (leagueConfig.seasonChampion && leagueConfig.seasonChampion.name === oldName) {
-                leagueConfig.seasonChampion.name = newName;
-                leagueConfig.seasonChampion.logo = finalLogo;
+            if (leagueConfig.championTeam === oldName) {
+                leagueConfig.championTeam = newName;
             }
 
             teams[index].name = newName;
@@ -929,7 +913,7 @@ function saveAndRefresh() {
     updateTeamSelects();
 }
 
-// Add Team
+// Add Team with Logo Option (URL or File Upload)
 if (addTeamForm) {
     addTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -954,7 +938,7 @@ if (addTeamForm) {
             clubLeadership[name] = {
                 manager: 'Not Appointed',
                 playstyle: 'Default / Balanced',
-                trophies: {}
+                trophies: { league: 0, ucl: 0, worldcup: 0, euro: 0, asiancup: 0 }
             };
 
             addTeamForm.reset();
@@ -981,8 +965,8 @@ window.deleteTeam = function(index) {
         matches = matches.filter(m => m.home !== target && m.away !== target);
         uclTeams = uclTeams.filter(u => u.name !== target);
         delete clubLeadership[target];
-        if (leagueConfig.seasonChampion && leagueConfig.seasonChampion.name === target) {
-            leagueConfig.seasonChampion = null;
+        if (leagueConfig.championTeam === target) {
+            leagueConfig.championTeam = null;
         }
         saveAndRefresh();
     }
@@ -1019,54 +1003,46 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season: Crown champion, award trophy to winning manager, qualify top teams, reset league matches
+// End Season: Crown Champion, Qualify top teams to secondary tournament, and reset scores
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
         const confirmed = confirm(
-            `End Season?\n\n` +
-            `• The 1st place team will be crowned League Champion and their manager awarded the trophy.\n` +
-            `• Teams inside the qualification zone will qualify for ${tournDef.title}.\n` +
-            `• League matches and scores will reset for the new season.`
+            `End Season & Crown Champion?\n\n` +
+            `• The #1 team will be declared League Champions.\n` +
+            `• Top teams inside the qualification line will qualify for ${tournDef.title}.\n` +
+            `• League match scores will reset for the new season.\n` +
+            `• Teams, managers, and trophy records will remain intact.`
         );
         if (confirmed) {
             const finalLeagueStandings = calculateTableStats(teams, 'League');
             const qualSpots = Number(leagueConfig.qualSpots) || 4;
-
-            if (finalLeagueStandings.length > 0) {
-                const championTeam = finalLeagueStandings[0];
-                leagueConfig.seasonChampion = {
-                    name: championTeam.name,
-                    logo: championTeam.logo || ''
-                };
-
-                // Award trophy to champion manager's cabinet automatically
-                const leagueKey = leagueConfig.selectedLeague || 'ccnn';
-                if (!clubLeadership[championTeam.name]) {
-                    clubLeadership[championTeam.name] = {
-                        manager: 'Not Appointed',
-                        playstyle: 'Default / Balanced',
-                        trophies: {}
-                    };
-                }
-                if (!clubLeadership[championTeam.name].trophies) {
-                    clubLeadership[championTeam.name].trophies = {};
-                }
-                const currentTrophyWins = clubLeadership[championTeam.name].trophies[leagueKey] || 0;
-                clubLeadership[championTeam.name].trophies[leagueKey] = currentTrophyWins + 1;
-            }
-
             const qualified = finalLeagueStandings.slice(0, qualSpots).map(t => ({
                 name: t.name,
                 logo: t.logo || ''
             }));
+
+            // Determine Champion
+            if (finalLeagueStandings.length > 0) {
+                const champion = finalLeagueStandings[0].name;
+                leagueConfig.championTeam = champion;
+                leagueConfig.seasonEnded = true;
+
+                // Optionally increment manager league title count for the champion
+                if (clubLeadership[champion]) {
+                    if (!clubLeadership[champion].trophies) {
+                        clubLeadership[champion].trophies = { league: 0, ucl: 0, worldcup: 0, euro: 0, asiancup: 0 };
+                    }
+                    clubLeadership[champion].trophies.league = (clubLeadership[champion].trophies.league || 0) + 1;
+                }
+            }
 
             uclTeams = qualified;
             // Clear league matches, keep tournament matches
             matches = matches.filter(m => m.type === 'Tournament' || m.type === 'UCL');
 
             saveAndRefresh();
-            alert(`Season ended! Congratulations to ${leagueConfig.seasonChampion ? leagueConfig.seasonChampion.name : 'the champion'}!`);
+            alert(`Season ended! ${leagueConfig.championTeam || 'Champion'} has won the league!`);
         }
     });
 }
@@ -1076,7 +1052,7 @@ if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
         const confirmed = confirm(
             '⚠️ Delete Everything?\n\n' +
-            'This will permanently delete all teams, logos, trophies, tournament entries, and match results.'
+            'This will permanently delete all teams, logos, tournament entries, match results, and configurations.'
         );
         if (confirmed) {
             localStorage.clear();
@@ -1091,7 +1067,8 @@ if (deleteEverythingBtn) {
                 darkMode: false,
                 selectedLeague: 'ccnn',
                 selectedTournament: 'ucl',
-                seasonChampion: null
+                seasonEnded: false,
+                championTeam: null
             };
             applyTheme(false);
             applyLeagueBranding('ccnn');
@@ -1143,6 +1120,11 @@ if (createMatchForm) {
             homeScore: 0,
             awayScore: 0
         });
+
+        // When a new league match is scheduled, reactivate in-progress season state
+        if (type === 'League' && leagueConfig.seasonEnded) {
+            leagueConfig.seasonEnded = false;
+        }
 
         matchModal.classList.remove('active');
         createMatchForm.reset();
