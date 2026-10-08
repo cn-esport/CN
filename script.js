@@ -66,7 +66,8 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     maxTeams: 8,
     qualSpots: 4,
     matchesPerTeam: 14,
-    darkMode: false
+    darkMode: false,
+    selectedLeague: 'ccnn'
 };
 
 // Normalize team object structure with logo property
@@ -74,6 +75,55 @@ let teams = rawTeams.map(t => ({
     name: t.name || 'Team',
     logo: t.logo || ''
 }));
+
+// League Branding Definitions
+const LEAGUE_BRANDING = {
+    'ccnn': {
+        name: 'CCNN ESPORTS',
+        short: 'CCNN'
+    },
+    'premier-league': {
+        name: 'PREMIER LEAGUE',
+        short: 'Premier League'
+    },
+    'la-liga': {
+        name: 'LALIGA EA SPORTS',
+        short: 'La Liga'
+    },
+    'serie-a': {
+        name: 'SERIE A TIM',
+        short: 'Serie A'
+    }
+};
+
+const headerBrandTitle = document.getElementById('header-brand-title');
+const currentLeagueBadge = document.getElementById('current-league-badge');
+const leagueSelectionDropdown = document.getElementById('league-selection-dropdown');
+
+function applyLeagueBranding(leagueKey) {
+    const key = LEAGUE_BRANDING[leagueKey] ? leagueKey : 'ccnn';
+    document.body.setAttribute('data-league', key);
+
+    const brand = LEAGUE_BRANDING[key];
+    if (headerBrandTitle) {
+        headerBrandTitle.textContent = brand.name;
+    }
+    if (currentLeagueBadge) {
+        currentLeagueBadge.textContent = brand.short;
+    }
+    if (leagueSelectionDropdown) {
+        leagueSelectionDropdown.value = key;
+    }
+}
+applyLeagueBranding(leagueConfig.selectedLeague);
+
+if (leagueSelectionDropdown) {
+    leagueSelectionDropdown.addEventListener('change', (e) => {
+        leagueConfig.selectedLeague = e.target.value;
+        applyLeagueBranding(leagueConfig.selectedLeague);
+        saveAndRefresh();
+    });
+}
 
 // Apply Dark Mode Preference
 const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -593,19 +643,16 @@ if (editTeamForm) {
         if (!newName) return;
 
         function applyTeamUpdate(finalLogo) {
-            // Update in matches
             matches.forEach(m => {
                 if (m.home === oldName) m.home = newName;
                 if (m.away === oldName) m.away = newName;
             });
-            // Update in UCL teams
             uclTeams.forEach(u => {
                 if (u.name === oldName) {
                     u.name = newName;
                     u.logo = finalLogo;
                 }
             });
-            // Update leadership
             if (clubLeadership[oldName]) {
                 clubLeadership[newName] = clubLeadership[oldName];
                 if (oldName !== newName) delete clubLeadership[oldName];
@@ -761,7 +808,7 @@ if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const confirmed = confirm(
             'End Season & Qualify to UCL?\n\n' +
-            '• Teams currently inside the blue qualification line will qualify for the UCL tab.\n' +
+            '• Teams currently inside the qualification line will qualify for the UCL tab.\n' +
             '• League match results will be cleared for the next season.\n' +
             '• Teams list and logos will remain intact.'
         );
@@ -795,8 +842,9 @@ if (deleteEverythingBtn) {
             uclTeams = [];
             matches = [];
             clubLeadership = {};
-            leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false };
+            leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false, selectedLeague: 'ccnn' };
             applyTheme(false);
+            applyLeagueBranding('ccnn');
             saveAndRefresh();
             alert('All league data has been erased.');
         }
