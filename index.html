@@ -22,11 +22,13 @@
             
             <!-- Dynamic Brand Header Container -->
             <div class="header-brand" id="header-brand-container">
+                <!-- Fallback/Default CCNN Layout -->
                 <div id="header-ccnn-brand" class="header-single-brand">
                     <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
                     <div class="underline" id="header-underline"></div>
                 </div>
 
+                <!-- 3-part Collab Layout: [CCNN] × [League Logo] -->
                 <div id="header-collab-brand" class="header-collab-brand" style="display: none;">
                     <span class="collab-brand-text">CCNN</span>
                     <span class="collab-separator">&times;</span>
@@ -68,7 +70,7 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
         </nav>
@@ -144,14 +146,15 @@
                 </div>
 
                 <!-- Feature 1: League Trophy Showcase Section -->
-                <div class="legend-card league-trophy-card" id="league-trophy-section">
-                    <div class="trophy-img-wrap">
-                        <img id="league-trophy-img" src="/CN/images/trophies/ccnn.webp" alt="Trophy" class="league-trophy-display-img">
+                <div class="legend-card league-trophy-card">
+                    <div class="trophy-card-image-box">
+                        <img id="league-trophy-img" src="/CN/images/trophies/ccnn-trophy.webp" alt="League Trophy" class="league-trophy-image" onerror="this.src='/CN/images/trophies/ccnn-trophy.webp'">
                     </div>
-                    <div class="trophy-content-wrap">
-                        <span class="trophy-badge" id="league-trophy-status-badge">SEASON STATUS</span>
-                        <h4 class="trophy-heading" id="league-trophy-heading">Season in Progress</h4>
-                        <div class="trophy-subtext" id="league-trophy-subtext">Compete to lift the official silverware</div>
+                    <div class="trophy-card-info">
+                        <span class="trophy-card-status" id="league-trophy-status">Season in Progress</span>
+                        <div class="trophy-winner-details" id="league-trophy-winner-details" style="display: none;">
+                            <span class="trophy-winner-name" id="league-trophy-winner-name">Champion Team</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,6 +169,7 @@
             <div id="matches-list" class="matches-container"></div>
             <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
 
+            <!-- Floating Add Match Button -->
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
             <!-- Add Match Modal -->
@@ -257,7 +261,7 @@
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
 
-        <!-- Feature 2: Edit Manager & Trophy Cabinet Modal -->
+        <!-- Edit Manager, Playstyle & Trophy Showcase Modal -->
         <div id="manager-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Club Leadership</h3>
@@ -272,11 +276,50 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
-                    <!-- Trophy Cabinet Selection Section -->
+                    <!-- Trophy Assignment Counters -->
                     <div class="form-group">
-                        <label>Trophy Cabinet Honors</label>
-                        <div class="trophy-selector-list" id="manager-trophy-selectors">
-                            <!-- Dynamic trophy counter inputs populated via JS -->
+                        <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
+                        <div class="trophy-counter-grid">
+                            <div class="trophy-counter-item">
+                                <span class="trophy-counter-label">🏆 League Title</span>
+                                <div class="counter-input-row">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('league', -1)">-</button>
+                                    <input type="number" id="trophy-count-league" class="styled-input-num" min="0" max="99" value="0">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('league', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="trophy-counter-item">
+                                <span class="trophy-counter-label">⭐ Champions League</span>
+                                <div class="counter-input-row">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('ucl', -1)">-</button>
+                                    <input type="number" id="trophy-count-ucl" class="styled-input-num" min="0" max="99" value="0">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('ucl', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="trophy-counter-item">
+                                <span class="trophy-counter-label">🌍 World Cup</span>
+                                <div class="counter-input-row">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('worldcup', -1)">-</button>
+                                    <input type="number" id="trophy-count-worldcup" class="styled-input-num" min="0" max="99" value="0">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('worldcup', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="trophy-counter-item">
+                                <span class="trophy-counter-label">🛡️ UEFA Euro</span>
+                                <div class="counter-input-row">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('euro', -1)">-</button>
+                                    <input type="number" id="trophy-count-euro" class="styled-input-num" min="0" max="99" value="0">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('euro', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="trophy-counter-item">
+                                <span class="trophy-counter-label">🌏 Asian Cup</span>
+                                <div class="counter-input-row">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('asiancup', -1)">-</button>
+                                    <input type="number" id="trophy-count-asiancup" class="styled-input-num" min="0" max="99" value="0">
+                                    <button type="button" class="btn-step" onclick="stepTrophy('asiancup', 1)">+</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
