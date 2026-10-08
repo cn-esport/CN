@@ -61,8 +61,7 @@ if (sideDrawerBackdrop) sideDrawerBackdrop.addEventListener('click', closeDrawer
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let uclTeams = JSON.parse(localStorage.getItem('ccnn_ucl_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
-let managers = JSON.parse(localStorage.getItem('ccnn_managers')) || {};
-let playStyles = JSON.parse(localStorage.getItem('ccnn_playstyles')) || {};
+let clubLeadership = JSON.parse(localStorage.getItem('ccnn_club_leadership')) || {};
 let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     maxTeams: 8,
     qualSpots: 4,
@@ -70,12 +69,13 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     darkMode: false
 };
 
+// Normalize team object structure with logo property
 let teams = rawTeams.map(t => ({
     name: t.name || 'Team',
     logo: t.logo || ''
 }));
 
-// Dark Mode Toggle
+// Apply Dark Mode Preference
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 function applyTheme(isDark) {
     if (isDark) {
@@ -130,6 +130,21 @@ const awayScoreInput = document.getElementById('away-score-input');
 // DOM Elements: Managers
 const managersList = document.getElementById('managers-list');
 const noManagersMsg = document.getElementById('no-managers-msg');
+const managerModal = document.getElementById('manager-modal');
+const closeManagerModalBtn = document.getElementById('close-manager-modal-btn');
+const editManagerForm = document.getElementById('edit-manager-form');
+const editManagerTeamKey = document.getElementById('edit-manager-team-key');
+const editManagerNameInput = document.getElementById('edit-manager-name-input');
+const editPlaystyleInput = document.getElementById('edit-playstyle-input');
+
+// DOM Elements: Edit Team Modal
+const editTeamModal = document.getElementById('edit-team-modal');
+const closeEditTeamModalBtn = document.getElementById('close-edit-team-modal-btn');
+const editTeamForm = document.getElementById('edit-team-form');
+const editTeamIndex = document.getElementById('edit-team-index');
+const editTeamNameInput = document.getElementById('edit-team-name-input');
+const editTeamLogoUrl = document.getElementById('edit-team-logo-url');
+const editTeamLogoFile = document.getElementById('edit-team-logo-file');
 
 // DOM Elements: Commissioner Dashboard
 const addTeamForm = document.getElementById('add-team-form');
@@ -149,37 +164,18 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Logo Rendering Helper
-function getTeamLogoHtml(teamName, customLogo = '') {
-    const cleanName = teamName || 'Team';
-    const initial = cleanName.charAt(0).toUpperCase();
+// Logo Helper: returns <img> tag if custom logo exists, or fallback initial circle
+function renderLogoMarkup(teamName, className = 'table-team-logo') {
+    const teamObj = teams.find(t => t.name === teamName) || uclTeams.find(t => t.name === teamName);
+    const initial = teamName ? teamName.charAt(0).toUpperCase() : 'T';
 
-    // Find saved team logo if customLogo not passed
-    if (!customLogo) {
-        const found = teams.find(t => t.name === cleanName) || uclTeams.find(u => u.name === cleanName);
-        if (found && found.logo) {
-            customLogo = found.logo;
-        }
+    if (teamObj && teamObj.logo) {
+        return `<img src="${escapeHtml(teamObj.logo)}" alt="${escapeHtml(teamName)}" class="${className}">`;
     }
-
-    if (customLogo) {
-        return `<img src="${customLogo}" alt="${escapeHtml(cleanName)}" class="table-team-logo" onerror="this.outerHTML='<span class=\\'table-team-logo\\'>${escapeHtml(initial)}</span>'">`;
-    }
-    return `<span class="table-team-logo">${escapeHtml(initial)}</span>`;
+    return `<span class="${className}">${escapeHtml(initial)}</span>`;
 }
 
-function getCardBadgeHtml(teamName) {
-    const cleanName = teamName || 'Team';
-    const initial = cleanName.charAt(0).toUpperCase();
-    const found = teams.find(t => t.name === cleanName) || uclTeams.find(u => u.name === cleanName);
-
-    if (found && found.logo) {
-        return `<img src="${found.logo}" alt="${escapeHtml(cleanName)}" class="team-badge-circle" onerror="this.outerHTML='<span class=\\'team-badge-circle\\'>${escapeHtml(initial)}</span>'">`;
-    }
-    return `<span class="team-badge-circle">${escapeHtml(initial)}</span>`;
-}
-
-// Standings Calculator for 'League' or 'UCL'
+// Standings Calculator for specific tournament type ('League' or 'UCL')
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
@@ -277,7 +273,7 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
-// Render League Standings (With Last 5 Column)
+// Render League Standings
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -302,7 +298,7 @@ function renderLeagueTable() {
             row.classList.add('top-qual');
         }
 
-        const logoHtml = getTeamLogoHtml(team.name, team.logo);
+        const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
         const formHtml = generateFormCirclesHtml(team.form);
 
         row.innerHTML = `
@@ -327,7 +323,7 @@ function renderLeagueTable() {
     });
 }
 
-// Render UCL Standings (NO Last 5 Column)
+// Render UCL Standings
 function renderUclTable() {
     if (!uclStandingsBody) return;
     uclStandingsBody.innerHTML = '';
@@ -345,7 +341,8 @@ function renderUclTable() {
 
     tableData.forEach((team, index) => {
         const row = document.createElement('tr');
-        const logoHtml = getTeamLogoHtml(team.name, team.logo);
+        const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
+        const formHtml = generateFormCirclesHtml(team.form);
 
         row.innerHTML = `
             <td class="col-pos">${index + 1}</td>
@@ -363,6 +360,7 @@ function renderUclTable() {
             <td>${team.gf}</td>
             <td>${team.ga}</td>
             <td>${team.gd}</td>
+            <td class="col-form">${formHtml}</td>
         `;
         uclStandingsBody.appendChild(row);
     });
@@ -380,10 +378,11 @@ function renderMatches() {
     if (noMatchesMsg) noMatchesMsg.style.display = 'none';
 
     matches.forEach((match, index) => {
-        const homeBadgeHtml = getCardBadgeHtml(match.home);
-        const awayBadgeHtml = getCardBadgeHtml(match.away);
         const isFinished = match.status === 'FT';
         const matchType = match.type || 'League';
+
+        const homeLogoHtml = renderLogoMarkup(match.home, 'team-badge-circle');
+        const awayLogoHtml = renderLogoMarkup(match.away, 'team-badge-circle');
 
         let homeScoreHtml = '';
         let awayScoreHtml = '';
@@ -421,14 +420,14 @@ function renderMatches() {
             <div class="match-teams">
                 <div class="team-row">
                     <div class="team-info">
-                        ${homeBadgeHtml}
+                        ${homeLogoHtml}
                         <span class="team-name">${escapeHtml(match.home)}</span>
                     </div>
                     ${homeScoreHtml}
                 </div>
                 <div class="team-row">
                     <div class="team-info">
-                        ${awayBadgeHtml}
+                        ${awayLogoHtml}
                         <span class="team-name">${escapeHtml(match.away)}</span>
                     </div>
                     ${awayScoreHtml}
@@ -443,7 +442,7 @@ function renderMatches() {
     });
 }
 
-// Render Managers Tab with Play Style & Queue Count
+// Render Managers Tab with Playstyle and Empty Trophy Box
 function renderManagers() {
     if (!managersList) return;
     managersList.innerHTML = '';
@@ -455,73 +454,60 @@ function renderManagers() {
     if (noManagersMsg) noManagersMsg.style.display = 'none';
 
     teams.forEach(team => {
-        const mgrName = managers[team.name] || 'Not Appointed';
-        const styleInfo = playStyles[team.name] || { position: 'Gaming', queueCount: '3' };
-        const logoHtml = getTeamLogoHtml(team.name, team.logo);
+        const leadership = clubLeadership[team.name] || { manager: 'Not Appointed', playstyle: 'Default / Balanced' };
+        const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
 
         const card = document.createElement('div');
         card.className = 'manager-card';
         card.innerHTML = `
             <div class="manager-card-top">
-                <div class="manager-team-row">
-                    ${logoHtml}
-                    <div>
-                        <div class="manager-team-name">${escapeHtml(team.name)}</div>
-                        <div class="manager-person-name">Manager: <strong>${escapeHtml(mgrName)}</strong></div>
+                <div>
+                    <div class="manager-team-row">
+                        ${logoHtml}
+                        <span class="manager-team-name">${escapeHtml(team.name)}</span>
                     </div>
+                    <div class="manager-person-name">Manager: <strong>${escapeHtml(leadership.manager || 'Not Appointed')}</strong></div>
+                    <div class="manager-playstyle-name">Playstyle: <strong>${escapeHtml(leadership.playstyle || 'Default / Balanced')}</strong></div>
                 </div>
-                <button class="btn-item-action btn-edit" onclick="setManager('${escapeHtml(team.name)}')">Change</button>
+                <button class="btn-item-action btn-edit" onclick="openManagerModal('${escapeHtml(team.name)}')">Edit</button>
             </div>
-
-            <!-- Play Style Section -->
-            <div class="play-style-box">
-                <div class="play-style-title">Play Style &amp; Setup</div>
-                <div class="play-style-grid">
-                    <div class="play-style-item">
-                        <span class="play-style-label">Position</span>
-                        <span class="play-style-value">${escapeHtml(styleInfo.position)}</span>
-                        <button class="btn-edit-style" onclick="editPosition('${escapeHtml(team.name)}')">Edit</button>
-                    </div>
-                    <div class="play-style-item">
-                        <span class="play-style-label">Queue Count</span>
-                        <span class="play-style-value">${escapeHtml(styleInfo.queueCount)}</span>
-                        <button class="btn-edit-style" onclick="editQueueCount('${escapeHtml(team.name)}')">Edit</button>
-                    </div>
-                </div>
-            </div>
+            <div class="trophy-placeholder-box"></div>
         `;
         managersList.appendChild(card);
     });
 }
 
-window.setManager = function(teamName) {
-    const current = managers[teamName] || '';
-    const name = prompt(`Enter manager name for ${teamName}:`, current);
-    if (name !== null) {
-        managers[teamName] = name.trim() || 'Not Appointed';
-        saveAndRefresh();
-    }
+// Open Manager & Playstyle Modal
+window.openManagerModal = function(teamName) {
+    const leadership = clubLeadership[teamName] || { manager: '', playstyle: '' };
+    editManagerTeamKey.value = teamName;
+    editManagerNameInput.value = leadership.manager && leadership.manager !== 'Not Appointed' ? leadership.manager : '';
+    editPlaystyleInput.value = leadership.playstyle && leadership.playstyle !== 'Default / Balanced' ? leadership.playstyle : '';
+    managerModal.classList.add('active');
 };
 
-window.editPosition = function(teamName) {
-    const current = (playStyles[teamName] && playStyles[teamName].position) || 'Gaming';
-    const newPos = prompt(`Edit Position for ${teamName}:`, current);
-    if (newPos !== null && newPos.trim()) {
-        if (!playStyles[teamName]) playStyles[teamName] = { position: 'Gaming', queueCount: '3' };
-        playStyles[teamName].position = newPos.trim();
-        saveAndRefresh();
-    }
-};
+if (closeManagerModalBtn) {
+    closeManagerModalBtn.addEventListener('click', () => {
+        managerModal.classList.remove('active');
+    });
+}
 
-window.editQueueCount = function(teamName) {
-    const current = (playStyles[teamName] && playStyles[teamName].queueCount) || '3';
-    const newCount = prompt(`Edit Queue Count for ${teamName}:`, current);
-    if (newCount !== null && newCount.trim()) {
-        if (!playStyles[teamName]) playStyles[teamName] = { position: 'Gaming', queueCount: '3' };
-        playStyles[teamName].queueCount = newCount.trim();
+if (editManagerForm) {
+    editManagerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const teamName = editManagerTeamKey.value;
+        const managerName = editManagerNameInput.value.trim() || 'Not Appointed';
+        const playstyleName = editPlaystyleInput.value.trim() || 'Default / Balanced';
+
+        clubLeadership[teamName] = {
+            manager: managerName,
+            playstyle: playstyleName
+        };
+
+        managerModal.classList.remove('active');
         saveAndRefresh();
-    }
-};
+    });
+}
 
 // Season Progress
 function updateSeasonProgress() {
@@ -555,7 +541,7 @@ function renderSettingsDashboard() {
     matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
 
     teams.forEach((team, index) => {
-        const logoHtml = getTeamLogoHtml(team.name, team.logo);
+        const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
         const li = document.createElement('li');
         li.className = 'team-list-item';
         li.innerHTML = `
@@ -565,7 +551,7 @@ function renderSettingsDashboard() {
                 <strong>${escapeHtml(team.name)}</strong>
             </div>
             <div class="team-item-actions">
-                <button class="btn-item-action btn-edit" onclick="editTeamDetails(${index})">Edit</button>
+                <button class="btn-item-action btn-edit" onclick="openEditTeamModal(${index})">Edit</button>
                 <button class="btn-item-action btn-del" onclick="deleteTeam(${index})">Delete</button>
             </div>
         `;
@@ -575,6 +561,76 @@ function renderSettingsDashboard() {
     updateSeasonProgress();
 }
 
+// Open Edit Team Modal
+window.openEditTeamModal = function(index) {
+    const team = teams[index];
+    if (!team) return;
+
+    editTeamIndex.value = index;
+    editTeamNameInput.value = team.name;
+    editTeamLogoUrl.value = team.logo && team.logo.startsWith('http') ? team.logo : '';
+    editTeamLogoFile.value = '';
+
+    editTeamModal.classList.add('active');
+};
+
+if (closeEditTeamModalBtn) {
+    closeEditTeamModalBtn.addEventListener('click', () => {
+        editTeamModal.classList.remove('active');
+    });
+}
+
+// Save Edit Team Changes (Name & Logo)
+if (editTeamForm) {
+    editTeamForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const index = parseInt(editTeamIndex.value, 10);
+        const oldName = teams[index].name;
+        const newName = editTeamNameInput.value.trim();
+        const urlInput = editTeamLogoUrl.value.trim();
+        const fileInput = editTeamLogoFile.files[0];
+
+        if (!newName) return;
+
+        function applyTeamUpdate(finalLogo) {
+            // Update in matches
+            matches.forEach(m => {
+                if (m.home === oldName) m.home = newName;
+                if (m.away === oldName) m.away = newName;
+            });
+            // Update in UCL teams
+            uclTeams.forEach(u => {
+                if (u.name === oldName) {
+                    u.name = newName;
+                    u.logo = finalLogo;
+                }
+            });
+            // Update leadership
+            if (clubLeadership[oldName]) {
+                clubLeadership[newName] = clubLeadership[oldName];
+                if (oldName !== newName) delete clubLeadership[oldName];
+            }
+
+            teams[index].name = newName;
+            teams[index].logo = finalLogo;
+
+            editTeamModal.classList.remove('active');
+            saveAndRefresh();
+        }
+
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                applyTeamUpdate(evt.target.result);
+            };
+            reader.readAsDataURL(fileInput);
+        } else {
+            applyTeamUpdate(urlInput || teams[index].logo || '');
+        }
+    });
+}
+
+// Update Match Creation Dropdown
 function updateTeamSelects() {
     if (!homeTeamSelect || !awayTeamSelect || !matchTypeSelect) return;
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
@@ -603,8 +659,7 @@ function saveAndRefresh() {
     localStorage.setItem('ccnn_teams', JSON.stringify(teams));
     localStorage.setItem('ccnn_ucl_teams', JSON.stringify(uclTeams));
     localStorage.setItem('ccnn_matches', JSON.stringify(matches));
-    localStorage.setItem('ccnn_managers', JSON.stringify(managers));
-    localStorage.setItem('ccnn_playstyles', JSON.stringify(playStyles));
+    localStorage.setItem('ccnn_club_leadership', JSON.stringify(clubLeadership));
     localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
 
     renderLeagueTable();
@@ -615,19 +670,9 @@ function saveAndRefresh() {
     updateTeamSelects();
 }
 
-// Convert uploaded file to Base64 String
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-    });
-}
-
-// Add Team (with Logo File or URL)
+// Add Team with Logo Option (URL or File Upload)
 if (addTeamForm) {
-    addTeamForm.addEventListener('submit', async (e) => {
+    addTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = teamNameInput.value.trim();
         if (!name) return;
@@ -638,71 +683,44 @@ if (addTeamForm) {
             return;
         }
 
-        let logoData = teamLogoUrlInput.value.trim();
-        if (teamLogoFileInput.files && teamLogoFileInput.files[0]) {
-            try {
-                logoData = await fileToBase64(teamLogoFileInput.files[0]);
-            } catch (err) {
-                console.error('File conversion failed', err);
-            }
+        const urlInput = teamLogoUrlInput.value.trim();
+        const fileInput = teamLogoFileInput.files[0];
+
+        function pushTeam(logoData) {
+            teams.push({
+                name: name,
+                logo: logoData
+            });
+
+            clubLeadership[name] = {
+                manager: 'Not Appointed',
+                playstyle: 'Default / Balanced'
+            };
+
+            addTeamForm.reset();
+            saveAndRefresh();
         }
 
-        teams.push({ name: name, logo: logoData });
-        teamNameInput.value = '';
-        teamLogoUrlInput.value = '';
-        teamLogoFileInput.value = '';
-        saveAndRefresh();
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                pushTeam(evt.target.result);
+            };
+            reader.readAsDataURL(fileInput);
+        } else {
+            pushTeam(urlInput);
+        }
     });
 }
 
-// Edit Team Name and Logo
-window.editTeamDetails = async function(index) {
-    const current = teams[index];
-    const newName = prompt('Edit Team Name:', current.name);
-    if (newName === null) return;
-
-    const cleanName = newName.trim() || current.name;
-    const newLogo = prompt('Edit Logo Image URL (leave blank to keep current):', current.logo);
-    
-    const finalLogo = (newLogo !== null && newLogo.trim() !== '') ? newLogo.trim() : current.logo;
-
-    // Synchronize updates across other collections
-    const oldName = current.name;
-    matches.forEach(m => {
-        if (m.home === oldName) m.home = cleanName;
-        if (m.away === oldName) m.away = cleanName;
-    });
-
-    uclTeams.forEach(u => {
-        if (u.name === oldName) {
-            u.name = cleanName;
-            u.logo = finalLogo;
-        }
-    });
-
-    if (managers[oldName]) {
-        managers[cleanName] = managers[oldName];
-        delete managers[oldName];
-    }
-
-    if (playStyles[oldName]) {
-        playStyles[cleanName] = playStyles[oldName];
-        delete playStyles[oldName];
-    }
-
-    teams[index].name = cleanName;
-    teams[index].logo = finalLogo;
-    saveAndRefresh();
-};
-
+// Delete Team
 window.deleteTeam = function(index) {
     const target = teams[index].name;
     if (confirm(`Delete team "${target}"? All their matches and UCL entries will be removed.`)) {
         teams.splice(index, 1);
         matches = matches.filter(m => m.home !== target && m.away !== target);
         uclTeams = uclTeams.filter(u => u.name !== target);
-        delete managers[target];
-        delete playStyles[target];
+        delete clubLeadership[target];
         saveAndRefresh();
     }
 };
@@ -738,14 +756,14 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season: Qualify top teams to UCL (preserving logos) and reset scores
+// End Season: Qualify top teams to UCL and reset scores
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const confirmed = confirm(
             'End Season & Qualify to UCL?\n\n' +
             '• Teams currently inside the blue qualification line will qualify for the UCL tab.\n' +
             '• League match results will be cleared for the next season.\n' +
-            '• Teams list and Logos will remain intact.'
+            '• Teams list and logos will remain intact.'
         );
         if (confirmed) {
             const finalLeagueStandings = calculateTableStats(teams, 'League');
@@ -769,15 +787,14 @@ if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
         const confirmed = confirm(
             '⚠️ Delete Everything?\n\n' +
-            'This will permanently delete all teams, logos, UCL entries, match results, managers, and configurations.'
+            'This will permanently delete all teams, logos, UCL entries, match results, and configurations.'
         );
         if (confirmed) {
             localStorage.clear();
             teams = [];
             uclTeams = [];
             matches = [];
-            managers = {};
-            playStyles = {};
+            clubLeadership = {};
             leagueConfig = { maxTeams: 8, qualSpots: 4, matchesPerTeam: 14, darkMode: false };
             applyTheme(false);
             saveAndRefresh();
