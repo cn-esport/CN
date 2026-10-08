@@ -19,7 +19,7 @@
     --progress-track: #E9ECEF;
     --placeholder-box: #F8F9FA;
 
-    /* Dynamic Brand Colors */
+    /* Dynamic Brand & Accent Colors */
     --brand-primary: #0066FF;
     --brand-secondary: #0052CC;
     --brand-underline: #111111;
@@ -68,7 +68,7 @@ body.dark-theme {
     --badge-bg: #25262B;
     --badge-text: #C1C2C5;
     --progress-track: #2C2E33;
-    --placeholder-box: #25262B;
+    --placeholder-box: #17181C;
     --brand-underline: #FFFFFF;
 }
 
@@ -159,7 +159,6 @@ body {
     width: 22px;
 }
 
-/* Single CCNN Header layout */
 .header-single-brand .brand-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -175,7 +174,6 @@ body {
     margin: 0 auto;
 }
 
-/* 3-part Collab Layout: [CCNN] × [League Logo] */
 .header-collab-brand {
     display: inline-flex;
     align-items: center;
@@ -475,7 +473,7 @@ body {
     border: 2px solid #8c98a4;
 }
 
-/* Legends */
+/* Legends & League Trophy Card */
 .legends-wrapper {
     display: flex;
     flex-direction: column;
@@ -533,7 +531,7 @@ body {
     gap: 10px;
 }
 
-/* Feature 1: League Trophy Showcase Section */
+/* League Trophy Section (Horizontal Card) */
 .league-trophy-card {
     display: flex;
     align-items: center;
@@ -541,59 +539,49 @@ body {
     padding: 16px 18px;
 }
 
-.trophy-img-wrap {
-    width: 58px;
-    height: 64px;
+.trophy-card-image-box {
+    width: 65px;
+    height: 65px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--bg-page);
+    border-radius: 12px;
     flex-shrink: 0;
+    padding: 6px;
 }
 
-.league-trophy-display-img {
+.league-trophy-image {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
 }
 
-.trophy-content-wrap {
-    flex: 1;
+.trophy-card-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 4px;
 }
 
-.trophy-badge {
-    font-size: 0.64rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--brand-primary);
-    margin-bottom: 2px;
-    text-transform: uppercase;
-}
-
-.trophy-heading {
-    font-size: 1.05rem;
+.trophy-card-status {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--text-main);
-    margin: 0;
+    letter-spacing: 0.01em;
 }
 
-.trophy-subtext {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    margin-top: 3px;
-    font-weight: 500;
+.trophy-winner-details {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
-.trophy-champion-logo {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    object-fit: cover;
+.trophy-winner-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--brand-primary);
 }
 
 /* Matches Page */
@@ -758,7 +746,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Feature 2: Manager Trophy Cabinet Styling */
+/* Managers List with Trophy Cabinet */
 .managers-container {
     display: flex;
     flex-direction: column;
@@ -805,122 +793,106 @@ body {
     color: var(--text-muted);
 }
 
-/* Increased height showcase box for trophies */
-.trophy-showcase-cabinet {
+/* Trophy Showcase Box (Increased height) */
+.trophy-placeholder-box {
     width: 100%;
-    min-height: 72px;
+    min-height: 70px;
     background-color: var(--placeholder-box);
     border-radius: 12px;
-    border: 1px dashed var(--border-line);
+    border: 1px solid var(--border-line);
     padding: 10px 14px;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.trophy-showcase-item {
+.trophy-showcase-empty {
+    width: 100%;
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.trophy-badge-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 3px;
+    flex-shrink: 0;
+    min-width: 44px;
 }
 
-.trophy-showcase-img {
-    height: 38px;
-    max-width: 38px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+.trophy-badge-icon {
+    font-size: 1.45rem;
+    line-height: 1;
 }
 
-.trophy-showcase-count {
+.trophy-badge-count {
     font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-main);
+    font-weight: 800;
+    color: var(--brand-primary);
     background-color: var(--badge-bg);
     padding: 1px 6px;
-    border-radius: 6px;
-    line-height: 1.2;
+    border-radius: 8px;
 }
 
-.trophy-empty-msg {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    font-style: italic;
-    width: 100%;
-    text-align: center;
-}
-
-/* Trophy Selector in Modal */
-.trophy-selector-list {
+/* Trophy Counter Inputs in Modal */
+.trophy-counter-grid {
     display: flex;
     flex-direction: column;
     gap: 8px;
     background-color: var(--bg-page);
-    padding: 10px;
     border-radius: 10px;
-    max-height: 180px;
-    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid var(--border-line);
 }
 
-.trophy-selector-row {
+.trophy-counter-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 4px;
-    border-bottom: 1px solid var(--border-subtle);
 }
 
-.trophy-selector-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.trophy-selector-img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-.trophy-selector-name {
-    font-size: 0.84rem;
+.trophy-counter-label {
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--text-main);
 }
 
-.trophy-counter-controls {
+.counter-input-row {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.btn-counter {
-    width: 26px;
-    height: 26px;
+.btn-step {
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
     border: 1px solid var(--border-line);
     background-color: var(--bg-card);
     color: var(--text-main);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
 }
 
-.btn-counter:active {
-    background-color: var(--badge-bg);
+.btn-step:active {
+    background-color: var(--border-subtle);
 }
 
-.trophy-count-value {
+.counter-input-row .styled-input-num {
+    width: 45px;
+    height: 28px;
+    padding: 2px;
     font-size: 0.85rem;
-    font-weight: 700;
-    min-width: 20px;
-    text-align: center;
-    color: var(--text-main);
 }
 
 /* Modals */
