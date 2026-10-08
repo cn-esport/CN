@@ -20,8 +20,8 @@
                 <span></span>
             </button>
             <div class="header-brand">
-                <h1 class="brand-title">CCNN ESPORTS</h1>
-                <div class="underline"></div>
+                <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
+                <div class="underline" id="header-underline"></div>
             </div>
             <div class="header-spacer"></div>
         </div>
@@ -291,6 +291,24 @@
             </div>
 
             <div class="dashboard-container">
+                <!-- Section: League Selection & Branding -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">League Selection</h3>
+                        <span class="badge-pill" id="current-league-badge">CCNN</span>
+                    </div>
+                    <p class="card-desc">Choose a competition style to update branding titles and official theme colors.</p>
+                    <div class="form-inline-group">
+                        <label for="league-selection-dropdown">Active Competition</label>
+                        <select id="league-selection-dropdown" class="styled-select">
+                            <option value="ccnn">CCNN (Custom - default)</option>
+                            <option value="premier-league">Premier League</option>
+                            <option value="la-liga">La Liga</option>
+                            <option value="serie-a">Serie A</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Theme Preferences -->
                 <div class="dashboard-card">
                     <div class="card-header">
