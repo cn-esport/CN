@@ -143,6 +143,7 @@
             <div id="matches-list" class="matches-container"></div>
             <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
 
+            <!-- Floating Add Match Button -->
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
             <!-- Add Match Modal -->
@@ -196,7 +197,7 @@
             </div>
         </section>
 
-        <!-- UCL Section (No Last 5 Column) -->
+        <!-- UCL Section -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title">UEFA Champions League</h2>
@@ -216,6 +217,7 @@
                             <th>GF</th>
                             <th>GA</th>
                             <th>GD</th>
+                            <th class="col-form">Last 5</th>
                         </tr>
                     </thead>
                     <tbody id="ucl-standings-body"></tbody>
@@ -232,6 +234,54 @@
             <div id="managers-list" class="managers-container"></div>
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
+
+        <!-- Edit Manager & Playstyle Modal -->
+        <div id="manager-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title">Edit Club Leadership</h3>
+                <form id="edit-manager-form">
+                    <input type="hidden" id="edit-manager-team-key">
+                    <div class="form-group">
+                        <label for="edit-manager-name-input">Manager Name</label>
+                        <input type="text" id="edit-manager-name-input" class="styled-text-input" placeholder="e.g., Carlo Ancelotti" maxlength="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-playstyle-input">Playstyle</label>
+                        <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="close-manager-modal-btn" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-accent">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Team Modal (Name & Logo) -->
+        <div id="edit-team-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title">Edit Team Details</h3>
+                <form id="edit-team-form">
+                    <input type="hidden" id="edit-team-index">
+                    <div class="form-group">
+                        <label for="edit-team-name-input">Team Name</label>
+                        <input type="text" id="edit-team-name-input" class="styled-text-input" maxlength="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-team-logo-url">Logo Image URL</label>
+                        <input type="url" id="edit-team-logo-url" class="styled-text-input" placeholder="https://example.com/logo.png">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-team-logo-file">Or Upload Logo Image</label>
+                        <input type="file" id="edit-team-logo-file" accept="image/*" class="styled-file-input">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="close-edit-team-modal-btn" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-accent">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Settings Section -->
         <section id="settings-view" class="view-section">
@@ -255,7 +305,7 @@
                     </div>
                 </div>
 
-                <!-- Section 1: Team Management -->
+                <!-- Section 1: Team Management with Logo Option -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Team Management</h3>
@@ -274,18 +324,20 @@
                         </select>
                     </div>
 
-                    <form id="add-team-form" class="team-management-form">
-                        <div class="form-field-block">
-                            <input type="text" id="team-name-input" placeholder="Team name" maxlength="20" required autocomplete="off">
+                    <form id="add-team-form" class="team-creation-form">
+                        <div class="form-group">
+                            <label for="team-name-input">Team Name</label>
+                            <input type="text" id="team-name-input" class="styled-text-input" placeholder="e.g., Real Madrid" maxlength="20" required autocomplete="off">
                         </div>
-                        <div class="form-field-block">
-                            <input type="url" id="team-logo-url-input" placeholder="Paste Logo Image URL (optional)">
+                        <div class="form-group">
+                            <label for="team-logo-url-input">Logo Image URL (Optional)</label>
+                            <input type="url" id="team-logo-url-input" class="styled-text-input" placeholder="https://example.com/logo.png">
                         </div>
-                        <div class="logo-file-row">
-                            <label class="file-label" for="team-logo-file-input">Or Upload Logo File:</label>
-                            <input type="file" id="team-logo-file-input" accept="image/*">
+                        <div class="form-group">
+                            <label for="team-logo-file-input">Or Upload Logo Image</label>
+                            <input type="file" id="team-logo-file-input" accept="image/*" class="styled-file-input">
                         </div>
-                        <button type="submit" class="btn-accent btn-full">Add Team</button>
+                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Team</button>
                     </form>
 
                     <div class="team-list-section">
