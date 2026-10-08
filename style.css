@@ -150,27 +150,60 @@ body {
 
 .header-brand {
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-spacer {
     width: 22px;
 }
 
-.brand-title {
+/* Single CCNN Header layout */
+.header-single-brand .brand-title {
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     color: var(--text-main);
     margin-bottom: 5px;
-    transition: color 0.2s ease;
 }
 
-.underline {
+.header-single-brand .underline {
     width: 120px;
     height: 2px;
     background-color: var(--brand-underline);
     margin: 0 auto;
-    transition: background-color 0.2s ease;
+}
+
+/* 3-part Collab Layout: [CCNN] × [League Logo] */
+.header-collab-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 32px;
+}
+
+.collab-brand-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.collab-separator {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.collab-league-logo {
+    height: 28px;
+    max-width: 90px;
+    object-fit: contain;
+    vertical-align: middle;
 }
 
 /* Side Drawer */
