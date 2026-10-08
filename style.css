@@ -531,57 +531,111 @@ body {
     gap: 10px;
 }
 
-/* League Trophy Section (Horizontal Card) */
+/* League Trophy Section (Transparent, Larger, Horizontal Card) */
 .league-trophy-card {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 18px;
+    gap: 18px;
+    padding: 16px 20px;
 }
 
 .trophy-card-image-box {
-    width: 65px;
-    height: 65px;
+    width: 82px;
+    height: 82px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-page);
-    border-radius: 12px;
+    background: transparent !important;
+    border: none !important;
     flex-shrink: 0;
-    padding: 6px;
+    padding: 0;
 }
 
 .league-trophy-image {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.14));
 }
 
 .trophy-card-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
+    gap: 2px;
 }
 
-.trophy-card-status {
-    font-size: 1rem;
+.trophy-active-placeholder .trophy-cup-name {
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-main);
-    letter-spacing: 0.01em;
 }
 
 .trophy-winner-details {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.trophy-champion-label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brand-primary);
 }
 
 .trophy-winner-name {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Dynamic Progress Bar Card on League Page */
+.league-progress-card {
+    padding: 16px 18px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-text {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.progress-pct {
+    font-size: 0.86rem;
     font-weight: 800;
     color: var(--brand-primary);
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background-color: var(--progress-track);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--brand-primary);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-top: 10px;
 }
 
 /* Matches Page */
@@ -746,7 +800,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Managers List with Trophy Cabinet */
+/* Managers List with Real Trophy Images */
 .managers-container {
     display: flex;
     flex-direction: column;
@@ -793,17 +847,17 @@ body {
     color: var(--text-muted);
 }
 
-/* Trophy Showcase Box (Increased height) */
+/* Trophy Showcase Box */
 .trophy-placeholder-box {
     width: 100%;
-    min-height: 70px;
+    min-height: 80px;
     background-color: var(--placeholder-box);
     border-radius: 12px;
     border: 1px solid var(--border-line);
     padding: 10px 14px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -821,22 +875,24 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     flex-shrink: 0;
-    min-width: 44px;
+    min-width: 48px;
 }
 
-.trophy-badge-icon {
-    font-size: 1.45rem;
-    line-height: 1;
+.trophy-badge-image {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));
 }
 
 .trophy-badge-count {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     font-weight: 800;
     color: var(--brand-primary);
     background-color: var(--badge-bg);
-    padding: 1px 6px;
+    padding: 1px 7px;
     border-radius: 8px;
 }
 
@@ -844,10 +900,10 @@ body {
 .trophy-counter-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     background-color: var(--bg-page);
     border-radius: 10px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid var(--border-line);
 }
 
@@ -855,6 +911,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.trophy-label-with-img {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trophy-modal-thumb {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .trophy-counter-label {
@@ -1239,54 +1307,12 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* Season Progress */
+/* Commissioner Settings Progress Block */
 .progress-block {
     margin-top: 16px;
     background-color: var(--bg-page);
     border-radius: 12px;
     padding: 14px;
-}
-
-.progress-labels {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.progress-text {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.progress-pct {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--brand-primary);
-}
-
-.progress-bar-track {
-    width: 100%;
-    height: 8px;
-    background-color: var(--progress-track);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: var(--brand-primary);
-    border-radius: 6px;
-    transition: width 0.4s ease;
-}
-
-.progress-stats {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.74rem;
-    color: var(--text-muted);
-    margin-top: 10px;
 }
 
 /* Season Danger Card */
