@@ -19,10 +19,23 @@
                 <span></span>
                 <span></span>
             </button>
-            <div class="header-brand">
-                <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
-                <div class="underline" id="header-underline"></div>
+            
+            <!-- Dynamic Brand Header Container -->
+            <div class="header-brand" id="header-brand-container">
+                <!-- Fallback/Default CCNN Layout -->
+                <div id="header-ccnn-brand" class="header-single-brand">
+                    <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
+                    <div class="underline" id="header-underline"></div>
+                </div>
+
+                <!-- 3-part Collab Layout: [CCNN] × [League Logo] -->
+                <div id="header-collab-brand" class="header-collab-brand" style="display: none;">
+                    <span class="collab-brand-text">CCNN</span>
+                    <span class="collab-separator">&times;</span>
+                    <img id="header-league-logo" src="" alt="League Logo" class="collab-league-logo">
+                </div>
             </div>
+
             <div class="header-spacer"></div>
         </div>
     </header>
@@ -49,7 +62,7 @@
             </button>
             <button class="drawer-link" data-target="ucl-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <span>UCL</span>
+                <span id="drawer-ucl-label">UCL</span>
             </button>
             <button class="drawer-link" data-target="managers-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -100,7 +113,7 @@
                     <h4 class="legend-card-title">Qualification / Relegation</h4>
                     <div class="legend-row">
                         <span class="legend-square uefa-square"></span>
-                        <span class="legend-text">UEFA Champions League Qualification</span>
+                        <span class="legend-text" id="legend-qual-label">UEFA Champions League Qualification</span>
                     </div>
                 </div>
 
@@ -155,7 +168,7 @@
                             <label for="match-type-select">Competition Type</label>
                             <select id="match-type-select" required>
                                 <option value="League" selected>League Match</option>
-                                <option value="UCL">UEFA Champions League</option>
+                                <option value="Tournament" id="match-type-tournament-option">Tournament Match</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -197,10 +210,10 @@
             </div>
         </section>
 
-        <!-- UCL Section -->
+        <!-- Tournament / UCL Section -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
-                <h2 class="matches-title">UEFA Champions League</h2>
+                <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
             </div>
             
             <div class="table-container">
@@ -223,7 +236,7 @@
                     <tbody id="ucl-standings-body"></tbody>
                 </table>
             </div>
-            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified UCL teams yet. Complete a League season to qualify top teams.</div>
+            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
         </section>
 
         <!-- Managers Section -->
@@ -291,20 +304,38 @@
             </div>
 
             <div class="dashboard-container">
-                <!-- Section: League Selection & Branding -->
+                <!-- Section: League Selection & Header Branding -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">League Selection</h3>
                         <span class="badge-pill" id="current-league-badge">CCNN</span>
                     </div>
-                    <p class="card-desc">Choose a competition style to update branding titles and official theme colors.</p>
+                    <p class="card-desc">Choose a league to display its official logo in the header and apply themed branding.</p>
                     <div class="form-inline-group">
-                        <label for="league-selection-dropdown">Active Competition</label>
+                        <label for="league-selection-dropdown">League</label>
                         <select id="league-selection-dropdown" class="styled-select">
-                            <option value="ccnn">CCNN (Custom - default)</option>
+                            <option value="ccnn">CCNN (Custom)</option>
                             <option value="premier-league">Premier League</option>
                             <option value="la-liga">La Liga</option>
                             <option value="serie-a">Serie A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section: Tournament Selection (UCL Tab) -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tournament Selection</h3>
+                        <span class="badge-pill" id="current-tournament-badge">UCL</span>
+                    </div>
+                    <p class="card-desc">Select which tournament the secondary tab and qualification system represent.</p>
+                    <div class="form-inline-group">
+                        <label for="tournament-selection-dropdown">Tournament Tab</label>
+                        <select id="tournament-selection-dropdown" class="styled-select">
+                            <option value="ucl">UEFA Champions League</option>
+                            <option value="world-cup">FIFA World Cup</option>
+                            <option value="euro">UEFA Euro</option>
+                            <option value="asian-cup">AFC Asian Cup</option>
                         </select>
                     </div>
                 </div>
@@ -368,14 +399,14 @@
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
                     </div>
-                    <p class="card-desc">Set how many top teams qualify for UCL when the season ends.</p>
+                    <p class="card-desc">Set how many top teams qualify when the season ends.</p>
                     <div class="form-inline-group">
-                        <label for="qual-zone-select">Promoted / UCL Spots</label>
+                        <label for="qual-zone-select">Promoted / Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
                             <option value="1">Top 1</option>
                             <option value="2">Top 2</option>
                             <option value="3">Top 3</option>
-                            <option value="4">Top 4 (Champions League)</option>
+                            <option value="4">Top 4</option>
                             <option value="6">Top 6</option>
                         </select>
                     </div>
@@ -411,9 +442,9 @@
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
-                    <p class="card-desc">End the season to qualify top teams into UCL and reset match results, or delete everything.</p>
+                    <p class="card-desc">End the season to qualify top teams into the tournament and reset match results, or delete everything.</p>
                     <div class="danger-actions">
-                        <button id="end-season-btn" class="btn-warning">End Season (Qualify to UCL &amp; Reset Scores)</button>
+                        <button id="end-season-btn" class="btn-warning">End Season (Qualify &amp; Reset Scores)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
                     </div>
                 </div>
@@ -421,7 +452,7 @@
         </section>
     </main>
 
-    <!-- Bottom Navigation (Home, League, Matches, UCL, Managers) -->
+    <!-- Bottom Navigation (Home, League, Matches, UCL/Tournament, Managers) -->
     <nav class="bottom-nav">
         <button class="nav-item" data-target="home-view">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -437,7 +468,7 @@
         </button>
         <button class="nav-item" data-target="ucl-view">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span class="nav-label">UCL</span>
+            <span class="nav-label" id="bottom-ucl-label">UCL</span>
         </button>
         <button class="nav-item" data-target="managers-view">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
