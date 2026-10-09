@@ -334,6 +334,208 @@ body {
     font-size: 0.9rem;
 }
 
+/* =========================================
+   HOME PAGE: DASHBOARD CARDS (Reference Layout)
+   ========================================= */
+.home-grid-container {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 14px;
+    align-items: start;
+    margin-top: 4px;
+}
+
+@media (max-width: 340px) {
+    .home-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-card {
+    background-color: var(--bg-card);
+    border-radius: 20px;
+    padding: 16px 14px;
+    box-shadow: 0 3px 12px var(--shadow-card);
+    border: 1px solid var(--border-subtle);
+}
+
+.home-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.home-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.home-card-header.link-header {
+    cursor: pointer;
+}
+
+.home-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.home-card-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-weight: 500;
+}
+
+.chevron-icon,
+.chevron-down-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* Home Left: Top 4 Table Card */
+.home-top4-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-team-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.home-team-row:last-child {
+    border-bottom: none;
+}
+
+.home-team-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-rank {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    width: 14px;
+    text-align: center;
+}
+
+.home-team-logo {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.home-team-abbr {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.03em;
+}
+
+.home-pts {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.home-table-more {
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: left;
+}
+
+.home-table-more:hover {
+    color: var(--brand-primary);
+}
+
+/* Home Right: Predictions Card */
+.home-predictions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.prediction-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.prediction-team-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.prediction-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 0.62rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prediction-name {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.prediction-pct {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+/* Home Right: Season Card */
+.home-season-card {
+    padding: 16px 14px 18px;
+}
+
+.home-season-number {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 14px;
+}
+
 /* Standings Table */
 .table-container {
     width: 100%;
@@ -531,7 +733,7 @@ body {
     gap: 10px;
 }
 
-/* League Trophy Section (Transparent, Larger, Horizontal Card) */
+/* League Trophy Section */
 .league-trophy-card {
     display: flex;
     align-items: center;
@@ -800,7 +1002,7 @@ body {
     transform: scale(0.95);
 }
 
-/* Managers List with Real Trophy Images */
+/* Managers List */
 .managers-container {
     display: flex;
     flex-direction: column;
@@ -847,7 +1049,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Trophy Showcase Box */
 .trophy-placeholder-box {
     width: 100%;
     min-height: 80px;
