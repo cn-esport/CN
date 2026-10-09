@@ -6,7 +6,7 @@
     <title>CCNN Esport</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -48,11 +48,11 @@
             <button id="close-drawer-btn" class="close-drawer-btn" aria-label="Close Menu">&times;</button>
         </div>
         <nav class="drawer-nav">
-            <button class="drawer-link" data-target="home-view">
+            <button class="drawer-link active" data-target="home-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Home</span>
             </button>
-            <button class="drawer-link active" data-target="league-view">
+            <button class="drawer-link" data-target="league-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 1 4 4v5c0 1.5-1.5 3-4 3s-4-1.5-4-3V6a4 4 0 0 1 4-4z"></path></svg>
                 <span>League</span>
             </button>
@@ -77,13 +77,53 @@
     </aside>
 
     <main class="content">
-        <!-- Home Section -->
-        <section id="home-view" class="view-section">
-            <div class="empty-state">Home Content</div>
+        <!-- Home Section: Reference Grid Cards -->
+        <section id="home-view" class="view-section active">
+            <div class="home-grid-container">
+                <!-- Left Column: Table Card -->
+                <div class="home-card home-table-card">
+                    <div class="home-card-header link-header" onclick="switchTab('league-view')">
+                        <h3 class="home-card-title">Table</h3>
+                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </div>
+                    
+                    <div id="home-top4-list" class="home-top4-list">
+                        <!-- Populated by script.js -->
+                    </div>
+
+                    <div id="home-table-more-btn" class="home-table-more" onclick="switchTab('league-view')">
+                        +0 more
+                    </div>
+                </div>
+
+                <!-- Right Column: Predictions & Season -->
+                <div class="home-right-col">
+                    <!-- Predictions Card -->
+                    <div class="home-card home-predictions-card">
+                        <div class="home-card-header">
+                            <div>
+                                <h3 class="home-card-title">Predictions</h3>
+                                <p class="home-card-sub">Who will win?</p>
+                            </div>
+                            <svg class="chevron-down-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        
+                        <div id="home-predictions-list" class="home-predictions-list">
+                            <!-- Populated by script.js -->
+                        </div>
+                    </div>
+
+                    <!-- Season Card -->
+                    <div class="home-card home-season-card">
+                        <h3 class="home-card-title">Season</h3>
+                        <div id="home-season-display" class="home-season-number">Season 1</div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- League Section -->
-        <section id="league-view" class="view-section active">
+        <section id="league-view" class="view-section">
             <div class="table-container">
                 <table class="standings-table">
                     <thead>
@@ -145,7 +185,7 @@
                     </div>
                 </div>
 
-                <!-- Feature 1 & 2: League Trophy Card (Larger, transparent image & Champion showcase) -->
+                <!-- League Trophy Card -->
                 <div class="legend-card league-trophy-card">
                     <div class="trophy-card-image-box">
                         <img id="league-trophy-img" src="/CN/images/trophies/ccnn-trophy.webp" alt="League Trophy" class="league-trophy-image" onerror="this.src='/CN/images/trophies/ccnn-trophy.webp'">
@@ -161,7 +201,7 @@
                     </div>
                 </div>
 
-                <!-- Feature 1: Dynamic League Progress Bar Card -->
+                <!-- Dynamic League Progress Bar Card -->
                 <div class="legend-card league-progress-card">
                     <div class="progress-labels">
                         <span class="progress-text" id="league-progress-title">CCNN League Progress</span>
@@ -294,7 +334,7 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
-                    <!-- Trophy Assignment Counters with Real Images -->
+                    <!-- Trophy Assignment Counters -->
                     <div class="form-group">
                         <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
                         <div class="trophy-counter-grid">
@@ -423,6 +463,17 @@
                     </div>
                 </div>
 
+                <!-- Section: Season Management -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Season Info</h3>
+                    </div>
+                    <div class="form-inline-group">
+                        <label for="season-number-input">Current Season Number</label>
+                        <input type="number" id="season-number-input" class="styled-input-num" min="1" max="999" value="1">
+                    </div>
+                </div>
+
                 <!-- Theme Preferences -->
                 <div class="dashboard-card">
                     <div class="card-header">
@@ -535,13 +586,13 @@
         </section>
     </main>
 
-    <!-- Bottom Navigation (Home, League, Matches, UCL/Tournament, Managers) -->
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <button class="nav-item" data-target="home-view">
+        <button class="nav-item active" data-target="home-view">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             <span class="nav-label">Home</span>
         </button>
-        <button class="nav-item active" data-target="league-view">
+        <button class="nav-item" data-target="league-view">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 1 4 4v5c0 1.5-1.5 3-4 3s-4-1.5-4-3V6a4 4 0 0 1 4-4z"></path></svg>
             <span class="nav-label">League</span>
         </button>
