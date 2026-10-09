@@ -22,13 +22,11 @@
             
             <!-- Dynamic Brand Header Container -->
             <div class="header-brand" id="header-brand-container">
-                <!-- Fallback/Default CCNN Layout -->
                 <div id="header-ccnn-brand" class="header-single-brand">
                     <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
                     <div class="underline" id="header-underline"></div>
                 </div>
 
-                <!-- 3-part Collab Layout: [CCNN] × [League Logo] -->
                 <div id="header-collab-brand" class="header-collab-brand" style="display: none;">
                     <span class="collab-brand-text">CCNN</span>
                     <span class="collab-separator">&times;</span>
@@ -48,11 +46,11 @@
             <button id="close-drawer-btn" class="close-drawer-btn" aria-label="Close Menu">&times;</button>
         </div>
         <nav class="drawer-nav">
-            <button class="drawer-link active" data-target="home-view">
+            <button class="drawer-link" data-target="home-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Home</span>
             </button>
-            <button class="drawer-link" data-target="league-view">
+            <button class="drawer-link active" data-target="league-view">
                 <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a4 4 0 0 1 4 4v5c0 1.5-1.5 3-4 3s-4-1.5-4-3V6a4 4 0 0 1 4-4z"></path></svg>
                 <span>League</span>
             </button>
@@ -70,35 +68,30 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
         </nav>
     </aside>
 
     <main class="content">
-        <!-- Home Section: Reference Grid Cards -->
+        <!-- Home Section -->
         <section id="home-view" class="view-section active">
             <div class="home-grid-container">
-                <!-- Left Column: Table Card -->
                 <div class="home-card home-table-card">
                     <div class="home-card-header link-header" onclick="switchTab('league-view')">
                         <h3 class="home-card-title">Table</h3>
                         <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </div>
                     
-                    <div id="home-top4-list" class="home-top4-list">
-                        <!-- Populated by script.js -->
-                    </div>
+                    <div id="home-top4-list" class="home-top4-list"></div>
 
                     <div id="home-table-more-btn" class="home-table-more" onclick="switchTab('league-view')">
                         +0 more
                     </div>
                 </div>
 
-                <!-- Right Column: Predictions & Season -->
                 <div class="home-right-col">
-                    <!-- Predictions Card -->
                     <div class="home-card home-predictions-card">
                         <div class="home-card-header">
                             <div>
@@ -108,12 +101,9 @@
                             <svg class="chevron-down-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         
-                        <div id="home-predictions-list" class="home-predictions-list">
-                            <!-- Populated by script.js -->
-                        </div>
+                        <div id="home-predictions-list" class="home-predictions-list"></div>
                     </div>
 
-                    <!-- Season Card -->
                     <div class="home-card home-season-card">
                         <h3 class="home-card-title">Season</h3>
                         <div id="home-season-display" class="home-season-number">Season 1</div>
@@ -201,7 +191,7 @@
                     </div>
                 </div>
 
-                <!-- Dynamic League Progress Bar Card -->
+                <!-- League Progress Bar Card -->
                 <div class="legend-card league-progress-card">
                     <div class="progress-labels">
                         <span class="progress-text" id="league-progress-title">CCNN League Progress</span>
@@ -281,33 +271,52 @@
             </div>
         </section>
 
-        <!-- Tournament / UCL Section -->
+        <!-- Tournament / UCL Section: Group Stage + Knockout Stage -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
             </div>
-            
-            <div class="table-container">
-                <table class="standings-table">
-                    <thead>
-                        <tr>
-                            <th class="col-pos">#</th>
-                            <th class="col-team">Club</th>
-                            <th>MP</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th class="col-pts">Pts</th>
-                            <th>GF</th>
-                            <th>GA</th>
-                            <th>GD</th>
-                            <th class="col-form">Last 5</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ucl-standings-body"></tbody>
-                </table>
+
+            <!-- Tournament Sub-Navigation (Group / Knockout) -->
+            <div class="tournament-subnav">
+                <button class="tourn-tab-btn active" id="tourn-tab-group-btn" onclick="switchTournStage('group')">Group Stage</button>
+                <button class="tourn-tab-btn" id="tourn-tab-ko-btn" onclick="switchTournStage('knockout')">Knockout Stage</button>
             </div>
-            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
+
+            <!-- Stage 1: Group Standings Table -->
+            <div id="tourn-group-stage-container">
+                <div class="table-container">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th class="col-pos">#</th>
+                                <th class="col-team">Club</th>
+                                <th>MP</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th class="col-pts">Pts</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th class="col-form">Last 5</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ucl-standings-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season or configure national teams in Settings.</div>
+
+                <div class="tourn-actions-box">
+                    <button class="btn-accent" id="generate-knockouts-btn" onclick="generateKnockoutsFromGroup()">Generate Knockout Bracket</button>
+                </div>
+            </div>
+
+            <!-- Stage 2: Knockout Bracket View -->
+            <div id="tourn-knockout-stage-container" style="display: none;">
+                <div id="knockout-rounds-list" class="knockout-rounds-container"></div>
+            </div>
         </section>
 
         <!-- Managers Section -->
@@ -319,7 +328,7 @@
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
 
-        <!-- Edit Manager, Playstyle & Trophy Showcase Modal -->
+        <!-- Edit Manager Modal -->
         <div id="manager-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Club Leadership</h3>
@@ -334,7 +343,6 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
-                    <!-- Trophy Assignment Counters -->
                     <div class="form-group">
                         <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
                         <div class="trophy-counter-grid">
@@ -393,12 +401,13 @@
             </div>
         </div>
 
-        <!-- Edit Team Modal (Name & Logo) -->
+        <!-- Edit Team Modal -->
         <div id="edit-team-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Team Details</h3>
                 <form id="edit-team-form">
                     <input type="hidden" id="edit-team-index">
+                    <input type="hidden" id="edit-team-source" value="league">
                     <div class="form-group">
                         <label for="edit-team-name-input">Team Name</label>
                         <input type="text" id="edit-team-name-input" class="styled-text-input" maxlength="20" required>
@@ -419,15 +428,37 @@
             </div>
         </div>
 
+        <!-- Enter Knockout Match Score Modal -->
+        <div id="ko-score-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title" id="ko-score-round-title">Match Score</h3>
+                <form id="ko-score-form">
+                    <input type="hidden" id="ko-match-id">
+                    <div class="score-input-row">
+                        <label id="ko-score-home-label" class="score-team-label">Home</label>
+                        <input type="number" id="ko-home-score-input" min="0" max="99" required placeholder="0">
+                    </div>
+                    <div class="score-input-row">
+                        <label id="ko-score-away-label" class="score-team-label">Away</label>
+                        <input type="number" id="ko-away-score-input" min="0" max="99" required placeholder="0">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="close-ko-score-modal-btn" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-accent">Save Result</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Settings Section -->
         <section id="settings-view" class="view-section">
             <div class="dashboard-header">
                 <h2 class="dashboard-title">League Commissioner</h2>
-                <p class="dashboard-subtitle">Configure rules, manage teams, and oversee tournaments.</p>
+                <p class="dashboard-subtitle">Configure tournaments, national teams, and season format.</p>
             </div>
 
             <div class="dashboard-container">
-                <!-- Section: League Selection & Header Branding -->
+                <!-- League Selection & Branding -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">League Selection</h3>
@@ -445,15 +476,15 @@
                     </div>
                 </div>
 
-                <!-- Section: Tournament Selection (UCL Tab) -->
+                <!-- Tournament Selection -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Selection</h3>
                         <span class="badge-pill" id="current-tournament-badge">UCL</span>
                     </div>
-                    <p class="card-desc">Select which tournament the secondary tab and qualification system represent.</p>
+                    <p class="card-desc">Select which tournament the secondary tab and playoff system represent.</p>
                     <div class="form-inline-group">
-                        <label for="tournament-selection-dropdown">Tournament Tab</label>
+                        <label for="tournament-selection-dropdown">Active Tournament</label>
                         <select id="tournament-selection-dropdown" class="styled-select">
                             <option value="ucl">UEFA Champions League</option>
                             <option value="world-cup">FIFA World Cup</option>
@@ -463,7 +494,58 @@
                     </div>
                 </div>
 
-                <!-- Section: Season Management -->
+                <!-- Tournament Format Settings -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tournament Format</h3>
+                    </div>
+                    <p class="card-desc">Customize rules for group matches and knockout ties.</p>
+                    <div class="form-inline-group">
+                        <label for="tourn-group-format-select">Group Stage Schedule</label>
+                        <select id="tourn-group-format-select" class="styled-select">
+                            <option value="single">One Game (Play Once)</option>
+                            <option value="double">Home &amp; Away (Play Twice)</option>
+                        </select>
+                    </div>
+                    <div class="form-inline-group">
+                        <label for="tourn-ko-legs-select">Knockout Match Legs</label>
+                        <select id="tourn-ko-legs-select" class="styled-select">
+                            <option value="1">One Leg (Single Match)</option>
+                            <option value="2">Two Legs (Aggregate)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- National Teams Management (World Cup, Euro, Asian Cup) -->
+                <div class="dashboard-card" id="national-teams-dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">National Teams (<span id="active-national-comp-name">World Cup</span>)</h3>
+                        <span class="badge-pill"><span id="national-team-count">0</span> Teams</span>
+                    </div>
+                    <p class="card-desc">Manage separate national teams participating in World Cup, Euro, or Asian Cup.</p>
+
+                    <form id="add-national-team-form" class="team-creation-form">
+                        <div class="form-group">
+                            <label for="national-team-name-input">National Team Name</label>
+                            <input type="text" id="national-team-name-input" class="styled-text-input" placeholder="e.g., France, Brazil, Japan" maxlength="20" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="national-team-logo-url">Flag/Logo Image URL (Optional)</label>
+                            <input type="url" id="national-team-logo-url" class="styled-text-input" placeholder="https://example.com/flag.png">
+                        </div>
+                        <div class="form-group">
+                            <label for="national-team-logo-file">Or Upload Image</label>
+                            <input type="file" id="national-team-logo-file" accept="image/*" class="styled-file-input">
+                        </div>
+                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add National Team</button>
+                    </form>
+
+                    <div class="team-list-section">
+                        <ul id="national-team-list" class="team-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Season Info -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Info</h3>
@@ -488,10 +570,10 @@
                     </div>
                 </div>
 
-                <!-- Section 1: Team Management with Logo Option -->
+                <!-- League Clubs Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">Team Management</h3>
+                        <h3 class="card-title">League Clubs</h3>
                         <span class="badge-pill"><span id="team-count">0</span> / <span id="team-max-display">8</span></span>
                     </div>
 
@@ -509,7 +591,7 @@
 
                     <form id="add-team-form" class="team-creation-form">
                         <div class="form-group">
-                            <label for="team-name-input">Team Name</label>
+                            <label for="team-name-input">Club Name</label>
                             <input type="text" id="team-name-input" class="styled-text-input" placeholder="e.g., Real Madrid" maxlength="20" required autocomplete="off">
                         </div>
                         <div class="form-group">
@@ -520,7 +602,7 @@
                             <label for="team-logo-file-input">Or Upload Logo Image</label>
                             <input type="file" id="team-logo-file-input" accept="image/*" class="styled-file-input">
                         </div>
-                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Team</button>
+                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Club</button>
                     </form>
 
                     <div class="team-list-section">
@@ -528,14 +610,14 @@
                     </div>
                 </div>
 
-                <!-- Section 2: Qualification Zone -->
+                <!-- Qualification Zone -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
                     </div>
-                    <p class="card-desc">Set how many top teams qualify when the season ends.</p>
+                    <p class="card-desc">Set how many top clubs qualify into UCL when the season ends.</p>
                     <div class="form-inline-group">
-                        <label for="qual-zone-select">Promoted / Qualifying Spots</label>
+                        <label for="qual-zone-select">UCL Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
                             <option value="1">Top 1</option>
                             <option value="2">Top 2</option>
@@ -546,10 +628,10 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Season Settings & Progress -->
+                <!-- Season Settings & Progress -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">Season Settings</h3>
+                        <h3 class="card-title">League Season Settings</h3>
                     </div>
                     <div class="form-inline-group">
                         <label for="matches-per-team-input">Matches Per Team</label>
@@ -571,14 +653,14 @@
                     </div>
                 </div>
 
-                <!-- Section 4: Season Controls -->
+                <!-- Season Controls -->
                 <div class="dashboard-card danger-card">
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
-                    <p class="card-desc">End the season to crown the champion, qualify top teams into the tournament, and reset match results.</p>
+                    <p class="card-desc">End the season to crown the champion, advance clubs into UCL, and reset league scores.</p>
                     <div class="danger-actions">
-                        <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Reset Scores)</button>
+                        <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Qualify)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
                     </div>
                 </div>
