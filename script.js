@@ -70,7 +70,8 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     selectedLeague: 'ccnn',
     selectedTournament: 'ucl',
     seasonEnded: false,
-    championTeam: null
+    championTeam: null,
+    seasonNumber: 1
 };
 
 // Normalize team object structure with logo property
@@ -79,7 +80,7 @@ let teams = rawTeams.map(t => ({
     logo: t.logo || ''
 }));
 
-// League Branding & Header Logo & Trophy Definitions
+// League Branding Definitions
 const LEAGUE_BRANDING = {
     'ccnn': {
         name: 'CCNN ESPORTS',
@@ -253,6 +254,13 @@ if (darkModeToggle) {
     });
 }
 
+// DOM Elements: Home Dashboard Cards
+const homeTop4List = document.getElementById('home-top4-list');
+const homeTableMoreBtn = document.getElementById('home-table-more-btn');
+const homePredictionsList = document.getElementById('home-predictions-list');
+const homeSeasonDisplay = document.getElementById('home-season-display');
+const seasonNumberInput = document.getElementById('season-number-input');
+
 // DOM Elements: League
 const standingsBody = document.getElementById('standings-body');
 const standingsTable = document.querySelector('#league-view .standings-table');
@@ -336,6 +344,20 @@ function renderLogoMarkup(teamName, className = 'table-team-logo') {
         return `<img src="${escapeHtml(teamObj.logo)}" alt="${escapeHtml(teamName)}" class="${className}">`;
     }
     return `<span class="${className}">${escapeHtml(initial)}</span>`;
+}
+
+// 3-Letter Abbreviation Helper
+function getTeamAbbr(teamName) {
+    if (!teamName) return 'TEA';
+    const words = teamName.trim().split(/\s+/);
+    if (words.length >= 3) {
+        return (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
+    } else if (words.length === 2) {
+        const first = words[0];
+        const second = words[1];
+        return (first.slice(0, 2) + second.slice(0, 1)).toUpperCase();
+    }
+    return teamName.slice(0, 3).toUpperCase();
 }
 
 // Standings Calculator for specific tournament type ('League' or 'Tournament')
@@ -444,6 +466,111 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
+// =========================================
+// RENDER HOME PAGE DASHBOARD CARDS
+// =========================================
+function renderHomeDashboard() {
+    if (!homeTop4List || !homePredictionsList || !homeSeasonDisplay) return;
+
+    const leagueTableData = calculateTableStats(teams, 'League');
+
+    // 1. Table Card (Left): Top 4 teams
+    homeTop4List.innerHTML = '';
+    const top4 = leagueTableData.slice(0, 4);
+
+    if (top4.length === 0) {
+        homeTop4List.innerHTML = `<div style="padding: 18px 0; font-size: 0.8rem; color: var(--text-muted); text-align: center;">No teams added yet</div>`;
+    } else {
+        top4.forEach((t, idx) => {
+            const logoHtml = renderLogoMarkup(t.name, 'home-team-logo');
+            const abbr = getTeamAbbr(t.name);
+            const row = document.createElement('div');
+            row.className = 'home-team-row';
+            row.innerHTML = `
+                <div class="home-team-left">
+                    <span class="home-rank">${idx + 1}</span>
+                    ${logoHtml}
+                    <span class="home-team-abbr">${escapeHtml(abbr)}</span>
+                </div>
+                <span class="home-pts">${t.pts} pts.</span>
+            `;
+            homeTop4List.appendChild(row);
+        });
+    }
+
+    // Bottom link of Table card
+    const remainingTeams = Math.max(0, leagueTableData.length - 4);
+    if (homeTableMoreBtn) {
+        homeTableMoreBtn.textContent = `+${remainingTeams} more`;
+        homeTableMoreBtn.style.display = remainingTeams > 0 ? 'block' : 'none';
+    }
+
+    // 2. Predictions Card (Right): Formula calculation
+    // Historical Score (70%): Total trophies * 2
+    // Form Score (30%): Last 5 matches (W=3, D=1, L=0)
+    homePredictionsList.innerHTML = '';
+
+    if (leagueTableData.length === 0) {
+        homePredictionsList.innerHTML = `<div style="padding: 14px 0; font-size: 0.8rem; color: var(--text-muted);">No data available</div>`;
+    } else {
+        const scoredTeams = leagueTableData.map(t => {
+            const leadership = clubLeadership[t.name] || {};
+            const trophies = leadership.trophies || {};
+            const totalTrophies = (Number(trophies.premierLeague) || 0) +
+                                  (Number(trophies.laLiga) || 0) +
+                                  (Number(trophies.serieA) || 0) +
+                                  (Number(trophies.ccnn) || Number(trophies.league) || 0);
+
+            const historicalScore = totalTrophies * 2;
+
+            // Form score from last 5 matches
+            const recent5 = t.form.slice(-5);
+            let formScore = 0;
+            recent5.forEach(res => {
+                if (res === 'W') formScore += 3;
+                else if (res === 'D') formScore += 1;
+            });
+
+            // Weighted combination: 70% Historical + 30% Form
+            // Base score of 1 added to avoid divide-by-zero for teams starting fresh
+            const rawScore = (historicalScore * 0.70) + (formScore * 0.30) + 1.0;
+
+            return {
+                name: t.name,
+                logo: t.logo,
+                rawScore: rawScore
+            };
+        });
+
+        // Compute Total score
+        const totalSum = scoredTeams.reduce((acc, curr) => acc + curr.rawScore, 0);
+
+        // Sort by rawScore descending and take Top 3
+        scoredTeams.sort((a, b) => b.rawScore - a.rawScore);
+        const top3Predictions = scoredTeams.slice(0, 3);
+
+        top3Predictions.forEach(pred => {
+            const pct = totalSum > 0 ? Math.round((pred.rawScore / totalSum) * 100) : 33;
+            const logoHtml = renderLogoMarkup(pred.name, 'prediction-logo');
+
+            const predRow = document.createElement('div');
+            predRow.className = 'prediction-row';
+            predRow.innerHTML = `
+                <div class="prediction-team-info">
+                    ${logoHtml}
+                    <span class="prediction-name">${escapeHtml(pred.name)}</span>
+                </div>
+                <span class="prediction-pct">${pct}%</span>
+            `;
+            homePredictionsList.appendChild(predRow);
+        });
+    }
+
+    // 3. Season Card (Bottom Right)
+    const currentSeasonNum = leagueConfig.seasonNumber || 1;
+    homeSeasonDisplay.textContent = `Season ${currentSeasonNum}`;
+}
+
 // Render League Standings, Trophy Section, and League Progress Bar
 function renderLeagueTable() {
     if (!standingsBody) return;
@@ -493,7 +620,7 @@ function renderLeagueTable() {
         standingsBody.appendChild(row);
     });
 
-    // Render League Trophy Card (No "Season in Progress" text)
+    // Render League Trophy Card
     if (leagueTrophyWinnerDetails && leagueTrophyWinnerName && leagueTrophyActivePlaceholder) {
         if (leagueConfig.seasonEnded && leagueConfig.championTeam) {
             leagueTrophyWinnerName.textContent = leagueConfig.championTeam;
@@ -505,7 +632,6 @@ function renderLeagueTable() {
         }
     }
 
-    // Render Dynamic Progress Bar on League Page
     updateLeaguePageProgress();
 }
 
@@ -667,7 +793,6 @@ function renderTrophyShowcaseHtml(trophiesObj) {
     let totalCount = 0;
 
     TROPHIES_CONFIG.forEach(t => {
-        // Fallback for legacy keys if existing
         let count = Number(trophiesObj[t.key]) || 0;
         if (t.key === 'ccnn' && !count && trophiesObj.league) {
             count = Number(trophiesObj.league) || 0;
@@ -825,6 +950,7 @@ function renderSettingsDashboard() {
     maxTeamsSelect.value = max;
     qualZoneSelect.value = leagueConfig.qualSpots || 4;
     matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
+    if (seasonNumberInput) seasonNumberInput.value = leagueConfig.seasonNumber || 1;
 
     teams.forEach((team, index) => {
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
@@ -845,6 +971,17 @@ function renderSettingsDashboard() {
     });
 
     updateCommissionerProgress();
+}
+
+// Season Number Change Listener
+if (seasonNumberInput) {
+    seasonNumberInput.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val >= 1) {
+            leagueConfig.seasonNumber = val;
+            saveAndRefresh();
+        }
+    });
 }
 
 // Open Edit Team Modal
@@ -950,6 +1087,7 @@ function saveAndRefresh() {
     localStorage.setItem('ccnn_club_leadership', JSON.stringify(clubLeadership));
     localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
 
+    renderHomeDashboard();
     renderLeagueTable();
     renderUclTable();
     renderMatches();
@@ -1121,7 +1259,8 @@ if (deleteEverythingBtn) {
                 selectedLeague: 'ccnn',
                 selectedTournament: 'ucl',
                 seasonEnded: false,
-                championTeam: null
+                championTeam: null,
+                seasonNumber: 1
             };
             applyTheme(false);
             applyLeagueBranding('ccnn');
