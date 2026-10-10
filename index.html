@@ -20,15 +20,12 @@
                 <span></span>
             </button>
             
-            <!-- Dynamic Brand Header Container -->
             <div class="header-brand" id="header-brand-container">
-                <!-- Fallback/Default CCNN Layout -->
                 <div id="header-ccnn-brand" class="header-single-brand">
                     <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
                     <div class="underline" id="header-underline"></div>
                 </div>
 
-                <!-- 3-part Collab Layout: [CCNN] × [League Logo] -->
                 <div id="header-collab-brand" class="header-collab-brand" style="display: none;">
                     <span class="collab-brand-text">CCNN</span>
                     <span class="collab-separator">&times;</span>
@@ -70,35 +67,26 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
         </nav>
     </aside>
 
     <main class="content">
-        <!-- Home Section: Reference Grid Cards -->
+        <!-- Home Section -->
         <section id="home-view" class="view-section active">
             <div class="home-grid-container">
-                <!-- Left Column: Table Card -->
                 <div class="home-card home-table-card">
                     <div class="home-card-header link-header" onclick="switchTab('league-view')">
                         <h3 class="home-card-title">Table</h3>
                         <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </div>
-                    
-                    <div id="home-top4-list" class="home-top4-list">
-                        <!-- Populated by script.js -->
-                    </div>
-
-                    <div id="home-table-more-btn" class="home-table-more" onclick="switchTab('league-view')">
-                        +0 more
-                    </div>
+                    <div id="home-top4-list" class="home-top4-list"></div>
+                    <div id="home-table-more-btn" class="home-table-more" onclick="switchTab('league-view')">+0 more</div>
                 </div>
 
-                <!-- Right Column: Predictions & Season -->
                 <div class="home-right-col">
-                    <!-- Predictions Card -->
                     <div class="home-card home-predictions-card">
                         <div class="home-card-header">
                             <div>
@@ -107,13 +95,9 @@
                             </div>
                             <svg class="chevron-down-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
-                        
-                        <div id="home-predictions-list" class="home-predictions-list">
-                            <!-- Populated by script.js -->
-                        </div>
+                        <div id="home-predictions-list" class="home-predictions-list"></div>
                     </div>
 
-                    <!-- Season Card -->
                     <div class="home-card home-season-card">
                         <h3 class="home-card-title">Season</h3>
                         <div id="home-season-display" class="home-season-number">Season 1</div>
@@ -147,7 +131,6 @@
 
             <div id="no-teams-msg" class="empty-state" style="display: none;">No teams added yet. Add teams in Settings.</div>
 
-            <!-- Legends Container -->
             <div id="league-legends-container" class="legends-wrapper">
                 <div class="legend-card">
                     <h4 class="legend-card-title">Qualification / Relegation</h4>
@@ -161,21 +144,15 @@
                     <h4 class="legend-card-title">Last 5 matches</h4>
                     <div class="legend-item-list">
                         <div class="legend-form-row">
-                            <span class="form-circle form-win">
-                                <svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
+                            <span class="form-circle form-win"><svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                             <span class="legend-text">Win</span>
                         </div>
                         <div class="legend-form-row">
-                            <span class="form-circle form-draw">
-                                <svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
-                            </span>
+                            <span class="form-circle form-draw"><svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg></span>
                             <span class="legend-text">Draw</span>
                         </div>
                         <div class="legend-form-row">
-                            <span class="form-circle form-loss">
-                                <svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
-                            </span>
+                            <span class="form-circle form-loss"><svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg></span>
                             <span class="legend-text">Loss</span>
                         </div>
                         <div class="legend-form-row">
@@ -185,7 +162,6 @@
                     </div>
                 </div>
 
-                <!-- League Trophy Card -->
                 <div class="legend-card league-trophy-card">
                     <div class="trophy-card-image-box">
                         <img id="league-trophy-img" src="/CN/images/trophies/ccnn-trophy.webp" alt="League Trophy" class="league-trophy-image" onerror="this.src='/CN/images/trophies/ccnn-trophy.webp'">
@@ -201,7 +177,6 @@
                     </div>
                 </div>
 
-                <!-- Dynamic League Progress Bar Card -->
                 <div class="legend-card league-progress-card">
                     <div class="progress-labels">
                         <span class="progress-text" id="league-progress-title">CCNN League Progress</span>
@@ -223,14 +198,11 @@
             <div class="matches-header">
                 <h2 class="matches-title">Matches</h2>
             </div>
-
             <div id="matches-list" class="matches-container"></div>
             <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
 
-            <!-- Floating Add Match Button -->
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
-            <!-- Add Match Modal -->
             <div id="match-modal" class="modal-overlay">
                 <div class="modal-content">
                     <h3 class="modal-title">Create Match</h3>
@@ -239,7 +211,7 @@
                             <label for="match-type-select">Competition Type</label>
                             <select id="match-type-select" required>
                                 <option value="League" selected>League Match</option>
-                                <option value="Tournament" id="match-type-tournament-option">Tournament Match</option>
+                                <option value="Tournament" id="match-type-tournament-option">Tournament Group Match</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -258,7 +230,6 @@
                 </div>
             </div>
 
-            <!-- Enter Match Score Modal -->
             <div id="score-modal" class="modal-overlay">
                 <div class="modal-content">
                     <h3 class="modal-title">Enter Score</h3>
@@ -281,12 +252,18 @@
             </div>
         </section>
 
-        <!-- Tournament / UCL Section -->
+        <!-- Tournament / UCL Section with Group Stage & Knockout Bracket -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
             </div>
             
+            <!-- Group Stage Section -->
+            <div class="tournament-stage-header">
+                <h3 class="stage-heading">Group Stage Standings</h3>
+                <button id="end-group-stage-btn" class="btn-action-small">Finalize &amp; Generate Bracket</button>
+            </div>
+
             <div class="table-container">
                 <table class="standings-table">
                     <thead>
@@ -308,7 +285,45 @@
                 </table>
             </div>
             <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
+
+            <!-- Knockout Stage Bracket Section -->
+            <div class="tournament-stage-header" style="margin-top: 24px;">
+                <h3 class="stage-heading">Playoff Bracket</h3>
+                <span class="stage-subtag" id="bracket-legs-subtag">One Leg</span>
+            </div>
+
+            <div class="bracket-container" id="tournament-bracket-container">
+                <!-- Dynamically populated knockout rounds -->
+            </div>
         </section>
+
+        <!-- Knockout Score Entry Modal -->
+        <div id="bracket-score-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title" id="bracket-score-title">Playoff Match Score</h3>
+                <form id="bracket-score-form">
+                    <input type="hidden" id="bracket-round-key">
+                    <input type="hidden" id="bracket-match-index">
+                    <input type="hidden" id="bracket-leg-number" value="1">
+                    <div class="score-input-row">
+                        <label id="bracket-score-home-label" class="score-team-label">Home</label>
+                        <input type="number" id="bracket-home-score-input" min="0" max="99" required placeholder="0">
+                    </div>
+                    <div class="score-input-row">
+                        <label id="bracket-score-away-label" class="score-team-label">Away</label>
+                        <input type="number" id="bracket-away-score-input" min="0" max="99" required placeholder="0">
+                    </div>
+                    <div id="bracket-penalties-box" class="form-group" style="display: none; margin-top: 10px;">
+                        <label style="font-weight: 600; color: #ff3b30;">Tied Aggregate / Sudden Death Winner:</label>
+                        <select id="bracket-penalties-winner-select" class="styled-select"></select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="close-bracket-score-modal-btn" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-accent">Advance Winner</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Managers Section -->
         <section id="managers-view" class="view-section">
@@ -319,7 +334,7 @@
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
 
-        <!-- Edit Manager, Playstyle & Trophy Showcase Modal -->
+        <!-- Edit Manager Modal -->
         <div id="manager-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Club Leadership</h3>
@@ -334,7 +349,6 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
-                    <!-- Trophy Assignment Counters -->
                     <div class="form-group">
                         <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
                         <div class="trophy-counter-grid">
@@ -393,7 +407,7 @@
             </div>
         </div>
 
-        <!-- Edit Team Modal (Name & Logo) -->
+        <!-- Edit Team Modal -->
         <div id="edit-team-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Team Details</h3>
@@ -459,6 +473,46 @@
                             <option value="world-cup">FIFA World Cup</option>
                             <option value="euro">UEFA Euro</option>
                             <option value="asian-cup">AFC Asian Cup</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section: Tournament Format Settings (Feature 2) -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tournament Format</h3>
+                    </div>
+                    <p class="card-desc">Configure match rules for group stages and knockout playoff legs.</p>
+                    
+                    <div class="form-inline-group">
+                        <label for="group-stage-format-select">Group Stage Schedule</label>
+                        <select id="group-stage-format-select" class="styled-select">
+                            <option value="single">Single Game (Play once)</option>
+                            <option value="home-away">Home &amp; Away (Play twice)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-inline-group">
+                        <label for="semi-final-legs-select">Semi-Final Legs</label>
+                        <select id="semi-final-legs-select" class="styled-select">
+                            <option value="1">One Leg</option>
+                            <option value="2">Two Legs (Home &amp; Away)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-inline-group">
+                        <label for="quarter-final-legs-select">Quarter-Final Legs</label>
+                        <select id="quarter-final-legs-select" class="styled-select">
+                            <option value="1">One Leg</option>
+                            <option value="2">Two Legs (Home &amp; Away)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-inline-group">
+                        <label for="final-legs-select">Final Legs</label>
+                        <select id="final-legs-select" class="styled-select">
+                            <option value="1">One Leg</option>
+                            <option value="2">Two Legs (Home &amp; Away)</option>
                         </select>
                     </div>
                 </div>
@@ -533,14 +587,12 @@
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
                     </div>
-                    <p class="card-desc">Set how many top teams qualify when the season ends.</p>
+                    <p class="card-desc">Set how many top teams qualify when the season ends (3 or 4 recommended for tournament bracket).</p>
                     <div class="form-inline-group">
                         <label for="qual-zone-select">Promoted / Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
-                            <option value="1">Top 1</option>
-                            <option value="2">Top 2</option>
-                            <option value="3">Top 3</option>
-                            <option value="4">Top 4</option>
+                            <option value="3">Top 3 (Playoff Bracket)</option>
+                            <option value="4" selected>Top 4 (Group Stage &amp; Playoff)</option>
                             <option value="6">Top 6</option>
                         </select>
                     </div>
