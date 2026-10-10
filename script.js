@@ -301,7 +301,6 @@ const bracketPenaltiesWinnerSelect = document.getElementById('bracket-penalties-
 const groupStageFormatSelect = document.getElementById('group-stage-format-select');
 const semiFinalLegsSelect = document.getElementById('semi-final-legs-select');
 const quarterFinalLegsSelect = document.getElementById('quarter-final-legs-select');
-const finalLegsSelect = document.getElementById('final-legs-select');
 
 // DOM Elements: Matches
 const matchesList = document.getElementById('matches-list');
@@ -345,13 +344,11 @@ const closeEditTeamModalBtn = document.getElementById('close-edit-team-modal-btn
 const editTeamForm = document.getElementById('edit-team-form');
 const editTeamIndex = document.getElementById('edit-team-index');
 const editTeamNameInput = document.getElementById('edit-team-name-input');
-const editTeamLogoUrl = document.getElementById('edit-team-logo-url');
 const editTeamLogoFile = document.getElementById('edit-team-logo-file');
 
 // DOM Elements: Commissioner Dashboard
 const addTeamForm = document.getElementById('add-team-form');
 const teamNameInput = document.getElementById('team-name-input');
-const teamLogoUrlInput = document.getElementById('team-logo-url-input');
 const teamLogoFileInput = document.getElementById('team-logo-file-input');
 const teamList = document.getElementById('team-list');
 const teamCount = document.getElementById('team-count');
@@ -700,7 +697,6 @@ function renderUclTable() {
     renderKnockoutBracket();
 }
 
-// Progress bar for the Group Stage
 function updateGroupStageProgress(currentGroupStandings) {
     if (!groupProgressFill || !groupProgressPct) return;
     const numTeams = currentGroupStandings.length;
@@ -725,7 +721,6 @@ function updateGroupStageProgress(currentGroupStandings) {
     groupProgressTargetCount.textContent = totalGroupTarget;
 }
 
-// Automatic check based on selected Group Stage Format
 function checkAndAutoGenerateKnockoutBracket(currentGroupStandings) {
     if (!currentGroupStandings || currentGroupStandings.length < 3) return;
 
@@ -733,7 +728,6 @@ function checkAndAutoGenerateKnockoutBracket(currentGroupStandings) {
     const isHomeAway = (leagueConfig.groupStageFormat === 'home-away');
     const requiredMatchesPerTeam = isHomeAway ? (numTeams - 1) * 2 : (numTeams - 1);
 
-    // Verify all teams have completed all required group stage matches
     const allCompleted = currentGroupStandings.every(t => t.mp >= requiredMatchesPerTeam);
 
     if (allCompleted && !tournamentBracket) {
@@ -742,7 +736,6 @@ function checkAndAutoGenerateKnockoutBracket(currentGroupStandings) {
         const third = currentGroupStandings[2].name;
 
         const semiLegs = Number(leagueConfig.semiFinalLegs) || 1;
-        const finalLegs = Number(leagueConfig.finalLegs) || 1;
 
         tournamentBracket = {
             semiFinal: {
@@ -758,7 +751,7 @@ function checkAndAutoGenerateKnockoutBracket(currentGroupStandings) {
                 ]
             },
             final: {
-                legs: finalLegs,
+                legs: 1, // Final is always 1 leg
                 directQualifier: first,
                 matches: [
                     {
@@ -775,7 +768,6 @@ function checkAndAutoGenerateKnockoutBracket(currentGroupStandings) {
     }
 }
 
-// Clean Bracket Renderer: no messy tags, no leg text, no sub-labels
 function renderKnockoutBracket() {
     if (!tournamentBracketContainer) return;
     tournamentBracketContainer.innerHTML = '';
@@ -852,7 +844,6 @@ function renderKnockoutBracket() {
     tournamentBracketContainer.appendChild(finalBlock);
 }
 
-// Open Knockout Score Modal
 window.openBracketScoreModal = function(roundKey, matchIndex) {
     if (!tournamentBracket || !tournamentBracket[roundKey]) return;
     const match = tournamentBracket[roundKey].matches[matchIndex];
@@ -882,7 +873,6 @@ if (closeBracketScoreModalBtn) {
     });
 }
 
-// Advance Knockout Winner
 if (bracketScoreForm) {
     bracketScoreForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1200,7 +1190,6 @@ function renderSettingsDashboard() {
     if (groupStageFormatSelect) groupStageFormatSelect.value = leagueConfig.groupStageFormat || 'single';
     if (semiFinalLegsSelect) semiFinalLegsSelect.value = leagueConfig.semiFinalLegs || 1;
     if (quarterFinalLegsSelect) quarterFinalLegsSelect.value = leagueConfig.quarterFinalLegs || 1;
-    if (finalLegsSelect) finalLegsSelect.value = leagueConfig.finalLegs || 1;
 
     teams.forEach((team, index) => {
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
@@ -1244,15 +1233,6 @@ if (quarterFinalLegsSelect) {
         saveAndRefresh();
     });
 }
-if (finalLegsSelect) {
-    finalLegsSelect.addEventListener('change', (e) => {
-        leagueConfig.finalLegs = parseInt(e.target.value, 10);
-        if (tournamentBracket && tournamentBracket.final) {
-            tournamentBracket.final.legs = leagueConfig.finalLegs;
-        }
-        saveAndRefresh();
-    });
-}
 
 if (seasonNumberInput) {
     seasonNumberInput.addEventListener('change', (e) => {
@@ -1271,7 +1251,6 @@ window.openEditTeamModal = function(index) {
 
     editTeamIndex.value = index;
     editTeamNameInput.value = team.name;
-    editTeamLogoUrl.value = team.logo && team.logo.startsWith('http') ? team.logo : '';
     editTeamLogoFile.value = '';
 
     editTeamModal.classList.add('active');
@@ -1289,7 +1268,6 @@ if (editTeamForm) {
         const index = parseInt(editTeamIndex.value, 10);
         const oldName = teams[index].name;
         const newName = editTeamNameInput.value.trim();
-        const urlInput = editTeamLogoUrl.value.trim();
         const fileInput = editTeamLogoFile.files[0];
 
         if (!newName) return;
@@ -1328,7 +1306,7 @@ if (editTeamForm) {
             };
             reader.readAsDataURL(fileInput);
         } else {
-            applyTeamUpdate(urlInput || teams[index].logo || '');
+            applyTeamUpdate(teams[index].logo || '');
         }
     });
 }
@@ -1388,7 +1366,6 @@ if (addTeamForm) {
             return;
         }
 
-        const urlInput = teamLogoUrlInput.value.trim();
         const fileInput = teamLogoFileInput.files[0];
 
         function pushTeam(logoData) {
@@ -1414,7 +1391,7 @@ if (addTeamForm) {
             };
             reader.readAsDataURL(fileInput);
         } else {
-            pushTeam(urlInput);
+            pushTeam('');
         }
     });
 }
@@ -1464,7 +1441,7 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season
+// End Season: Crown Champion & Qualify
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
