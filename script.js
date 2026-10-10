@@ -60,14 +60,11 @@ if (sideDrawerBackdrop) sideDrawerBackdrop.addEventListener('click', closeDrawer
 // APP STATE
 let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let uclTeams = JSON.parse(localStorage.getItem('ccnn_ucl_teams')) || [];
-let nationalTeams = JSON.parse(localStorage.getItem('ccnn_national_teams')) || {
-    'world-cup': [],
-    'euro': [],
-    'asian-cup': []
-};
+let nationalTeams = JSON.parse(localStorage.getItem('ccnn_national_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
-let knockoutRounds = JSON.parse(localStorage.getItem('ccnn_knockout_rounds')) || [];
+let knockoutMatches = JSON.parse(localStorage.getItem('ccnn_knockout_matches')) || [];
 let clubLeadership = JSON.parse(localStorage.getItem('ccnn_club_leadership')) || {};
+
 let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     maxTeams: 8,
     qualSpots: 4,
@@ -75,15 +72,21 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     darkMode: false,
     selectedLeague: 'ccnn',
     selectedTournament: 'ucl',
-    tournGroupFormat: 'single', // 'single' (one game) or 'double' (home & away)
-    tournKoLegs: 1, // 1 or 2
+    tournamentGroupFormat: 'single', // 'single' or 'double'
+    tournamentKnockoutLegs: '1',     // '1' or '2'
     seasonEnded: false,
     championTeam: null,
     seasonNumber: 1
 };
 
+// Normalize team object structures
 let teams = rawTeams.map(t => ({
     name: t.name || 'Team',
+    logo: t.logo || ''
+}));
+
+nationalTeams = nationalTeams.map(t => ({
+    name: t.name || 'Nation',
     logo: t.logo || ''
 }));
 
@@ -161,11 +164,21 @@ function applyLeagueBranding(leagueKey) {
         }
     }
 
-    if (currentLeagueBadge) currentLeagueBadge.textContent = brand.short;
-    if (leagueSelectionDropdown) leagueSelectionDropdown.value = key;
-    if (leagueTrophyImg) leagueTrophyImg.src = brand.trophy;
-    if (leagueCupName) leagueCupName.textContent = brand.cupName;
-    if (leagueProgressTitle) leagueProgressTitle.textContent = brand.progressTitle;
+    if (currentLeagueBadge) {
+        currentLeagueBadge.textContent = brand.short;
+    }
+    if (leagueSelectionDropdown) {
+        leagueSelectionDropdown.value = key;
+    }
+    if (leagueTrophyImg) {
+        leagueTrophyImg.src = brand.trophy;
+    }
+    if (leagueCupName) {
+        leagueCupName.textContent = brand.cupName;
+    }
+    if (leagueProgressTitle) {
+        leagueProgressTitle.textContent = brand.progressTitle;
+    }
 }
 applyLeagueBranding(leagueConfig.selectedLeague);
 
@@ -183,25 +196,25 @@ const TOURNAMENT_DEFINITIONS = {
         title: 'UEFA Champions League',
         tabLabel: 'UCL',
         badge: 'UCL',
-        isClub: true
+        isNational: false
     },
     'world-cup': {
         title: 'FIFA World Cup',
         tabLabel: 'World Cup',
         badge: 'World Cup',
-        isClub: false
+        isNational: true
     },
     'euro': {
         title: 'UEFA Euro',
         tabLabel: 'Euro',
         badge: 'Euro',
-        isClub: false
+        isNational: true
     },
     'asian-cup': {
         title: 'AFC Asian Cup',
         tabLabel: 'Asian Cup',
         badge: 'Asian Cup',
-        isClub: false
+        isNational: true
     }
 };
 
@@ -213,10 +226,8 @@ const uclSectionTitle = document.getElementById('ucl-section-title');
 const legendQualLabel = document.getElementById('legend-qual-label');
 const matchTypeTournamentOption = document.getElementById('match-type-tournament-option');
 
-const nationalTeamsDashboardCard = document.getElementById('national-teams-dashboard-card');
-const activeNationalCompName = document.getElementById('active-national-comp-name');
-const tournGroupFormatSelect = document.getElementById('tourn-group-format-select');
-const tournKoLegsSelect = document.getElementById('tourn-ko-legs-select');
+const tournamentGroupFormatSelect = document.getElementById('tournament-group-format');
+const tournamentKnockoutLegsSelect = document.getElementById('tournament-knockout-legs');
 
 function applyTournamentSettings(tournKey) {
     const key = TOURNAMENT_DEFINITIONS[tournKey] ? tournKey : 'ucl';
@@ -227,21 +238,11 @@ function applyTournamentSettings(tournKey) {
     if (drawerUclLabel) drawerUclLabel.textContent = tournament.tabLabel;
     if (uclSectionTitle) uclSectionTitle.textContent = tournament.title;
     if (legendQualLabel) legendQualLabel.textContent = `${tournament.title} Qualification`;
-    if (matchTypeTournamentOption) matchTypeTournamentOption.textContent = tournament.title;
+    if (matchTypeTournamentOption) matchTypeTournamentOption.textContent = `${tournament.tabLabel} Group Match`;
     if (tournamentSelectionDropdown) tournamentSelectionDropdown.value = key;
 
-    // Show/Hide National Teams management based on selection
-    if (nationalTeamsDashboardCard && activeNationalCompName) {
-        if (!tournament.isClub) {
-            nationalTeamsDashboardCard.style.display = 'block';
-            activeNationalCompName.textContent = tournament.badge;
-        } else {
-            nationalTeamsDashboardCard.style.display = 'none';
-        }
-    }
-
-    if (tournGroupFormatSelect) tournGroupFormatSelect.value = leagueConfig.tournGroupFormat || 'single';
-    if (tournKoLegsSelect) tournKoLegsSelect.value = leagueConfig.tournKoLegs || 1;
+    if (tournamentGroupFormatSelect) tournamentGroupFormatSelect.value = leagueConfig.tournamentGroupFormat || 'single';
+    if (tournamentKnockoutLegsSelect) tournamentKnockoutLegsSelect.value = leagueConfig.tournamentKnockoutLegs || '1';
 }
 applyTournamentSettings(leagueConfig.selectedTournament);
 
@@ -253,21 +254,21 @@ if (tournamentSelectionDropdown) {
     });
 }
 
-if (tournGroupFormatSelect) {
-    tournGroupFormatSelect.addEventListener('change', (e) => {
-        leagueConfig.tournGroupFormat = e.target.value;
+if (tournamentGroupFormatSelect) {
+    tournamentGroupFormatSelect.addEventListener('change', (e) => {
+        leagueConfig.tournamentGroupFormat = e.target.value;
         saveAndRefresh();
     });
 }
 
-if (tournKoLegsSelect) {
-    tournKoLegsSelect.addEventListener('change', (e) => {
-        leagueConfig.tournKoLegs = parseInt(e.target.value, 10);
+if (tournamentKnockoutLegsSelect) {
+    tournamentKnockoutLegsSelect.addEventListener('change', (e) => {
+        leagueConfig.tournamentKnockoutLegs = e.target.value;
         saveAndRefresh();
     });
 }
 
-// Theme Preferences
+// Dark Mode Toggle
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 function applyTheme(isDark) {
     if (isDark) {
@@ -300,14 +301,10 @@ const standingsTable = document.querySelector('#league-view .standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
 const leagueLegendsContainer = document.getElementById('league-legends-container');
 
-// DOM Elements: Tournament
+// DOM Elements: Tournament & Knockouts
 const uclStandingsBody = document.getElementById('ucl-standings-body');
 const uclStandingsTable = document.querySelector('#ucl-view .standings-table');
 const noUclTeamsMsg = document.getElementById('no-ucl-teams-msg');
-const tournGroupStageContainer = document.getElementById('tourn-group-stage-container');
-const tournKnockoutStageContainer = document.getElementById('tourn-knockout-stage-container');
-const tournTabGroupBtn = document.getElementById('tourn-tab-group-btn');
-const tournTabKoBtn = document.getElementById('tourn-tab-ko-btn');
 const knockoutRoundsList = document.getElementById('knockout-rounds-list');
 
 // DOM Elements: Matches
@@ -326,21 +323,12 @@ const scoreModal = document.getElementById('score-modal');
 const closeScoreModalBtn = document.getElementById('close-score-modal-btn');
 const enterScoreForm = document.getElementById('enter-score-form');
 const scoreMatchIndexInput = document.getElementById('score-match-index');
+const scoreMatchKindInput = document.getElementById('score-match-kind');
+const scoreModalHeading = document.getElementById('score-modal-heading');
 const scoreHomeLabel = document.getElementById('score-home-label');
 const scoreAwayLabel = document.getElementById('score-away-label');
 const homeScoreInput = document.getElementById('home-score-input');
 const awayScoreInput = document.getElementById('away-score-input');
-
-// DOM Elements: Knockout Score Modal
-const koScoreModal = document.getElementById('ko-score-modal');
-const closeKoScoreModalBtn = document.getElementById('close-ko-score-modal-btn');
-const koScoreForm = document.getElementById('ko-score-form');
-const koMatchIdInput = document.getElementById('ko-match-id');
-const koScoreRoundTitle = document.getElementById('ko-score-round-title');
-const koScoreHomeLabel = document.getElementById('ko-score-home-label');
-const koScoreAwayLabel = document.getElementById('ko-score-away-label');
-const koHomeScoreInput = document.getElementById('ko-home-score-input');
-const koAwayScoreInput = document.getElementById('ko-away-score-input');
 
 // DOM Elements: Managers
 const managersList = document.getElementById('managers-list');
@@ -362,10 +350,18 @@ const editTeamModal = document.getElementById('edit-team-modal');
 const closeEditTeamModalBtn = document.getElementById('close-edit-team-modal-btn');
 const editTeamForm = document.getElementById('edit-team-form');
 const editTeamIndex = document.getElementById('edit-team-index');
-const editTeamSource = document.getElementById('edit-team-source');
+const editTeamType = document.getElementById('edit-team-type');
 const editTeamNameInput = document.getElementById('edit-team-name-input');
 const editTeamLogoUrl = document.getElementById('edit-team-logo-url');
 const editTeamLogoFile = document.getElementById('edit-team-logo-file');
+
+// DOM Elements: National Teams
+const addNationalTeamForm = document.getElementById('add-national-team-form');
+const nationalTeamNameInput = document.getElementById('national-team-name-input');
+const nationalTeamLogoUrlInput = document.getElementById('national-team-logo-url-input');
+const nationalTeamLogoFileInput = document.getElementById('national-team-logo-file-input');
+const nationalTeamList = document.getElementById('national-team-list');
+const nationalTeamCount = document.getElementById('national-team-count');
 
 // DOM Elements: Commissioner Dashboard
 const addTeamForm = document.getElementById('add-team-form');
@@ -385,34 +381,10 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// DOM Elements: National Teams Form
-const addNationalTeamForm = document.getElementById('add-national-team-form');
-const nationalTeamNameInput = document.getElementById('national-team-name-input');
-const nationalTeamLogoUrl = document.getElementById('national-team-logo-url');
-const nationalTeamLogoFile = document.getElementById('national-team-logo-file');
-const nationalTeamList = document.getElementById('national-team-list');
-const nationalTeamCount = document.getElementById('national-team-count');
-
-// Helper: Active Tournament Teams Provider
-function getActiveTournamentTeams() {
-    const activeKey = leagueConfig.selectedTournament || 'ucl';
-    if (activeKey === 'ucl') {
-        return uclTeams;
-    }
-    return nationalTeams[activeKey] || [];
-}
-
 // Logo Helper
 function renderLogoMarkup(teamName, className = 'table-team-logo') {
-    let teamObj = teams.find(t => t.name === teamName) || uclTeams.find(t => t.name === teamName);
-    
-    // Check in national teams if not found
-    if (!teamObj) {
-        const activeKey = leagueConfig.selectedTournament || 'world-cup';
-        const natList = nationalTeams[activeKey] || [];
-        teamObj = natList.find(t => t.name === teamName);
-    }
-
+    const all = [...teams, ...uclTeams, ...nationalTeams];
+    const teamObj = all.find(t => t.name === teamName);
     const initial = teamName ? teamName.charAt(0).toUpperCase() : 'T';
 
     if (teamObj && teamObj.logo) {
@@ -435,7 +407,13 @@ function getTeamAbbr(teamName) {
     return teamName.slice(0, 3).toUpperCase();
 }
 
-// Standings Calculator
+// Active Tournament Teams Source Selector
+function getActiveTournamentTeams() {
+    const activeTourn = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
+    return activeTourn.isNational ? nationalTeams : uclTeams;
+}
+
+// Table Calculation
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
@@ -505,6 +483,7 @@ function calculateTableStats(teamArray, tournamentType) {
     return tableData;
 }
 
+// Generate Last 5 Form Circles HTML
 function generateFormCirclesHtml(formArray) {
     const recent = formArray.slice(-5);
     let html = '<div class="form-circles-group">';
@@ -540,7 +519,9 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
-// Render Home Dashboard
+// =========================================
+// RENDER HOME PAGE DASHBOARD CARDS
+// =========================================
 function renderHomeDashboard() {
     if (!homeTop4List || !homePredictionsList || !homeSeasonDisplay) return;
 
@@ -607,6 +588,7 @@ function renderHomeDashboard() {
         });
 
         const totalSum = scoredTeams.reduce((acc, curr) => acc + curr.rawScore, 0);
+
         scoredTeams.sort((a, b) => b.rawScore - a.rawScore);
         const top3Predictions = scoredTeams.slice(0, 3);
 
@@ -712,42 +694,102 @@ function updateLeaguePageProgress() {
     if (leagueProgressTargetCount) leagueProgressTargetCount.textContent = totalScheduledTarget;
 }
 
-// Switch between Tournament Group and Knockout View
-window.switchTournStage = function(stage) {
-    if (stage === 'knockout') {
-        tournGroupStageContainer.style.display = 'none';
-        tournKnockoutStageContainer.style.display = 'block';
-        tournTabGroupBtn.classList.remove('active');
-        tournTabKoBtn.classList.add('active');
-        renderKnockoutsView();
-    } else {
-        tournGroupStageContainer.style.display = 'block';
-        tournKnockoutStageContainer.style.display = 'none';
-        tournTabGroupBtn.classList.add('active');
-        tournTabKoBtn.classList.remove('active');
-        renderUclTable();
+// =========================================
+// TOURNAMENT SYSTEM: GROUP & KNOCKOUT BRACKET
+// =========================================
+function syncKnockoutTree(groupStandings) {
+    const count = groupStandings.length;
+    if (count < 3) {
+        knockoutMatches = [];
+        return;
     }
-};
 
-// Render Tournament Group Standings
+    // Small Team Count Logic: 3 or 4 Teams
+    if (count === 3 || count === 4) {
+        const team1 = groupStandings[0] ? groupStandings[0].name : '1st Place';
+        const team2 = groupStandings[1] ? groupStandings[1].name : '2nd Place';
+        const team3 = groupStandings[2] ? groupStandings[2].name : '3rd Place';
+
+        // Ensure Semi-Final fixture exists
+        let semi = knockoutMatches.find(m => m.stage === 'Semi-Final');
+        if (!semi) {
+            semi = {
+                id: 'semi-1',
+                stage: 'Semi-Final',
+                home: team2,
+                away: team3,
+                status: 'SCHEDULED',
+                homeScore: 0,
+                awayScore: 0,
+                winner: null
+            };
+            knockoutMatches.push(semi);
+        } else {
+            if (semi.status !== 'FT') {
+                semi.home = team2;
+                semi.away = team3;
+            }
+        }
+
+        // Ensure Final fixture exists
+        const finalOpponent = semi.winner || 'Semi-Final Winner';
+        let finalMatch = knockoutMatches.find(m => m.stage === 'Final');
+        if (!finalMatch) {
+            finalMatch = {
+                id: 'final-1',
+                stage: 'Final',
+                home: team1,
+                away: finalOpponent,
+                status: 'SCHEDULED',
+                homeScore: 0,
+                awayScore: 0,
+                winner: null
+            };
+            knockoutMatches.push(finalMatch);
+        } else {
+            if (finalMatch.status !== 'FT') {
+                finalMatch.home = team1;
+                finalMatch.away = finalOpponent;
+            }
+        }
+    } else if (count >= 5 && count <= 8) {
+        // Quarter-Finals -> Semi-Finals -> Final for 5-8 teams
+        const stages = ['Quarter-Finals', 'Semi-Finals', 'Final'];
+        if (knockoutMatches.length === 0) {
+            // Seed Quarter-Finals
+            knockoutMatches = [
+                { id: 'qf-1', stage: 'Quarter-Finals', home: groupStandings[0].name, away: groupStandings[7]?.name || 'Wildcard 1', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'qf-2', stage: 'Quarter-Finals', home: groupStandings[3].name, away: groupStandings[4]?.name || 'Wildcard 2', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'qf-3', stage: 'Quarter-Finals', home: groupStandings[1].name, away: groupStandings[6]?.name || 'Wildcard 3', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'qf-4', stage: 'Quarter-Finals', home: groupStandings[2].name, away: groupStandings[5]?.name || 'Wildcard 4', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'sf-1', stage: 'Semi-Finals', home: 'Winner QF 1', away: 'Winner QF 2', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'sf-2', stage: 'Semi-Finals', home: 'Winner QF 3', away: 'Winner QF 4', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null },
+                { id: 'fn-1', stage: 'Final', home: 'Winner SF 1', away: 'Winner SF 2', status: 'SCHEDULED', homeScore: 0, awayScore: 0, winner: null }
+            ];
+        }
+    }
+}
+
+// Render Tournament Page (Group Table + Vertical Round Cards)
 function renderUclTable() {
-    if (!uclStandingsBody) return;
+    if (!uclStandingsBody || !knockoutRoundsList) return;
     uclStandingsBody.innerHTML = '';
 
-    const tournTeams = getActiveTournamentTeams();
+    const currentTournTeams = getActiveTournamentTeams();
 
-    if (tournTeams.length === 0) {
+    if (currentTournTeams.length === 0) {
         if (uclStandingsTable) uclStandingsTable.style.display = 'none';
         if (noUclTeamsMsg) noUclTeamsMsg.style.display = 'block';
+        knockoutRoundsList.innerHTML = '';
         return;
     }
 
     if (uclStandingsTable) uclStandingsTable.style.display = 'table';
     if (noUclTeamsMsg) noUclTeamsMsg.style.display = 'none';
 
-    const tableData = calculateTableStats(tournTeams, 'Tournament');
+    const groupStandings = calculateTableStats(currentTournTeams, 'Tournament');
 
-    tableData.forEach((team, index) => {
+    groupStandings.forEach((team, index) => {
         const row = document.createElement('tr');
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
         const formHtml = generateFormCirclesHtml(team.form);
@@ -772,282 +814,111 @@ function renderUclTable() {
         `;
         uclStandingsBody.appendChild(row);
     });
+
+    // Sync & Render Knockout Bracket
+    syncKnockoutTree(groupStandings);
+    renderKnockoutMatches();
 }
 
-// Generate Knockouts from Group Standings (Small Team count 3-4 logic included)
-window.generateKnockoutsFromGroup = function() {
-    const tournTeams = getActiveTournamentTeams();
-    if (tournTeams.length < 3) {
-        alert('You need at least 3 teams in the tournament to generate knockout stages.');
-        return;
-    }
-
-    const tableData = calculateTableStats(tournTeams, 'Tournament');
-    knockoutRounds = [];
-
-    if (tableData.length === 3 || tableData.length === 4) {
-        // Small team format:
-        // 1st goes to Final
-        // 2nd vs 3rd play Semi-Final
-        const first = tableData[0].name;
-        const second = tableData[1].name;
-        const third = tableData[2].name;
-
-        knockoutRounds = [
-            {
-                name: 'Semi-Finals',
-                matches: [
-                    {
-                        id: 'semi_1',
-                        home: second,
-                        away: third,
-                        homeScore: null,
-                        awayScore: null,
-                        winner: null,
-                        status: 'SCHEDULED'
-                    }
-                ]
-            },
-            {
-                name: 'Final',
-                matches: [
-                    {
-                        id: 'final_1',
-                        home: first,
-                        away: 'Winner of SF',
-                        homeScore: null,
-                        awayScore: null,
-                        winner: null,
-                        status: 'WAITING'
-                    }
-                ]
-            }
-        ];
-    } else {
-        // Standard knockout tree for larger tournaments (Quarter-Finals or Semi-Finals)
-        const qualifiedCount = tableData.length >= 8 ? 8 : 4;
-        const topTeams = tableData.slice(0, qualifiedCount);
-        
-        if (qualifiedCount === 8) {
-            knockoutRounds.push({
-                name: 'Quarter-Finals',
-                matches: [
-                    { id: 'qf_1', home: topTeams[0].name, away: topTeams[7].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' },
-                    { id: 'qf_2', home: topTeams[1].name, away: topTeams[6].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' },
-                    { id: 'qf_3', home: topTeams[2].name, away: topTeams[5].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' },
-                    { id: 'qf_4', home: topTeams[3].name, away: topTeams[4].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' }
-                ]
-            });
-            knockoutRounds.push({
-                name: 'Semi-Finals',
-                matches: [
-                    { id: 'sf_1', home: 'Winner QF1', away: 'Winner QF4', homeScore: null, awayScore: null, winner: null, status: 'WAITING' },
-                    { id: 'sf_2', home: 'Winner QF2', away: 'Winner QF3', homeScore: null, awayScore: null, winner: null, status: 'WAITING' }
-                ]
-            });
-            knockoutRounds.push({
-                name: 'Final',
-                matches: [
-                    { id: 'final_1', home: 'Winner SF1', away: 'Winner SF2', homeScore: null, awayScore: null, winner: null, status: 'WAITING' }
-                ]
-            });
-        } else {
-            knockoutRounds.push({
-                name: 'Semi-Finals',
-                matches: [
-                    { id: 'sf_1', home: topTeams[0].name, away: topTeams[3].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' },
-                    { id: 'sf_2', home: topTeams[1].name, away: topTeams[2].name, homeScore: null, awayScore: null, winner: null, status: 'SCHEDULED' }
-                ]
-            });
-            knockoutRounds.push({
-                name: 'Final',
-                matches: [
-                    { id: 'final_1', home: 'Winner SF1', away: 'Winner SF2', homeScore: null, awayScore: null, winner: null, status: 'WAITING' }
-                ]
-            });
-        }
-    }
-
-    saveAndRefresh();
-    switchTournStage('knockout');
-};
-
-// Render Knockout Rounds View
-function renderKnockoutsView() {
+// Render Knockout Match Cards
+function renderKnockoutMatches() {
     if (!knockoutRoundsList) return;
     knockoutRoundsList.innerHTML = '';
 
-    if (!knockoutRounds || knockoutRounds.length === 0) {
-        knockoutRoundsList.innerHTML = `<div class="empty-state">No knockout bracket generated yet. Tap "Generate Knockout Bracket" in the Group Stage tab.</div>`;
+    if (knockoutMatches.length === 0) {
+        knockoutRoundsList.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:10px 0;">Play group matches to qualify for knockout stages.</div>`;
         return;
     }
 
-    knockoutRounds.forEach(round => {
-        const roundSection = document.createElement('div');
-        roundSection.className = 'ko-round-section';
-        roundSection.innerHTML = `<h3 class="ko-round-title">${escapeHtml(round.name)}</h3>`;
+    // Group by Round / Stage
+    const stages = [...new Set(knockoutMatches.map(m => m.stage))];
 
-        round.matches.forEach(m => {
-            const homeLogo = renderLogoMarkup(m.home, 'team-badge-circle');
-            const awayLogo = renderLogoMarkup(m.away, 'team-badge-circle');
-            const isFinished = m.status === 'FT';
+    stages.forEach(stageName => {
+        const roundGroup = document.createElement('div');
+        roundGroup.className = 'knockout-round-group';
 
-            let homeScoreHtml = '';
-            let awayScoreHtml = '';
-            let rightColumnHtml = '';
+        const stageTitle = document.createElement('div');
+        stageTitle.className = 'knockout-round-title';
+        stageTitle.innerHTML = `<span>🏆</span> <span>${escapeHtml(stageName)}</span>`;
+        roundGroup.appendChild(stageTitle);
 
-            if (isFinished) {
-                const homeWon = m.homeScore > m.awayScore;
-                const awayWon = m.awayScore > m.homeScore;
+        const stageMatches = knockoutMatches.filter(m => m.stage === stageName);
 
-                homeScoreHtml = `
-                    <div class="team-score-slot">
-                        <span>${m.homeScore}</span>
-                        ${homeWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
-                    </div>
-                `;
-                awayScoreHtml = `
-                    <div class="team-score-slot">
-                        <span>${m.awayScore}</span>
-                        ${awayWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
-                    </div>
-                `;
-                rightColumnHtml = `<span class="match-ft-tag">FT</span>`;
-            } else if (m.status === 'WAITING') {
-                rightColumnHtml = `<span class="click-hint">TBD</span>`;
-            } else {
-                rightColumnHtml = `
-                    <span class="match-vs-tag">VS</span>
-                    <span class="click-hint">Enter Score</span>
-                `;
-            }
+        stageMatches.forEach(match => {
+            const isFinished = match.status === 'FT';
+            const homeLogoHtml = renderLogoMarkup(match.home, 'team-badge-circle');
+            const awayLogoHtml = renderLogoMarkup(match.away, 'team-badge-circle');
+
+            const homeWon = isFinished && match.homeScore > match.awayScore;
+            const awayWon = isFinished && match.awayScore > match.homeScore;
+
+            const homeScoreHtml = isFinished ? `
+                <div class="team-score-slot">
+                    <span>${match.homeScore}</span>
+                    ${homeWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
+                </div>
+            ` : '';
+
+            const awayScoreHtml = isFinished ? `
+                <div class="team-score-slot">
+                    <span>${match.awayScore}</span>
+                    ${awayWon ? '<span class="winner-arrow">&#9664;</span>' : ''}
+                </div>
+            ` : '';
 
             const card = document.createElement('div');
-            card.className = 'match-card';
+            card.className = 'knockout-match-card';
             card.innerHTML = `
                 <div class="match-teams">
                     <div class="team-row">
                         <div class="team-info">
-                            ${homeLogo}
-                            <span class="team-name">${escapeHtml(m.home)}</span>
+                            ${homeLogoHtml}
+                            <span class="team-name" style="${homeWon ? 'font-weight:700;' : ''}">${escapeHtml(match.home)}</span>
                         </div>
                         ${homeScoreHtml}
                     </div>
                     <div class="team-row">
                         <div class="team-info">
-                            ${awayLogo}
-                            <span class="team-name">${escapeHtml(m.away)}</span>
+                            ${awayLogoHtml}
+                            <span class="team-name" style="${awayWon ? 'font-weight:700;' : ''}">${escapeHtml(match.away)}</span>
                         </div>
                         ${awayScoreHtml}
                     </div>
                 </div>
                 <div class="match-divider"></div>
-                <div class="match-action-col" onclick="openKoScoreModal('${m.id}', '${escapeHtml(round.name)}')">
-                    ${rightColumnHtml}
+                <div class="match-action-col" onclick="openKnockoutScoreModal('${match.id}')">
+                    ${isFinished ? '<span class="match-ft-tag">FT</span>' : '<span class="match-vs-tag">VS</span><span class="click-hint">Enter Score</span>'}
                 </div>
             `;
-            roundSection.appendChild(card);
+            roundGroup.appendChild(card);
         });
 
-        knockoutRoundsList.appendChild(roundSection);
+        knockoutRoundsList.appendChild(roundGroup);
     });
 }
 
 // Open Knockout Score Modal
-window.openKoScoreModal = function(matchId, roundName) {
-    let targetMatch = null;
-    knockoutRounds.forEach(r => {
-        const found = r.matches.find(m => m.id === matchId);
-        if (found) targetMatch = found;
-    });
+window.openKnockoutScoreModal = function(matchId) {
+    const match = knockoutMatches.find(m => m.id === matchId);
+    if (!match) return;
 
-    if (!targetMatch || targetMatch.status === 'WAITING') return;
+    if (match.home.includes('Winner') || match.away.includes('Winner') || match.home.includes('Place') || match.away.includes('Place')) {
+        alert('Teams for this round have not been determined yet.');
+        return;
+    }
 
-    koMatchIdInput.value = matchId;
-    koScoreRoundTitle.textContent = roundName;
-    koScoreHomeLabel.textContent = targetMatch.home;
-    koScoreAwayLabel.textContent = targetMatch.away;
-    koHomeScoreInput.value = targetMatch.homeScore !== null ? targetMatch.homeScore : '';
-    koAwayScoreInput.value = targetMatch.awayScore !== null ? targetMatch.awayScore : '';
+    scoreMatchIndexInput.value = matchId;
+    scoreMatchKindInput.value = 'knockout';
+    scoreModalHeading.textContent = `${match.stage} Score`;
+    scoreHomeLabel.textContent = match.home;
+    scoreAwayLabel.textContent = match.away;
+    homeScoreInput.value = match.status === 'FT' ? match.homeScore : '';
+    awayScoreInput.value = match.status === 'FT' ? match.awayScore : '';
 
-    koScoreModal.classList.add('active');
+    scoreModal.classList.add('active');
 };
 
-if (closeKoScoreModalBtn) {
-    closeKoScoreModalBtn.addEventListener('click', () => {
-        koScoreModal.classList.remove('active');
-    });
-}
-
-// Submit Knockout Score & Advance Winners
-if (koScoreForm) {
-    koScoreForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const matchId = koMatchIdInput.value;
-        const homeScore = parseInt(koHomeScoreInput.value, 10);
-        const awayScore = parseInt(koAwayScoreInput.value, 10);
-
-        if (isNaN(homeScore) || isNaN(awayScore) || homeScore < 0 || awayScore < 0) {
-            alert('Please enter valid scores.');
-            return;
-        }
-
-        if (homeScore === awayScore) {
-            alert('Knockout matches must have a winner (no draws allowed).');
-            return;
-        }
-
-        let roundIndex = -1;
-        let matchIndex = -1;
-        knockoutRounds.forEach((r, rIdx) => {
-            const mIdx = r.matches.findIndex(m => m.id === matchId);
-            if (mIdx !== -1) {
-                roundIndex = rIdx;
-                matchIndex = mIdx;
-            }
-        });
-
-        if (roundIndex === -1) return;
-
-        const currentMatch = knockoutRounds[roundIndex].matches[matchIndex];
-        currentMatch.homeScore = homeScore;
-        currentMatch.awayScore = awayScore;
-        currentMatch.status = 'FT';
-        const winner = homeScore > awayScore ? currentMatch.home : currentMatch.away;
-        currentMatch.winner = winner;
-
-        // Auto-advance logic to subsequent round
-        if (roundIndex + 1 < knockoutRounds.length) {
-            const nextRound = knockoutRounds[roundIndex + 1];
-
-            // If in small 3-4 teams playoff format
-            if (currentMatch.id === 'semi_1') {
-                const finalMatch = nextRound.matches[0];
-                finalMatch.away = winner;
-                finalMatch.status = 'SCHEDULED';
-            } else {
-                // Tree advance
-                const nextMatchIndex = Math.floor(matchIndex / 2);
-                if (nextRound.matches[nextMatchIndex]) {
-                    const isHome = matchIndex % 2 === 0;
-                    if (isHome) {
-                        nextRound.matches[nextMatchIndex].home = winner;
-                    } else {
-                        nextRound.matches[nextMatchIndex].away = winner;
-                    }
-                    if (!nextRound.matches[nextMatchIndex].home.startsWith('Winner') && !nextRound.matches[nextMatchIndex].away.startsWith('Winner')) {
-                        nextRound.matches[nextMatchIndex].status = 'SCHEDULED';
-                    }
-                }
-            }
-        }
-
-        koScoreModal.classList.remove('active');
-        saveAndRefresh();
-    });
-}
-
-// Render Matches
+// Render Regular Matches List
 function renderMatches() {
     if (!matchesList) return;
     matchesList.innerHTML = '';
@@ -1126,7 +997,7 @@ function renderMatches() {
     });
 }
 
-// Trophy showcase with actual image files
+// Managers Tab Showcase
 const TROPHIES_CONFIG = [
     { key: 'premierLeague', img: '/CN/images/trophies/premier-league-trophy.webp', title: 'Premier League' },
     { key: 'laLiga', img: '/CN/images/trophies/la-liga-trophy.webp', title: 'La Liga' },
@@ -1144,10 +1015,6 @@ function renderTrophyShowcaseHtml(trophiesObj) {
 
     TROPHIES_CONFIG.forEach(t => {
         let count = Number(trophiesObj[t.key]) || 0;
-        if (t.key === 'ccnn' && !count && trophiesObj.league) {
-            count = Number(trophiesObj.league) || 0;
-        }
-
         if (count > 0) {
             totalCount += count;
             itemsHtml += `
@@ -1166,7 +1033,6 @@ function renderTrophyShowcaseHtml(trophiesObj) {
     return itemsHtml;
 }
 
-// Render Managers Tab
 function renderManagers() {
     if (!managersList) return;
     managersList.innerHTML = '';
@@ -1268,7 +1134,7 @@ if (editManagerForm) {
     });
 }
 
-// Commissioner Dashboard Progress Update
+// Settings Dashboard Progress Update
 function updateCommissionerProgress() {
     const leagueMatchesPlayed = matches.filter(m => (m.type || 'League') === 'League' && m.status === 'FT').length;
     const totalTeams = teams.length;
@@ -1287,10 +1153,11 @@ function updateCommissionerProgress() {
     if (progressTargetCount) progressTargetCount.textContent = totalScheduledTarget;
 }
 
-// Settings Dashboard Render (Clubs and National Teams)
+// Render National Teams & League Teams in Settings
 function renderSettingsDashboard() {
-    if (!teamList) return;
+    if (!teamList || !nationalTeamList) return;
     teamList.innerHTML = '';
+    nationalTeamList.innerHTML = '';
 
     const max = Number(leagueConfig.maxTeams) || 8;
     teamCount.textContent = teams.length;
@@ -1300,7 +1167,7 @@ function renderSettingsDashboard() {
     matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
     if (seasonNumberInput) seasonNumberInput.value = leagueConfig.seasonNumber || 1;
 
-    // League clubs
+    // League Clubs List
     teams.forEach((team, index) => {
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
         const li = document.createElement('li');
@@ -1319,31 +1186,25 @@ function renderSettingsDashboard() {
         teamList.appendChild(li);
     });
 
-    // National teams for currently selected international tournament
-    if (nationalTeamList && nationalTeamCount) {
-        const activeKey = leagueConfig.selectedTournament || 'world-cup';
-        const natList = nationalTeams[activeKey] || [];
-        nationalTeamCount.textContent = natList.length;
-        nationalTeamList.innerHTML = '';
-
-        natList.forEach((nTeam, nIdx) => {
-            const logoHtml = renderLogoMarkup(nTeam.name, 'table-team-logo');
-            const li = document.createElement('li');
-            li.className = 'team-list-item';
-            li.innerHTML = `
-                <div class="team-item-left">
-                    <span>${nIdx + 1}.</span>
-                    ${logoHtml}
-                    <strong>${escapeHtml(nTeam.name)}</strong>
-                </div>
-                <div class="team-item-actions">
-                    <button class="btn-item-action btn-edit" onclick="openEditTeamModal(${nIdx}, 'national')">Edit</button>
-                    <button class="btn-item-action btn-del" onclick="deleteNationalTeam(${nIdx})">Delete</button>
-                </div>
-            `;
-            nationalTeamList.appendChild(li);
-        });
-    }
+    // National Teams List
+    nationalTeamCount.textContent = nationalTeams.length;
+    nationalTeams.forEach((team, index) => {
+        const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
+        const li = document.createElement('li');
+        li.className = 'team-list-item';
+        li.innerHTML = `
+            <div class="team-item-left">
+                <span>${index + 1}.</span>
+                ${logoHtml}
+                <strong>${escapeHtml(team.name)}</strong>
+            </div>
+            <div class="team-item-actions">
+                <button class="btn-item-action btn-edit" onclick="openEditTeamModal(${index}, 'national')">Edit</button>
+                <button class="btn-item-action btn-del" onclick="deleteNationalTeam(${index})">Delete</button>
+            </div>
+        `;
+        nationalTeamList.appendChild(li);
+    });
 
     updateCommissionerProgress();
 }
@@ -1358,23 +1219,16 @@ if (seasonNumberInput) {
     });
 }
 
-// Open Edit Team Modal (Supporting League clubs and National teams)
-window.openEditTeamModal = function(index, source = 'league') {
-    editTeamSource.value = source;
+// Edit Team Modal
+window.openEditTeamModal = function(index, kind = 'league') {
+    const list = kind === 'national' ? nationalTeams : teams;
+    const team = list[index];
+    if (!team) return;
+
     editTeamIndex.value = index;
-
-    let teamObj = null;
-    if (source === 'league') {
-        teamObj = teams[index];
-    } else {
-        const activeKey = leagueConfig.selectedTournament || 'world-cup';
-        teamObj = (nationalTeams[activeKey] || [])[index];
-    }
-
-    if (!teamObj) return;
-
-    editTeamNameInput.value = teamObj.name;
-    editTeamLogoUrl.value = teamObj.logo && teamObj.logo.startsWith('http') ? teamObj.logo : '';
+    editTeamType.value = kind;
+    editTeamNameInput.value = team.name;
+    editTeamLogoUrl.value = team.logo && team.logo.startsWith('http') ? team.logo : '';
     editTeamLogoFile.value = '';
 
     editTeamModal.classList.add('active');
@@ -1386,50 +1240,46 @@ if (closeEditTeamModalBtn) {
     });
 }
 
-// Save Edit Team Changes
 if (editTeamForm) {
     editTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const index = parseInt(editTeamIndex.value, 10);
-        const source = editTeamSource.value;
+        const kind = editTeamType.value;
+        const list = kind === 'national' ? nationalTeams : teams;
+        const oldName = list[index].name;
         const newName = editTeamNameInput.value.trim();
         const urlInput = editTeamLogoUrl.value.trim();
         const fileInput = editTeamLogoFile.files[0];
 
         if (!newName) return;
 
-        function applyUpdate(finalLogo) {
-            if (source === 'league') {
-                const oldName = teams[index].name;
-                matches.forEach(m => {
-                    if (m.home === oldName) m.home = newName;
-                    if (m.away === oldName) m.away = newName;
-                });
-                uclTeams.forEach(u => {
-                    if (u.name === oldName) {
-                        u.name = newName;
-                        u.logo = finalLogo;
-                    }
-                });
-                if (clubLeadership[oldName]) {
-                    clubLeadership[newName] = clubLeadership[oldName];
-                    if (oldName !== newName) delete clubLeadership[oldName];
+        function applyTeamUpdate(finalLogo) {
+            matches.forEach(m => {
+                if (m.home === oldName) m.home = newName;
+                if (m.away === oldName) m.away = newName;
+            });
+            knockoutMatches.forEach(m => {
+                if (m.home === oldName) m.home = newName;
+                if (m.away === oldName) m.away = newName;
+                if (m.winner === oldName) m.winner = newName;
+            });
+            uclTeams.forEach(u => {
+                if (u.name === oldName) {
+                    u.name = newName;
+                    u.logo = finalLogo;
                 }
-                if (leagueConfig.championTeam === oldName) {
-                    leagueConfig.championTeam = newName;
-                }
-                teams[index].name = newName;
-                teams[index].logo = finalLogo;
-            } else {
-                const activeKey = leagueConfig.selectedTournament || 'world-cup';
-                const oldName = nationalTeams[activeKey][index].name;
-                matches.forEach(m => {
-                    if (m.home === oldName) m.home = newName;
-                    if (m.away === oldName) m.away = newName;
-                });
-                nationalTeams[activeKey][index].name = newName;
-                nationalTeams[activeKey][index].logo = finalLogo;
+            });
+            if (clubLeadership[oldName]) {
+                clubLeadership[newName] = clubLeadership[oldName];
+                if (oldName !== newName) delete clubLeadership[oldName];
             }
+
+            if (leagueConfig.championTeam === oldName) {
+                leagueConfig.championTeam = newName;
+            }
+
+            list[index].name = newName;
+            list[index].logo = finalLogo;
 
             editTeamModal.classList.remove('active');
             saveAndRefresh();
@@ -1438,17 +1288,16 @@ if (editTeamForm) {
         if (fileInput) {
             const reader = new FileReader();
             reader.onload = function(evt) {
-                applyUpdate(evt.target.result);
+                applyTeamUpdate(evt.target.result);
             };
             reader.readAsDataURL(fileInput);
         } else {
-            const existingLogo = source === 'league' ? teams[index].logo : nationalTeams[leagueConfig.selectedTournament][index].logo;
-            applyUpdate(urlInput || existingLogo || '');
+            applyTeamUpdate(urlInput || list[index].logo || '');
         }
     });
 }
 
-// Update Match Creation Dropdown
+// Update Match Creation Dropdown Options
 function updateTeamSelects() {
     if (!homeTeamSelect || !awayTeamSelect || !matchTypeSelect) return;
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
@@ -1479,21 +1328,20 @@ function saveAndRefresh() {
     localStorage.setItem('ccnn_ucl_teams', JSON.stringify(uclTeams));
     localStorage.setItem('ccnn_national_teams', JSON.stringify(nationalTeams));
     localStorage.setItem('ccnn_matches', JSON.stringify(matches));
-    localStorage.setItem('ccnn_knockout_rounds', JSON.stringify(knockoutRounds));
+    localStorage.setItem('ccnn_knockout_matches', JSON.stringify(knockoutMatches));
     localStorage.setItem('ccnn_club_leadership', JSON.stringify(clubLeadership));
     localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
 
     renderHomeDashboard();
     renderLeagueTable();
     renderUclTable();
-    renderKnockoutsView();
     renderMatches();
     renderManagers();
     renderSettingsDashboard();
     updateTeamSelects();
 }
 
-// Add Club
+// Add Club Team
 if (addTeamForm) {
     addTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1537,64 +1385,86 @@ if (addNationalTeamForm) {
         const name = nationalTeamNameInput.value.trim();
         if (!name) return;
 
-        const activeKey = leagueConfig.selectedTournament || 'world-cup';
-        if (!nationalTeams[activeKey]) nationalTeams[activeKey] = [];
+        const urlInput = nationalTeamLogoUrlInput.value.trim();
+        const fileInput = nationalTeamLogoFileInput.files[0];
 
-        const urlInput = nationalTeamLogoUrl.value.trim();
-        const fileInput = nationalTeamLogoFile.files[0];
-
-        function pushNatTeam(logoData) {
-            nationalTeams[activeKey].push({ name: name, logo: logoData });
+        function pushNational(logoData) {
+            nationalTeams.push({ name: name, logo: logoData });
             addNationalTeamForm.reset();
             saveAndRefresh();
         }
 
         if (fileInput) {
             const reader = new FileReader();
-            reader.onload = function(evt) { pushNatTeam(evt.target.result); };
+            reader.onload = function(evt) { pushNational(evt.target.result); };
             reader.readAsDataURL(fileInput);
         } else {
-            pushNatTeam(urlInput);
+            pushNational(urlInput);
         }
     });
 }
 
-window.deleteNationalTeam = function(index) {
-    const activeKey = leagueConfig.selectedTournament || 'world-cup';
-    if (!nationalTeams[activeKey]) return;
-
-    const target = nationalTeams[activeKey][index].name;
-    if (confirm(`Delete national team "${target}"?`)) {
-        nationalTeams[activeKey].splice(index, 1);
-        matches = matches.filter(m => m.home !== target && m.away !== target);
-        saveAndRefresh();
-    }
-};
-
 window.deleteTeam = function(index) {
     const target = teams[index].name;
-    if (confirm(`Delete team "${target}"? All their matches and tournament entries will be removed.`)) {
+    if (confirm(`Delete club "${target}"?`)) {
         teams.splice(index, 1);
         matches = matches.filter(m => m.home !== target && m.away !== target);
         uclTeams = uclTeams.filter(u => u.name !== target);
         delete clubLeadership[target];
-        if (leagueConfig.championTeam === target) {
-            leagueConfig.championTeam = null;
-        }
+        if (leagueConfig.championTeam === target) leagueConfig.championTeam = null;
         saveAndRefresh();
     }
 };
 
-// End Season
+window.deleteNationalTeam = function(index) {
+    const target = nationalTeams[index].name;
+    if (confirm(`Delete national team "${target}"?`)) {
+        nationalTeams.splice(index, 1);
+        matches = matches.filter(m => m.home !== target && m.away !== target);
+        knockoutMatches = knockoutMatches.filter(m => m.home !== target && m.away !== target);
+        saveAndRefresh();
+    }
+};
+
+if (maxTeamsSelect) {
+    maxTeamsSelect.addEventListener('change', (e) => {
+        const newMax = parseInt(e.target.value, 10);
+        if (teams.length > newMax) {
+            alert(`You currently have ${teams.length} clubs. Delete down to ${newMax} before reducing capacity.`);
+            maxTeamsSelect.value = leagueConfig.maxTeams;
+            return;
+        }
+        leagueConfig.maxTeams = newMax;
+        saveAndRefresh();
+    });
+}
+
+if (qualZoneSelect) {
+    qualZoneSelect.addEventListener('change', (e) => {
+        leagueConfig.qualSpots = parseInt(e.target.value, 10);
+        saveAndRefresh();
+    });
+}
+
+if (matchesPerTeamInput) {
+    matchesPerTeamInput.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (val >= 1 && val <= 100) {
+            leagueConfig.matchesPerTeam = val;
+            saveAndRefresh();
+        }
+    });
+}
+
+// End Season: Crown Champion & Qualify for UCL
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
-        const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
         const confirmed = confirm(
             `End Season & Crown Champion?\n\n` +
             `• The #1 team will be declared League Champions.\n` +
             `• Top teams inside the qualification line will qualify for UCL.\n` +
             `• League match scores will reset for the new season.\n` +
-            `• Teams, managers, and trophy records will remain intact.`
+            `• National teams, trophies, and tournament rosters remain intact.`
         );
         if (confirmed) {
             const finalLeagueStandings = calculateTableStats(teams, 'League');
@@ -1613,22 +1483,16 @@ if (endSeasonBtn) {
                     if (!clubLeadership[champion].trophies) {
                         clubLeadership[champion].trophies = { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 };
                     }
-                    
                     const activeLeague = leagueConfig.selectedLeague || 'ccnn';
-                    if (activeLeague === 'premier-league') {
-                        clubLeadership[champion].trophies.premierLeague = (clubLeadership[champion].trophies.premierLeague || 0) + 1;
-                    } else if (activeLeague === 'la-liga') {
-                        clubLeadership[champion].trophies.laLiga = (clubLeadership[champion].trophies.laLiga || 0) + 1;
-                    } else if (activeLeague === 'serie-a') {
-                        clubLeadership[champion].trophies.serieA = (clubLeadership[champion].trophies.serieA || 0) + 1;
-                    } else {
-                        clubLeadership[champion].trophies.ccnn = (clubLeadership[champion].trophies.ccnn || 0) + 1;
-                    }
+                    if (activeLeague === 'premier-league') clubLeadership[champion].trophies.premierLeague = (clubLeadership[champion].trophies.premierLeague || 0) + 1;
+                    else if (activeLeague === 'la-liga') clubLeadership[champion].trophies.laLiga = (clubLeadership[champion].trophies.laLiga || 0) + 1;
+                    else if (activeLeague === 'serie-a') clubLeadership[champion].trophies.serieA = (clubLeadership[champion].trophies.serieA || 0) + 1;
+                    else clubLeadership[champion].trophies.ccnn = (clubLeadership[champion].trophies.ccnn || 0) + 1;
                 }
             }
 
             uclTeams = qualified;
-            knockoutRounds = [];
+            knockoutMatches = []; // Reset knockouts for new tournament cycle
             matches = matches.filter(m => m.type === 'Tournament' || m.type === 'UCL');
 
             saveAndRefresh();
@@ -1640,17 +1504,14 @@ if (endSeasonBtn) {
 // Delete Everything
 if (deleteEverythingBtn) {
     deleteEverythingBtn.addEventListener('click', () => {
-        const confirmed = confirm(
-            '⚠️ Delete Everything?\n\n' +
-            'This will permanently delete all teams, logos, tournament entries, match results, and configurations.'
-        );
+        const confirmed = confirm('⚠️ Wipe all data? This deletes all clubs, national teams, matches, and trophies.');
         if (confirmed) {
             localStorage.clear();
             teams = [];
             uclTeams = [];
-            nationalTeams = { 'world-cup': [], 'euro': [], 'asian-cup': [] };
+            nationalTeams = [];
             matches = [];
-            knockoutRounds = [];
+            knockoutMatches = [];
             clubLeadership = {};
             leagueConfig = {
                 maxTeams: 8,
@@ -1659,8 +1520,8 @@ if (deleteEverythingBtn) {
                 darkMode: false,
                 selectedLeague: 'ccnn',
                 selectedTournament: 'ucl',
-                tournGroupFormat: 'single',
-                tournKoLegs: 1,
+                tournamentGroupFormat: 'single',
+                tournamentKnockoutLegs: '1',
                 seasonEnded: false,
                 championTeam: null,
                 seasonNumber: 1
@@ -1669,19 +1530,19 @@ if (deleteEverythingBtn) {
             applyLeagueBranding('ccnn');
             applyTournamentSettings('ucl');
             saveAndRefresh();
-            alert('All league data has been erased.');
+            alert('All data has been reset.');
         }
     });
 }
 
-// Match Scheduling
+// Match Creation
 if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
         const isTournament = matchTypeSelect.value === 'Tournament' || matchTypeSelect.value === 'UCL';
         const source = isTournament ? getActiveTournamentTeams() : teams;
         const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
         if (source.length < 2) {
-            alert(`You need at least 2 ${isTournament ? `participating ${tournDef.tabLabel}` : ''} teams to create a match.`);
+            alert(`You need at least 2 teams to schedule a match in this section.`);
             return;
         }
         matchModal.classList.add('active');
@@ -1726,12 +1587,14 @@ if (createMatchForm) {
     });
 }
 
-// Score Modal
+// Score Input Handling for Regular & Knockout Matches
 window.openScoreModal = function(index) {
     const match = matches[index];
     if (!match) return;
 
     scoreMatchIndexInput.value = index;
+    scoreMatchKindInput.value = 'regular';
+    scoreModalHeading.textContent = 'Enter Score';
     scoreHomeLabel.textContent = match.home;
     scoreAwayLabel.textContent = match.away;
     homeScoreInput.value = match.status === 'FT' ? match.homeScore : '';
@@ -1749,7 +1612,7 @@ if (closeScoreModalBtn) {
 if (enterScoreForm) {
     enterScoreForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const index = parseInt(scoreMatchIndexInput.value, 10);
+        const kind = scoreMatchKindInput.value;
         const homeScore = parseInt(homeScoreInput.value, 10);
         const awayScore = parseInt(awayScoreInput.value, 10);
 
@@ -1758,9 +1621,34 @@ if (enterScoreForm) {
             return;
         }
 
-        matches[index].homeScore = homeScore;
-        matches[index].awayScore = awayScore;
-        matches[index].status = 'FT';
+        if (kind === 'knockout') {
+            const matchId = scoreMatchIndexInput.value;
+            const match = knockoutMatches.find(m => m.id === matchId);
+            if (!match) return;
+
+            if (homeScore === awayScore) {
+                alert('Knockout matches cannot end in a draw. Please assign the winner extra time or penalty result.');
+                return;
+            }
+
+            match.homeScore = homeScore;
+            match.awayScore = awayScore;
+            match.status = 'FT';
+            match.winner = homeScore > awayScore ? match.home : match.away;
+
+            // Small Team Count Logic: Advance Winner to Final
+            if (match.stage === 'Semi-Final') {
+                const finalMatch = knockoutMatches.find(m => m.stage === 'Final');
+                if (finalMatch) {
+                    finalMatch.away = match.winner;
+                }
+            }
+        } else {
+            const index = parseInt(scoreMatchIndexInput.value, 10);
+            matches[index].homeScore = homeScore;
+            matches[index].awayScore = awayScore;
+            matches[index].status = 'FT';
+        }
 
         scoreModal.classList.remove('active');
         saveAndRefresh();
