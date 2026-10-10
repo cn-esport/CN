@@ -20,12 +20,15 @@
                 <span></span>
             </button>
             
+            <!-- Dynamic Brand Header Container -->
             <div class="header-brand" id="header-brand-container">
+                <!-- Fallback/Default CCNN Layout -->
                 <div id="header-ccnn-brand" class="header-single-brand">
                     <h1 class="brand-title" id="header-brand-title">CCNN ESPORTS</h1>
                     <div class="underline" id="header-underline"></div>
                 </div>
 
+                <!-- 3-part Collab Layout: [CCNN] × [League Logo] -->
                 <div id="header-collab-brand" class="header-collab-brand" style="display: none;">
                     <span class="collab-brand-text">CCNN</span>
                     <span class="collab-separator">&times;</span>
@@ -74,23 +77,28 @@
     </aside>
 
     <main class="content">
-        <!-- Home Section -->
+        <!-- Home Section: Reference Grid Cards -->
         <section id="home-view" class="view-section active">
             <div class="home-grid-container">
+                <!-- Left Column: Table Card -->
                 <div class="home-card home-table-card">
                     <div class="home-card-header link-header" onclick="switchTab('league-view')">
                         <h3 class="home-card-title">Table</h3>
                         <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </div>
                     
-                    <div id="home-top4-list" class="home-top4-list"></div>
+                    <div id="home-top4-list" class="home-top4-list">
+                        <!-- Populated by script.js -->
+                    </div>
 
                     <div id="home-table-more-btn" class="home-table-more" onclick="switchTab('league-view')">
                         +0 more
                     </div>
                 </div>
 
+                <!-- Right Column: Predictions & Season -->
                 <div class="home-right-col">
+                    <!-- Predictions Card -->
                     <div class="home-card home-predictions-card">
                         <div class="home-card-header">
                             <div>
@@ -100,9 +108,12 @@
                             <svg class="chevron-down-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         
-                        <div id="home-predictions-list" class="home-predictions-list"></div>
+                        <div id="home-predictions-list" class="home-predictions-list">
+                            <!-- Populated by script.js -->
+                        </div>
                     </div>
 
+                    <!-- Season Card -->
                     <div class="home-card home-season-card">
                         <h3 class="home-card-title">Season</h3>
                         <div id="home-season-display" class="home-season-number">Season 1</div>
@@ -136,6 +147,7 @@
 
             <div id="no-teams-msg" class="empty-state" style="display: none;">No teams added yet. Add teams in Settings.</div>
 
+            <!-- Legends Container -->
             <div id="league-legends-container" class="legends-wrapper">
                 <div class="legend-card">
                     <h4 class="legend-card-title">Qualification / Relegation</h4>
@@ -173,6 +185,7 @@
                     </div>
                 </div>
 
+                <!-- League Trophy Card -->
                 <div class="legend-card league-trophy-card">
                     <div class="trophy-card-image-box">
                         <img id="league-trophy-img" src="/CN/images/trophies/ccnn-trophy.webp" alt="League Trophy" class="league-trophy-image" onerror="this.src='/CN/images/trophies/ccnn-trophy.webp'">
@@ -188,6 +201,7 @@
                     </div>
                 </div>
 
+                <!-- Dynamic League Progress Bar Card -->
                 <div class="legend-card league-progress-card">
                     <div class="progress-labels">
                         <span class="progress-text" id="league-progress-title">CCNN League Progress</span>
@@ -213,6 +227,7 @@
             <div id="matches-list" class="matches-container"></div>
             <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
 
+            <!-- Floating Add Match Button -->
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
             <!-- Add Match Modal -->
@@ -277,7 +292,7 @@
                     <thead>
                         <tr>
                             <th class="col-pos">#</th>
-                            <th class="col-team" id="ucl-team-col-header">Club</th>
+                            <th class="col-team">Club</th>
                             <th>MP</th>
                             <th>W</th>
                             <th>D</th>
@@ -304,7 +319,7 @@
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
 
-        <!-- Edit Manager Modal -->
+        <!-- Edit Manager, Playstyle & Trophy Showcase Modal -->
         <div id="manager-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Club Leadership</h3>
@@ -319,6 +334,7 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
+                    <!-- Trophy Assignment Counters -->
                     <div class="form-group">
                         <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
                         <div class="trophy-counter-grid">
@@ -377,7 +393,7 @@
             </div>
         </div>
 
-        <!-- Edit Team Modal -->
+        <!-- Edit Team Modal (Name & Logo) -->
         <div id="edit-team-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Team Details</h3>
@@ -411,7 +427,7 @@
             </div>
 
             <div class="dashboard-container">
-                <!-- League Selection & Branding -->
+                <!-- Section: League Selection & Header Branding -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">League Selection</h3>
@@ -429,25 +445,25 @@
                     </div>
                 </div>
 
-                <!-- Tournament Selection -->
+                <!-- Section: Tournament Selection (UCL Tab) -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Selection</h3>
                         <span class="badge-pill" id="current-tournament-badge">UCL</span>
                     </div>
-                    <p class="card-desc">Select which tournament the secondary tab represents. UCL links with the Club League; World Cup, Euro, and Asian Cup use National Teams.</p>
+                    <p class="card-desc">Select which tournament the secondary tab and qualification system represent.</p>
                     <div class="form-inline-group">
                         <label for="tournament-selection-dropdown">Tournament Tab</label>
                         <select id="tournament-selection-dropdown" class="styled-select">
-                            <option value="ucl">UEFA Champions League (Clubs)</option>
-                            <option value="world-cup">FIFA World Cup (National Teams)</option>
-                            <option value="euro">UEFA Euro (National Teams)</option>
-                            <option value="asian-cup">AFC Asian Cup (National Teams)</option>
+                            <option value="ucl">UEFA Champions League</option>
+                            <option value="world-cup">FIFA World Cup</option>
+                            <option value="euro">UEFA Euro</option>
+                            <option value="asian-cup">AFC Asian Cup</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Season Info -->
+                <!-- Section: Season Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Info</h3>
@@ -472,10 +488,10 @@
                     </div>
                 </div>
 
-                <!-- Section 1: Club Team Management -->
+                <!-- Section 1: Team Management with Logo Option -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">Club Teams (League)</h3>
+                        <h3 class="card-title">Team Management</h3>
                         <span class="badge-pill"><span id="team-count">0</span> / <span id="team-max-display">8</span></span>
                     </div>
 
@@ -493,7 +509,7 @@
 
                     <form id="add-team-form" class="team-creation-form">
                         <div class="form-group">
-                            <label for="team-name-input">Club Name</label>
+                            <label for="team-name-input">Team Name</label>
                             <input type="text" id="team-name-input" class="styled-text-input" placeholder="e.g., Real Madrid" maxlength="20" required autocomplete="off">
                         </div>
                         <div class="form-group">
@@ -504,7 +520,7 @@
                             <label for="team-logo-file-input">Or Upload Logo Image</label>
                             <input type="file" id="team-logo-file-input" accept="image/*" class="styled-file-input">
                         </div>
-                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Club</button>
+                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Team</button>
                     </form>
 
                     <div class="team-list-section">
@@ -512,43 +528,14 @@
                     </div>
                 </div>
 
-                <!-- Section 1B: National Teams Management (World Cup, Euro, Asian Cup) -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3 class="card-title">National Teams</h3>
-                        <span class="badge-pill" id="national-team-count">0 Teams</span>
-                    </div>
-                    <p class="card-desc">Add international nations (e.g., Brazil, Argentina, France, Germany) used when the tournament is set to World Cup, Euro, or Asian Cup.</p>
-
-                    <form id="add-national-team-form" class="team-creation-form">
-                        <div class="form-group">
-                            <label for="national-team-name-input">Nation Name</label>
-                            <input type="text" id="national-team-name-input" class="styled-text-input" placeholder="e.g., Brazil" maxlength="25" required autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label for="national-team-logo-url">Flag / Logo URL (Optional)</label>
-                            <input type="url" id="national-team-logo-url" class="styled-text-input" placeholder="https://example.com/flag.png">
-                        </div>
-                        <div class="form-group">
-                            <label for="national-team-logo-file">Or Upload Flag Image</label>
-                            <input type="file" id="national-team-logo-file" accept="image/*" class="styled-file-input">
-                        </div>
-                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add National Team</button>
-                    </form>
-
-                    <div class="team-list-section">
-                        <ul id="national-team-list" class="team-list"></ul>
-                    </div>
-                </div>
-
                 <!-- Section 2: Qualification Zone -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">Qualification Zone (UCL)</h3>
+                        <h3 class="card-title">Qualification Zone</h3>
                     </div>
-                    <p class="card-desc">Set how many top league clubs qualify for UCL when the season ends.</p>
+                    <p class="card-desc">Set how many top teams qualify when the season ends.</p>
                     <div class="form-inline-group">
-                        <label for="qual-zone-select">UCL Qualifying Spots</label>
+                        <label for="qual-zone-select">Promoted / Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
                             <option value="1">Top 1</option>
                             <option value="2">Top 2</option>
@@ -589,7 +576,7 @@
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
-                    <p class="card-desc">End the season to crown the champion, qualify top teams into UCL, and reset match results.</p>
+                    <p class="card-desc">End the season to crown the champion, qualify top teams into the tournament, and reset match results.</p>
                     <div class="danger-actions">
                         <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Reset Scores)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
