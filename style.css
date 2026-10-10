@@ -306,7 +306,6 @@ body {
     font-weight: 600;
 }
 
-/* Neatly styled Dark Mode toggle inside drawer */
 .drawer-theme-toggle {
     display: flex;
     align-items: center;
@@ -849,6 +848,39 @@ body {
 }
 
 /* =========================================
+   MATCHES PAGE: TAB SWITCHER
+   ========================================= */
+.matches-tab-switcher {
+    display: flex;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 2px 6px var(--shadow-card);
+}
+
+.matches-tab-btn {
+    flex: 1;
+    padding: 10px 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.matches-tab-btn.active {
+    background-color: var(--brand-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 102, 255, 0.25);
+}
+
+/* =========================================
    UCL PAGE: TAB SWITCHER & CLEAN KNOCKOUT
    ========================================= */
 .ucl-tab-switcher {
@@ -889,7 +921,7 @@ body {
     display: block;
 }
 
-/* Knockout Bracket (Cleaned Up) */
+/* Knockout Bracket */
 .bracket-container {
     display: flex;
     flex-direction: column;
@@ -971,7 +1003,7 @@ body {
     text-align: right;
 }
 
-/* Matches Page */
+/* Matches Cards */
 .matches-header {
     margin-bottom: 16px;
     padding-left: 4px;
@@ -1420,12 +1452,6 @@ body {
     color: var(--text-main);
 }
 
-.dashboard-subtitle {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-}
-
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -1450,13 +1476,6 @@ body {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-main);
-}
-
-.card-desc {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-    margin-bottom: 14px;
 }
 
 .badge-pill {
