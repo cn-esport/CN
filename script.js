@@ -355,6 +355,10 @@ const trophyCountPremierLeague = document.getElementById('trophy-count-premierLe
 const trophyCountLaLiga = document.getElementById('trophy-count-laLiga');
 const trophyCountSerieA = document.getElementById('trophy-count-serieA');
 const trophyCountCcnn = document.getElementById('trophy-count-ccnn');
+const trophyCountUcl = document.getElementById('trophy-count-ucl');
+const trophyCountWorldcup = document.getElementById('trophy-count-worldcup');
+const trophyCountEuro = document.getElementById('trophy-count-euro');
+const trophyCountAsiancup = document.getElementById('trophy-count-asiancup');
 
 // Edit Team Modal
 const editTeamModal = document.getElementById('edit-team-modal');
@@ -540,7 +544,11 @@ function renderHomeDashboard() {
             const totalTrophies = (Number(trophies.premierLeague) || 0) +
                                   (Number(trophies.laLiga) || 0) +
                                   (Number(trophies.serieA) || 0) +
-                                  (Number(trophies.ccnn) || Number(trophies.league) || 0);
+                                  (Number(trophies.ccnn) || Number(trophies.league) || 0) +
+                                  (Number(trophies.ucl) || 0) +
+                                  (Number(trophies.worldcup) || 0) +
+                                  (Number(trophies.euro) || 0) +
+                                  (Number(trophies.asiancup) || 0);
 
             const historicalScore = totalTrophies * 2;
             const recent5 = t.form.slice(-5);
@@ -697,7 +705,16 @@ function concludeSeason(isManual = false) {
 
         if (clubLeadership[champion]) {
             if (!clubLeadership[champion].trophies) {
-                clubLeadership[champion].trophies = { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 };
+                clubLeadership[champion].trophies = {
+                    premierLeague: 0,
+                    laLiga: 0,
+                    serieA: 0,
+                    ccnn: 0,
+                    ucl: 0,
+                    worldcup: 0,
+                    euro: 0,
+                    asiancup: 0
+                };
             }
             
             const activeLeague = leagueConfig.selectedLeague || 'ccnn';
@@ -989,11 +1006,26 @@ if (bracketScoreForm) {
 
             if (clubLeadership[winner]) {
                 if (!clubLeadership[winner].trophies) {
-                    clubLeadership[winner].trophies = { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 };
+                    clubLeadership[winner].trophies = {
+                        premierLeague: 0,
+                        laLiga: 0,
+                        serieA: 0,
+                        ccnn: 0,
+                        ucl: 0,
+                        worldcup: 0,
+                        euro: 0,
+                        asiancup: 0
+                    };
                 }
                 const activeTourn = leagueConfig.selectedTournament || 'ucl';
                 if (activeTourn === 'ucl') {
-                    clubLeadership[winner].trophies.ccnn = (clubLeadership[winner].trophies.ccnn || 0) + 1;
+                    clubLeadership[winner].trophies.ucl = (clubLeadership[winner].trophies.ucl || 0) + 1;
+                } else if (activeTourn === 'world-cup') {
+                    clubLeadership[winner].trophies.worldcup = (clubLeadership[winner].trophies.worldcup || 0) + 1;
+                } else if (activeTourn === 'euro') {
+                    clubLeadership[winner].trophies.euro = (clubLeadership[winner].trophies.euro || 0) + 1;
+                } else if (activeTourn === 'asian-cup') {
+                    clubLeadership[winner].trophies.asiancup = (clubLeadership[winner].trophies.asiancup || 0) + 1;
                 }
             }
         }
@@ -1024,7 +1056,6 @@ function renderMatches() {
 
     const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
 
-    // Filter matches based on active tab: upcoming (unplayed) vs results (FT)
     const filteredMatches = matches.filter(m => {
         if (matchesFilter === 'results') {
             return m.status === 'FT';
@@ -1042,7 +1073,6 @@ function renderMatches() {
     if (noMatchesMsg) noMatchesMsg.style.display = 'none';
 
     filteredMatches.forEach((match) => {
-        // Find real index in parent matches array for score modal
         const realIndex = matches.indexOf(match);
         const isFinished = match.status === 'FT';
         const rawType = match.type || 'League';
@@ -1109,12 +1139,16 @@ function renderMatches() {
     });
 }
 
-// Trophy Showcase Definitions
+// Complete 8 Trophies Showcase Definitions
 const TROPHIES_CONFIG = [
     { key: 'premierLeague', img: '/CN/images/trophies/premier-league-trophy.webp', title: 'Premier League' },
     { key: 'laLiga', img: '/CN/images/trophies/la-liga-trophy.webp', title: 'La Liga' },
     { key: 'serieA', img: '/CN/images/trophies/serie-a-trophy.webp', title: 'Serie A' },
-    { key: 'ccnn', img: '/CN/images/trophies/ccnn-trophy.webp', title: 'CCNN Trophy' }
+    { key: 'ccnn', img: '/CN/images/trophies/ccnn-trophy.webp', title: 'CCNN Trophy' },
+    { key: 'ucl', img: '/CN/images/trophies/ucl-trophy.webp', title: 'Champions League' },
+    { key: 'worldcup', img: '/CN/images/trophies/world-cup-trophy.webp', title: 'FIFA World Cup' },
+    { key: 'euro', img: '/CN/images/trophies/euro-trophy.webp', title: 'UEFA Euro' },
+    { key: 'asiancup', img: '/CN/images/trophies/asian-cup-trophy.webp', title: 'AFC Asian Cup' }
 ];
 
 function renderTrophyShowcaseHtml(trophiesObj) {
@@ -1164,7 +1198,16 @@ function renderManagers() {
         const leadership = clubLeadership[team.name] || {
             manager: 'Not Appointed',
             playstyle: 'Default / Balanced',
-            trophies: { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 }
+            trophies: {
+                premierLeague: 0,
+                laLiga: 0,
+                serieA: 0,
+                ccnn: 0,
+                ucl: 0,
+                worldcup: 0,
+                euro: 0,
+                asiancup: 0
+            }
         };
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
         const trophyCabinetHtml = renderTrophyShowcaseHtml(leadership.trophies);
@@ -1204,7 +1247,16 @@ window.openManagerModal = function(teamName) {
     const leadership = clubLeadership[teamName] || {
         manager: '',
         playstyle: '',
-        trophies: { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 }
+        trophies: {
+            premierLeague: 0,
+            laLiga: 0,
+            serieA: 0,
+            ccnn: 0,
+            ucl: 0,
+            worldcup: 0,
+            euro: 0,
+            asiancup: 0
+        }
     };
     
     editManagerTeamKey.value = teamName;
@@ -1216,6 +1268,10 @@ window.openManagerModal = function(teamName) {
     if (trophyCountLaLiga) trophyCountLaLiga.value = t.laLiga || 0;
     if (trophyCountSerieA) trophyCountSerieA.value = t.serieA || 0;
     if (trophyCountCcnn) trophyCountCcnn.value = t.ccnn || (t.league || 0);
+    if (trophyCountUcl) trophyCountUcl.value = t.ucl || 0;
+    if (trophyCountWorldcup) trophyCountWorldcup.value = t.worldcup || 0;
+    if (trophyCountEuro) trophyCountEuro.value = t.euro || 0;
+    if (trophyCountAsiancup) trophyCountAsiancup.value = t.asiancup || 0;
 
     managerModal.classList.add('active');
 };
@@ -1237,7 +1293,11 @@ if (editManagerForm) {
             premierLeague: parseInt(trophyCountPremierLeague.value, 10) || 0,
             laLiga: parseInt(trophyCountLaLiga.value, 10) || 0,
             serieA: parseInt(trophyCountSerieA.value, 10) || 0,
-            ccnn: parseInt(trophyCountCcnn.value, 10) || 0
+            ccnn: parseInt(trophyCountCcnn.value, 10) || 0,
+            ucl: parseInt(trophyCountUcl.value, 10) || 0,
+            worldcup: parseInt(trophyCountWorldcup.value, 10) || 0,
+            euro: parseInt(trophyCountEuro.value, 10) || 0,
+            asiancup: parseInt(trophyCountAsiancup.value, 10) || 0
         };
 
         clubLeadership[teamName] = {
@@ -1471,7 +1531,16 @@ if (addTeamForm) {
             clubLeadership[name] = {
                 manager: 'Not Appointed',
                 playstyle: 'Default / Balanced',
-                trophies: { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 }
+                trophies: {
+                    premierLeague: 0,
+                    laLiga: 0,
+                    serieA: 0,
+                    ccnn: 0,
+                    ucl: 0,
+                    worldcup: 0,
+                    euro: 0,
+                    asiancup: 0
+                }
             };
 
             addTeamForm.reset();
@@ -1631,9 +1700,7 @@ if (createMatchForm) {
             awayScore: 0
         });
 
-        if (type === 'League' && leagueConfig.seasonEnded) {
-            leagueConfig.seasonEnded = false;
-        }
+        // Auto-restart behavior removed: seasonEnded status remains intact until manual reset
 
         matchModal.classList.remove('active');
         createMatchForm.reset();
