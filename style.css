@@ -831,7 +831,7 @@ body {
 }
 
 /* =========================================
-   KNOCKOUT BRACKET & TOURNAMENT SYSTEM
+   KNOCKOUT STAGE BRACKET & TOURNAMENT SYSTEM
    ========================================= */
 .tournament-stage-header {
     display: flex;
@@ -854,22 +854,6 @@ body {
     border-radius: 6px;
     background-color: var(--badge-bg);
     color: var(--brand-primary);
-}
-
-.btn-action-small {
-    background-color: var(--brand-primary);
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 0.76rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.btn-action-small:active {
-    opacity: 0.85;
 }
 
 .bracket-container {
