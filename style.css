@@ -19,12 +19,14 @@
     --progress-track: #E9ECEF;
     --placeholder-box: #F8F9FA;
 
+    /* Dynamic Brand & Accent Colors */
     --brand-primary: #0066FF;
     --brand-secondary: #0052CC;
     --brand-underline: #111111;
     --brand-active-glow: rgba(0, 102, 255, 0.1);
 }
 
+/* League Branding Themes */
 body[data-league="premier-league"] {
     --brand-primary: #38003C;
     --brand-secondary: #00FF85;
@@ -53,6 +55,7 @@ body[data-league="ccnn"] {
     --brand-active-glow: rgba(0, 102, 255, 0.1);
 }
 
+/* Dark Theme Overrides */
 body.dark-theme {
     --bg-page: #121316;
     --bg-card: #1C1E22;
@@ -331,7 +334,9 @@ body {
     font-size: 0.9rem;
 }
 
-/* Home Grid Layout */
+/* =========================================
+   HOME PAGE: DASHBOARD CARDS (Reference Layout)
+   ========================================= */
 .home-grid-container {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -393,6 +398,7 @@ body {
     flex-shrink: 0;
 }
 
+/* Home Left: Top 4 Table Card */
 .home-top4-list {
     display: flex;
     flex-direction: column;
@@ -466,6 +472,7 @@ body {
     color: var(--brand-primary);
 }
 
+/* Home Right: Predictions Card */
 .home-predictions-list {
     display: flex;
     flex-direction: column;
@@ -517,6 +524,7 @@ body {
     flex-shrink: 0;
 }
 
+/* Home Right: Season Card */
 .home-season-card {
     padding: 16px 14px 18px;
 }
@@ -667,7 +675,7 @@ body {
     border: 2px solid #8c98a4;
 }
 
-/* Legends */
+/* Legends & League Trophy Card */
 .legends-wrapper {
     display: flex;
     flex-direction: column;
@@ -725,6 +733,7 @@ body {
     gap: 10px;
 }
 
+/* League Trophy Section */
 .league-trophy-card {
     display: flex;
     align-items: center;
@@ -784,6 +793,7 @@ body {
     color: var(--text-main);
 }
 
+/* Dynamic Progress Bar Card on League Page */
 .league-progress-card {
     padding: 16px 18px;
 }
@@ -830,7 +840,7 @@ body {
     margin-top: 10px;
 }
 
-/* Matches */
+/* Matches Page */
 .matches-header {
     margin-bottom: 16px;
     padding-left: 4px;
@@ -1087,6 +1097,7 @@ body {
     border-radius: 8px;
 }
 
+/* Trophy Counter Inputs in Modal */
 .trophy-counter-grid {
     display: flex;
     flex-direction: column;
@@ -1445,6 +1456,7 @@ body {
     color: #ff3b30;
 }
 
+/* Switch Toggle (Dark/Light mode) */
 .switch {
     position: relative;
     display: inline-block;
@@ -1496,6 +1508,7 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
+/* Commissioner Settings Progress Block */
 .progress-block {
     margin-top: 16px;
     background-color: var(--bg-page);
@@ -1503,6 +1516,7 @@ input:checked + .slider:before {
     padding: 14px;
 }
 
+/* Season Danger Card */
 .danger-card {
     border: 1px solid #ffe3e3;
 }
@@ -1561,6 +1575,7 @@ body.dark-theme .btn-warning {
     opacity: 0.85;
 }
 
+/* Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
