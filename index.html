@@ -67,11 +67,11 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
 
-            <!-- Relocated Dark Mode Toggle -->
+            <!-- Dark Mode Toggle inside Drawer -->
             <div class="drawer-theme-toggle">
                 <span class="drawer-theme-label">Dark Mode</span>
                 <label class="switch">
@@ -207,11 +207,19 @@
             <div class="matches-header">
                 <h2 class="matches-title">Matches</h2>
             </div>
+
+            <!-- Matches Tab Switcher (Matches vs Results) -->
+            <div class="matches-tab-switcher">
+                <button class="matches-tab-btn active" id="filter-upcoming-btn">Matches</button>
+                <button class="matches-tab-btn" id="filter-results-btn">Results</button>
+            </div>
+
             <div id="matches-list" class="matches-container"></div>
-            <div id="no-matches-msg" class="empty-state" style="display: none;">No matches scheduled. Tap '+' to create one.</div>
+            <div id="no-matches-msg" class="empty-state" style="display: none;">No matches found.</div>
 
             <button id="open-match-modal-btn" class="fab-btn" aria-label="Add Match">+</button>
 
+            <!-- Match Creation Modal -->
             <div id="match-modal" class="modal-overlay">
                 <div class="modal-content">
                     <h3 class="modal-title">Create Match</h3>
@@ -239,6 +247,7 @@
                 </div>
             </div>
 
+            <!-- Score Entry Modal -->
             <div id="score-modal" class="modal-overlay">
                 <div class="modal-content">
                     <h3 class="modal-title">Enter Score</h3>
@@ -267,13 +276,11 @@
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
             </div>
             
-            <!-- Tab Switcher: Group vs Knockout -->
             <div class="ucl-tab-switcher">
                 <button class="ucl-tab-btn active" id="ucl-group-tab-btn">Group</button>
                 <button class="ucl-tab-btn" id="ucl-knockout-tab-btn">Knockout</button>
             </div>
 
-            <!-- Group View Panel -->
             <div id="ucl-group-panel" class="ucl-panel active">
                 <div class="table-container">
                     <table class="standings-table">
@@ -297,7 +304,6 @@
                 </div>
                 <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
 
-                <!-- Group Stage Progress Bar Card -->
                 <div class="legend-card group-stage-progress-card" id="group-stage-progress-card">
                     <div class="progress-labels">
                         <span class="progress-text" id="group-progress-title">Group Stage Progress</span>
@@ -313,7 +319,6 @@
                 </div>
             </div>
 
-            <!-- Knockout View Panel -->
             <div id="ucl-knockout-panel" class="ucl-panel">
                 <div class="bracket-container" id="tournament-bracket-container"></div>
             </div>
@@ -458,7 +463,7 @@
             </div>
 
             <div class="dashboard-container">
-                <!-- Section: League Selection & Header Branding -->
+                <!-- League Selection -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">League Selection</h3>
@@ -475,7 +480,7 @@
                     </div>
                 </div>
 
-                <!-- Section: Tournament Selection (UCL Tab) -->
+                <!-- Tournament Selection -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Selection</h3>
@@ -492,7 +497,7 @@
                     </div>
                 </div>
 
-                <!-- Section: Tournament Format Settings -->
+                <!-- Tournament Format Settings -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Format</h3>
@@ -523,7 +528,7 @@
                     </div>
                 </div>
 
-                <!-- Section: Season Management -->
+                <!-- Season Info -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Info</h3>
@@ -534,7 +539,7 @@
                     </div>
                 </div>
 
-                <!-- Section 1: Team Management -->
+                <!-- Team Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Team Management</h3>
@@ -570,7 +575,7 @@
                     </div>
                 </div>
 
-                <!-- Section 2: Qualification Zone -->
+                <!-- Qualification Zone -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
@@ -586,7 +591,7 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Season Settings & Progress -->
+                <!-- Season Settings & Progress -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Settings</h3>
@@ -611,7 +616,7 @@
                     </div>
                 </div>
 
-                <!-- Section 4: Season Controls -->
+                <!-- Season Controls -->
                 <div class="dashboard-card danger-card">
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
