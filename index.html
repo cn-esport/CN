@@ -67,9 +67,18 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
+
+            <!-- Relocated Dark Mode Toggle -->
+            <div class="drawer-theme-toggle">
+                <span class="drawer-theme-label">Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </nav>
     </aside>
 
@@ -252,48 +261,61 @@
             </div>
         </section>
 
-        <!-- Tournament / UCL Section with Group Stage & Automatic Knockout Stage Bracket -->
+        <!-- Tournament / UCL Section -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
             </div>
             
-            <!-- Group Stage Section -->
-            <div class="tournament-stage-header">
-                <h3 class="stage-heading">Group Stage Standings</h3>
-                <span class="stage-subtag" id="group-stage-subtag">Single Game</span>
+            <!-- Tab Switcher: Group vs Knockout -->
+            <div class="ucl-tab-switcher">
+                <button class="ucl-tab-btn active" id="ucl-group-tab-btn">Group</button>
+                <button class="ucl-tab-btn" id="ucl-knockout-tab-btn">Knockout</button>
             </div>
 
-            <div class="table-container">
-                <table class="standings-table">
-                    <thead>
-                        <tr>
-                            <th class="col-pos">#</th>
-                            <th class="col-team">Club</th>
-                            <th>MP</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th class="col-pts">Pts</th>
-                            <th>GF</th>
-                            <th>GA</th>
-                            <th>GD</th>
-                            <th class="col-form">Last 5</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ucl-standings-body"></tbody>
-                </table>
-            </div>
-            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
+            <!-- Group View Panel -->
+            <div id="ucl-group-panel" class="ucl-panel active">
+                <div class="table-container">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th class="col-pos">#</th>
+                                <th class="col-team">Club</th>
+                                <th>MP</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th class="col-pts">Pts</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th class="col-form">Last 5</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ucl-standings-body"></tbody>
+                    </table>
+                </div>
+                <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
 
-            <!-- Knockout Stage Bracket Section -->
-            <div class="tournament-stage-header" style="margin-top: 24px;">
-                <h3 class="stage-heading">Knockout Stage</h3>
-                <span class="stage-subtag" id="bracket-legs-subtag">One Leg</span>
+                <!-- Group Stage Progress Bar Card -->
+                <div class="legend-card group-stage-progress-card" id="group-stage-progress-card">
+                    <div class="progress-labels">
+                        <span class="progress-text" id="group-progress-title">Group Stage Progress</span>
+                        <span id="group-progress-pct" class="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div id="group-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>Completed: <strong id="group-progress-played-count">0</strong></span>
+                        <span>Target: <strong id="group-progress-target-count">0</strong></span>
+                    </div>
+                </div>
             </div>
 
-            <div class="bracket-container" id="tournament-bracket-container">
-                <!-- Dynamically and automatically populated knockout rounds -->
+            <!-- Knockout View Panel -->
+            <div id="ucl-knockout-panel" class="ucl-panel">
+                <div class="bracket-container" id="tournament-bracket-container"></div>
             </div>
         </section>
 
@@ -314,7 +336,7 @@
                         <input type="number" id="bracket-away-score-input" min="0" max="99" required placeholder="0">
                     </div>
                     <div id="bracket-penalties-box" class="form-group" style="display: none; margin-top: 10px;">
-                        <label style="font-weight: 600; color: #ff3b30;">Tied Aggregate / Sudden Death Winner:</label>
+                        <label style="font-weight: 600; color: #ff3b30;">Tied Score Winner:</label>
                         <select id="bracket-penalties-winner-select" class="styled-select"></select>
                     </div>
                     <div class="modal-actions">
@@ -525,20 +547,6 @@
                     <div class="form-inline-group">
                         <label for="season-number-input">Current Season Number</label>
                         <input type="number" id="season-number-input" class="styled-input-num" min="1" max="999" value="1">
-                    </div>
-                </div>
-
-                <!-- Theme Preferences -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3 class="card-title">Theme Preferences</h3>
-                    </div>
-                    <div class="form-inline-group">
-                        <label for="dark-mode-toggle">Dark Mode</label>
-                        <label class="switch">
-                            <input type="checkbox" id="dark-mode-toggle">
-                            <span class="slider round"></span>
-                        </label>
                     </div>
                 </div>
 
