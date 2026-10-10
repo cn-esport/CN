@@ -331,7 +331,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Home Dashboard Layout */
+/* Home Grid Layout */
 .home-grid-container {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -667,82 +667,7 @@ body {
     border: 2px solid #8c98a4;
 }
 
-/* Tournament Stage Headers & Knockout Styles */
-.tournament-stage-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.stage-tag {
-    font-size: 0.78rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background-color: var(--badge-bg);
-    color: var(--text-main);
-}
-
-.stage-tag.active {
-    background-color: var(--brand-primary);
-    color: #ffffff;
-}
-
-.knockout-tag {
-    background-color: #111111;
-    color: #ffffff;
-}
-
-body.dark-theme .knockout-tag {
-    background-color: #2c2e33;
-    color: #ffffff;
-}
-
-.knockout-rounds-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.knockout-round-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.knockout-round-title {
-    font-size: 0.92rem;
-    font-weight: 800;
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding-left: 2px;
-}
-
-.knockout-match-card {
-    background-color: var(--bg-card);
-    border-radius: 16px;
-    box-shadow: 0 2px 10px var(--shadow-card);
-    display: flex;
-    align-items: center;
-    padding: 16px 16px;
-    border: 1px solid var(--border-subtle);
-}
-
-.knockout-leg-sub {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 6px;
-}
-
-/* Legends & League Trophy Card */
+/* Legends */
 .legends-wrapper {
     display: flex;
     flex-direction: column;
@@ -905,7 +830,7 @@ body.dark-theme .knockout-tag {
     margin-top: 10px;
 }
 
-/* Matches Page */
+/* Matches */
 .matches-header {
     margin-bottom: 16px;
     padding-left: 4px;
@@ -1520,7 +1445,6 @@ body.dark-theme .knockout-tag {
     color: #ff3b30;
 }
 
-/* Switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -1637,7 +1561,6 @@ body.dark-theme .btn-warning {
     opacity: 0.85;
 }
 
-/* Bottom Nav */
 .bottom-nav {
     position: fixed;
     bottom: 0;
