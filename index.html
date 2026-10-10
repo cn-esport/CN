@@ -224,7 +224,7 @@
                             <label for="match-type-select">Competition Type</label>
                             <select id="match-type-select" required>
                                 <option value="League" selected>League Match</option>
-                                <option value="Tournament" id="match-type-tournament-option">Tournament Group Match</option>
+                                <option value="Tournament" id="match-type-tournament-option">Tournament Match</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -243,13 +243,12 @@
                 </div>
             </div>
 
-            <!-- Score Modal -->
+            <!-- Enter Match Score Modal -->
             <div id="score-modal" class="modal-overlay">
                 <div class="modal-content">
-                    <h3 class="modal-title" id="score-modal-heading">Enter Score</h3>
+                    <h3 class="modal-title">Enter Score</h3>
                     <form id="enter-score-form">
                         <input type="hidden" id="score-match-index">
-                        <input type="hidden" id="score-match-kind">
                         <div class="score-input-row">
                             <label id="score-home-label" class="score-team-label">Home</label>
                             <input type="number" id="home-score-input" min="0" max="99" required placeholder="0">
@@ -267,15 +266,10 @@
             </div>
         </section>
 
-        <!-- Tournament / UCL Section with Group & Knockout Display -->
+        <!-- Tournament / UCL Section -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
-            </div>
-
-            <!-- Tournament Sub-Nav / Segment Header -->
-            <div class="tournament-stage-header">
-                <span class="stage-tag active">Group Stage</span>
             </div>
             
             <div class="table-container">
@@ -283,7 +277,7 @@
                     <thead>
                         <tr>
                             <th class="col-pos">#</th>
-                            <th class="col-team">Team</th>
+                            <th class="col-team" id="ucl-team-col-header">Club</th>
                             <th>MP</th>
                             <th>W</th>
                             <th>D</th>
@@ -298,17 +292,7 @@
                     <tbody id="ucl-standings-body"></tbody>
                 </table>
             </div>
-            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No teams currently in tournament.</div>
-
-            <!-- Knockout / Playoff Stages Container -->
-            <div class="knockout-section" id="knockout-section">
-                <div class="tournament-stage-header" style="margin-top: 24px;">
-                    <span class="stage-tag knockout-tag">Knockout Stage</span>
-                </div>
-                <div id="knockout-rounds-list" class="knockout-rounds-list">
-                    <!-- Populated dynamically: Round of 16, Quarters, Semis, Final -->
-                </div>
-            </div>
+            <div id="no-ucl-teams-msg" class="empty-state" style="display: none;">No qualified teams yet. Complete a League season to qualify top teams.</div>
         </section>
 
         <!-- Managers Section -->
@@ -399,7 +383,6 @@
                 <h3 class="modal-title">Edit Team Details</h3>
                 <form id="edit-team-form">
                     <input type="hidden" id="edit-team-index">
-                    <input type="hidden" id="edit-team-type" value="league">
                     <div class="form-group">
                         <label for="edit-team-name-input">Team Name</label>
                         <input type="text" id="edit-team-name-input" class="styled-text-input" maxlength="20" required>
@@ -424,11 +407,11 @@
         <section id="settings-view" class="view-section">
             <div class="dashboard-header">
                 <h2 class="dashboard-title">League Commissioner</h2>
-                <p class="dashboard-subtitle">Configure rules, tournaments, teams, and knockout systems.</p>
+                <p class="dashboard-subtitle">Configure rules, manage teams, and oversee tournaments.</p>
             </div>
 
             <div class="dashboard-container">
-                <!-- Section: League Selection & Header Branding -->
+                <!-- League Selection & Branding -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">League Selection</h3>
@@ -446,76 +429,25 @@
                     </div>
                 </div>
 
-                <!-- Section: Tournament Selection & Rules -->
+                <!-- Tournament Selection -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Selection</h3>
                         <span class="badge-pill" id="current-tournament-badge">UCL</span>
                     </div>
-                    <p class="card-desc">Choose which tournament active rules and tabs represent.</p>
+                    <p class="card-desc">Select which tournament the secondary tab represents. UCL links with the Club League; World Cup, Euro, and Asian Cup use National Teams.</p>
                     <div class="form-inline-group">
-                        <label for="tournament-selection-dropdown">Active Tournament</label>
+                        <label for="tournament-selection-dropdown">Tournament Tab</label>
                         <select id="tournament-selection-dropdown" class="styled-select">
-                            <option value="ucl">UEFA Champions League</option>
-                            <option value="world-cup">FIFA World Cup</option>
-                            <option value="euro">UEFA Euro</option>
-                            <option value="asian-cup">AFC Asian Cup</option>
+                            <option value="ucl">UEFA Champions League (Clubs)</option>
+                            <option value="world-cup">FIFA World Cup (National Teams)</option>
+                            <option value="euro">UEFA Euro (National Teams)</option>
+                            <option value="asian-cup">AFC Asian Cup (National Teams)</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Section: Tournament Format Settings -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3 class="card-title">Tournament Format</h3>
-                    </div>
-                    <p class="card-desc">Customize stage scheduling for tournaments.</p>
-                    <div class="form-inline-group">
-                        <label for="tournament-group-format">Group Stage</label>
-                        <select id="tournament-group-format" class="styled-select">
-                            <option value="single">One Game (Plays once)</option>
-                            <option value="double">Home & Away (Plays twice)</option>
-                        </select>
-                    </div>
-                    <div class="form-inline-group">
-                        <label for="tournament-knockout-legs">Knockout Match Format</label>
-                        <select id="tournament-knockout-legs" class="styled-select">
-                            <option value="1">One Leg (Single Match)</option>
-                            <option value="2">Two Legs (Home & Away Aggregate)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Section: National Teams Management (World Cup, Euro, Asian Cup) -->
-                <div class="dashboard-card" id="national-teams-card">
-                    <div class="card-header">
-                        <h3 class="card-title">National Teams (International)</h3>
-                        <span class="badge-pill"><span id="national-team-count">0</span> Teams</span>
-                    </div>
-                    <p class="card-desc">Separate roster for international competitions (World Cup, Euro, Asian Cup).</p>
-
-                    <form id="add-national-team-form" class="team-creation-form">
-                        <div class="form-group">
-                            <label for="national-team-name-input">Country / National Team Name</label>
-                            <input type="text" id="national-team-name-input" class="styled-text-input" placeholder="e.g., Brazil, Spain, Japan" maxlength="20" required autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label for="national-team-logo-url-input">Flag / Crest URL (Optional)</label>
-                            <input type="url" id="national-team-logo-url-input" class="styled-text-input" placeholder="https://example.com/flag.png">
-                        </div>
-                        <div class="form-group">
-                            <label for="national-team-logo-file-input">Or Upload Flag Image</label>
-                            <input type="file" id="national-team-logo-file-input" accept="image/*" class="styled-file-input">
-                        </div>
-                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add National Team</button>
-                    </form>
-
-                    <div class="team-list-section">
-                        <ul id="national-team-list" class="team-list"></ul>
-                    </div>
-                </div>
-
-                <!-- Section: Season Management -->
+                <!-- Season Info -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Info</h3>
@@ -540,10 +472,10 @@
                     </div>
                 </div>
 
-                <!-- Section: League Club Teams Management -->
+                <!-- Section 1: Club Team Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">League Clubs Management</h3>
+                        <h3 class="card-title">Club Teams (League)</h3>
                         <span class="badge-pill"><span id="team-count">0</span> / <span id="team-max-display">8</span></span>
                     </div>
 
@@ -580,25 +512,54 @@
                     </div>
                 </div>
 
-                <!-- Section: Qualification Zone -->
+                <!-- Section 1B: National Teams Management (World Cup, Euro, Asian Cup) -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">Qualification Zone</h3>
+                        <h3 class="card-title">National Teams</h3>
+                        <span class="badge-pill" id="national-team-count">0 Teams</span>
                     </div>
-                    <p class="card-desc">Set how many top teams qualify for the UCL tournament upon season finish.</p>
+                    <p class="card-desc">Add international nations (e.g., Brazil, Argentina, France, Germany) used when the tournament is set to World Cup, Euro, or Asian Cup.</p>
+
+                    <form id="add-national-team-form" class="team-creation-form">
+                        <div class="form-group">
+                            <label for="national-team-name-input">Nation Name</label>
+                            <input type="text" id="national-team-name-input" class="styled-text-input" placeholder="e.g., Brazil" maxlength="25" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="national-team-logo-url">Flag / Logo URL (Optional)</label>
+                            <input type="url" id="national-team-logo-url" class="styled-text-input" placeholder="https://example.com/flag.png">
+                        </div>
+                        <div class="form-group">
+                            <label for="national-team-logo-file">Or Upload Flag Image</label>
+                            <input type="file" id="national-team-logo-file" accept="image/*" class="styled-file-input">
+                        </div>
+                        <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add National Team</button>
+                    </form>
+
+                    <div class="team-list-section">
+                        <ul id="national-team-list" class="team-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Section 2: Qualification Zone -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Qualification Zone (UCL)</h3>
+                    </div>
+                    <p class="card-desc">Set how many top league clubs qualify for UCL when the season ends.</p>
                     <div class="form-inline-group">
-                        <label for="qual-zone-select">Promoted / UCL Spots</label>
+                        <label for="qual-zone-select">UCL Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
                             <option value="1">Top 1</option>
                             <option value="2">Top 2</option>
                             <option value="3">Top 3</option>
-                            <option value="4">Top 4 (Champions League)</option>
+                            <option value="4">Top 4</option>
                             <option value="6">Top 6</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Section: Season Settings & Progress -->
+                <!-- Section 3: Season Settings & Progress -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Season Settings</h3>
@@ -623,12 +584,12 @@
                     </div>
                 </div>
 
-                <!-- Section: Season Controls -->
+                <!-- Section 4: Season Controls -->
                 <div class="dashboard-card danger-card">
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
-                    <p class="card-desc">Crown league champions, advance qualified clubs to UCL, or wipe all records.</p>
+                    <p class="card-desc">End the season to crown the champion, qualify top teams into UCL, and reset match results.</p>
                     <div class="danger-actions">
                         <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Reset Scores)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
