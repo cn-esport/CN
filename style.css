@@ -1705,6 +1705,29 @@ body.dark-theme .btn-warning {
     opacity: 0.85;
 }
 
+.btn-secondary-action {
+    background-color: #f1f3f5;
+    color: #212529;
+    border: 1px solid #ced4da;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+}
+
+body.dark-theme .btn-secondary-action {
+    background-color: #25262b;
+    border-color: #373a40;
+    color: #c1c2c5;
+}
+
+.btn-secondary-action:active {
+    opacity: 0.85;
+}
+
 .btn-danger {
     background-color: #ff3b30;
     color: #ffffff;
