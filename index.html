@@ -67,7 +67,7 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
         </nav>
@@ -252,7 +252,7 @@
             </div>
         </section>
 
-        <!-- Tournament / UCL Section with Group Stage & Knockout Bracket -->
+        <!-- Tournament / UCL Section with Group Stage & Automatic Knockout Stage Bracket -->
         <section id="ucl-view" class="view-section">
             <div class="matches-header">
                 <h2 class="matches-title" id="ucl-section-title">UEFA Champions League</h2>
@@ -261,7 +261,7 @@
             <!-- Group Stage Section -->
             <div class="tournament-stage-header">
                 <h3 class="stage-heading">Group Stage Standings</h3>
-                <button id="end-group-stage-btn" class="btn-action-small">Finalize &amp; Generate Bracket</button>
+                <span class="stage-subtag" id="group-stage-subtag">Single Game</span>
             </div>
 
             <div class="table-container">
@@ -288,19 +288,19 @@
 
             <!-- Knockout Stage Bracket Section -->
             <div class="tournament-stage-header" style="margin-top: 24px;">
-                <h3 class="stage-heading">Playoff Bracket</h3>
+                <h3 class="stage-heading">Knockout Stage</h3>
                 <span class="stage-subtag" id="bracket-legs-subtag">One Leg</span>
             </div>
 
             <div class="bracket-container" id="tournament-bracket-container">
-                <!-- Dynamically populated knockout rounds -->
+                <!-- Dynamically and automatically populated knockout rounds -->
             </div>
         </section>
 
         <!-- Knockout Score Entry Modal -->
         <div id="bracket-score-modal" class="modal-overlay">
             <div class="modal-content">
-                <h3 class="modal-title" id="bracket-score-title">Playoff Match Score</h3>
+                <h3 class="modal-title" id="bracket-score-title">Knockout Match Score</h3>
                 <form id="bracket-score-form">
                     <input type="hidden" id="bracket-round-key">
                     <input type="hidden" id="bracket-match-index">
@@ -477,7 +477,7 @@
                     </div>
                 </div>
 
-                <!-- Section: Tournament Format Settings (Feature 2) -->
+                <!-- Section: Tournament Format Settings -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Tournament Format</h3>
@@ -591,8 +591,8 @@
                     <div class="form-inline-group">
                         <label for="qual-zone-select">Promoted / Qualifying Spots</label>
                         <select id="qual-zone-select" class="styled-select">
-                            <option value="3">Top 3 (Playoff Bracket)</option>
-                            <option value="4" selected>Top 4 (Group Stage &amp; Playoff)</option>
+                            <option value="3">Top 3 (Knockout Stage)</option>
+                            <option value="4" selected>Top 4 (Group Stage &amp; Knockout)</option>
                             <option value="6">Top 6</option>
                         </select>
                     </div>
