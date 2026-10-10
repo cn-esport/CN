@@ -67,7 +67,7 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
 
@@ -440,11 +440,7 @@
                         <input type="text" id="edit-team-name-input" class="styled-text-input" maxlength="20" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-team-logo-url">Logo Image URL</label>
-                        <input type="url" id="edit-team-logo-url" class="styled-text-input" placeholder="https://example.com/logo.png">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-team-logo-file">Or Upload Logo Image</label>
+                        <label for="edit-team-logo-file">Upload Logo Image</label>
                         <input type="file" id="edit-team-logo-file" accept="image/*" class="styled-file-input">
                     </div>
                     <div class="modal-actions">
@@ -459,7 +455,6 @@
         <section id="settings-view" class="view-section">
             <div class="dashboard-header">
                 <h2 class="dashboard-title">League Commissioner</h2>
-                <p class="dashboard-subtitle">Configure rules, manage teams, and oversee tournaments.</p>
             </div>
 
             <div class="dashboard-container">
@@ -469,7 +464,6 @@
                         <h3 class="card-title">League Selection</h3>
                         <span class="badge-pill" id="current-league-badge">CCNN</span>
                     </div>
-                    <p class="card-desc">Choose a league to display its official logo in the header and apply themed branding.</p>
                     <div class="form-inline-group">
                         <label for="league-selection-dropdown">League</label>
                         <select id="league-selection-dropdown" class="styled-select">
@@ -487,7 +481,6 @@
                         <h3 class="card-title">Tournament Selection</h3>
                         <span class="badge-pill" id="current-tournament-badge">UCL</span>
                     </div>
-                    <p class="card-desc">Select which tournament the secondary tab and qualification system represent.</p>
                     <div class="form-inline-group">
                         <label for="tournament-selection-dropdown">Tournament Tab</label>
                         <select id="tournament-selection-dropdown" class="styled-select">
@@ -504,37 +497,28 @@
                     <div class="card-header">
                         <h3 class="card-title">Tournament Format</h3>
                     </div>
-                    <p class="card-desc">Configure match rules for group stages and knockout playoff legs.</p>
                     
                     <div class="form-inline-group">
-                        <label for="group-stage-format-select">Group Stage Schedule</label>
+                        <label for="group-stage-format-select">Group Stage</label>
                         <select id="group-stage-format-select" class="styled-select">
-                            <option value="single">Single Game (Play once)</option>
-                            <option value="home-away">Home &amp; Away (Play twice)</option>
+                            <option value="single">Single Game</option>
+                            <option value="home-away">Home &amp; Away</option>
                         </select>
                     </div>
 
                     <div class="form-inline-group">
-                        <label for="semi-final-legs-select">Semi-Final Legs</label>
+                        <label for="semi-final-legs-select">Semi-Final</label>
                         <select id="semi-final-legs-select" class="styled-select">
                             <option value="1">One Leg</option>
-                            <option value="2">Two Legs (Home &amp; Away)</option>
+                            <option value="2">Two Legs</option>
                         </select>
                     </div>
 
                     <div class="form-inline-group">
-                        <label for="quarter-final-legs-select">Quarter-Final Legs</label>
+                        <label for="quarter-final-legs-select">Quarter-Final</label>
                         <select id="quarter-final-legs-select" class="styled-select">
                             <option value="1">One Leg</option>
-                            <option value="2">Two Legs (Home &amp; Away)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-inline-group">
-                        <label for="final-legs-select">Final Legs</label>
-                        <select id="final-legs-select" class="styled-select">
-                            <option value="1">One Leg</option>
-                            <option value="2">Two Legs (Home &amp; Away)</option>
+                            <option value="2">Two Legs</option>
                         </select>
                     </div>
                 </div>
@@ -550,7 +534,7 @@
                     </div>
                 </div>
 
-                <!-- Section 1: Team Management with Logo Option -->
+                <!-- Section 1: Team Management -->
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Team Management</h3>
@@ -575,11 +559,7 @@
                             <input type="text" id="team-name-input" class="styled-text-input" placeholder="e.g., Real Madrid" maxlength="20" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="team-logo-url-input">Logo Image URL (Optional)</label>
-                            <input type="url" id="team-logo-url-input" class="styled-text-input" placeholder="https://example.com/logo.png">
-                        </div>
-                        <div class="form-group">
-                            <label for="team-logo-file-input">Or Upload Logo Image</label>
+                            <label for="team-logo-file-input">Upload Logo Image</label>
                             <input type="file" id="team-logo-file-input" accept="image/*" class="styled-file-input">
                         </div>
                         <button type="submit" class="btn-accent" style="width: 100%; margin-top: 4px;">Add Team</button>
@@ -595,13 +575,13 @@
                     <div class="card-header">
                         <h3 class="card-title">Qualification Zone</h3>
                     </div>
-                    <p class="card-desc">Set how many top teams qualify when the season ends (3 or 4 recommended for tournament bracket).</p>
                     <div class="form-inline-group">
-                        <label for="qual-zone-select">Promoted / Qualifying Spots</label>
+                        <label for="qual-zone-select">Qualifying Teams</label>
                         <select id="qual-zone-select" class="styled-select">
-                            <option value="3">Top 3 (Knockout Stage)</option>
-                            <option value="4" selected>Top 4 (Group Stage &amp; Knockout)</option>
-                            <option value="6">Top 6</option>
+                            <option value="1">Top 1</option>
+                            <option value="2">Top 2</option>
+                            <option value="3">Top 3</option>
+                            <option value="4" selected>Top 4</option>
                         </select>
                     </div>
                 </div>
@@ -636,7 +616,6 @@
                     <div class="card-header">
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
-                    <p class="card-desc">End the season to crown the champion, qualify top teams into the tournament, and reset match results.</p>
                     <div class="danger-actions">
                         <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Reset Scores)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
