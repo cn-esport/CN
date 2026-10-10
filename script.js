@@ -62,6 +62,8 @@ let rawTeams = JSON.parse(localStorage.getItem('ccnn_teams')) || [];
 let uclTeams = JSON.parse(localStorage.getItem('ccnn_ucl_teams')) || [];
 let matches = JSON.parse(localStorage.getItem('ccnn_matches')) || [];
 let clubLeadership = JSON.parse(localStorage.getItem('ccnn_club_leadership')) || {};
+let tournamentBracket = JSON.parse(localStorage.getItem('ccnn_bracket')) || null;
+
 let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     maxTeams: 8,
     qualSpots: 4,
@@ -71,7 +73,12 @@ let leagueConfig = JSON.parse(localStorage.getItem('ccnn_config')) || {
     selectedTournament: 'ucl',
     seasonEnded: false,
     championTeam: null,
-    seasonNumber: 1
+    seasonNumber: 1,
+    // Tournament Format Settings
+    groupStageFormat: 'single', // 'single' or 'home-away'
+    semiFinalLegs: 1,
+    quarterFinalLegs: 1,
+    finalLegs: 1
 };
 
 // Normalize team object structure with logo property
@@ -154,21 +161,11 @@ function applyLeagueBranding(leagueKey) {
         }
     }
 
-    if (currentLeagueBadge) {
-        currentLeagueBadge.textContent = brand.short;
-    }
-    if (leagueSelectionDropdown) {
-        leagueSelectionDropdown.value = key;
-    }
-    if (leagueTrophyImg) {
-        leagueTrophyImg.src = brand.trophy;
-    }
-    if (leagueCupName) {
-        leagueCupName.textContent = brand.cupName;
-    }
-    if (leagueProgressTitle) {
-        leagueProgressTitle.textContent = brand.progressTitle;
-    }
+    if (currentLeagueBadge) currentLeagueBadge.textContent = brand.short;
+    if (leagueSelectionDropdown) leagueSelectionDropdown.value = key;
+    if (leagueTrophyImg) leagueTrophyImg.src = brand.trophy;
+    if (leagueCupName) leagueCupName.textContent = brand.cupName;
+    if (leagueProgressTitle) leagueProgressTitle.textContent = brand.progressTitle;
 }
 applyLeagueBranding(leagueConfig.selectedLeague);
 
@@ -180,28 +177,12 @@ if (leagueSelectionDropdown) {
     });
 }
 
-// Tournament Definitions & Tab Customization
+// Tournament Definitions
 const TOURNAMENT_DEFINITIONS = {
-    'ucl': {
-        title: 'UEFA Champions League',
-        tabLabel: 'UCL',
-        badge: 'UCL'
-    },
-    'world-cup': {
-        title: 'FIFA World Cup',
-        tabLabel: 'World Cup',
-        badge: 'World Cup'
-    },
-    'euro': {
-        title: 'UEFA Euro',
-        tabLabel: 'Euro',
-        badge: 'Euro'
-    },
-    'asian-cup': {
-        title: 'AFC Asian Cup',
-        tabLabel: 'Asian Cup',
-        badge: 'Asian Cup'
-    }
+    'ucl': { title: 'UEFA Champions League', tabLabel: 'UCL', badge: 'UCL' },
+    'world-cup': { title: 'FIFA World Cup', tabLabel: 'World Cup', badge: 'World Cup' },
+    'euro': { title: 'UEFA Euro', tabLabel: 'Euro', badge: 'Euro' },
+    'asian-cup': { title: 'AFC Asian Cup', tabLabel: 'Asian Cup', badge: 'Asian Cup' }
 };
 
 const tournamentSelectionDropdown = document.getElementById('tournament-selection-dropdown');
@@ -221,7 +202,7 @@ function applyTournamentSettings(tournKey) {
     if (drawerUclLabel) drawerUclLabel.textContent = tournament.tabLabel;
     if (uclSectionTitle) uclSectionTitle.textContent = tournament.title;
     if (legendQualLabel) legendQualLabel.textContent = `${tournament.title} Qualification`;
-    if (matchTypeTournamentOption) matchTypeTournamentOption.textContent = tournament.title;
+    if (matchTypeTournamentOption) matchTypeTournamentOption.textContent = `${tournament.title} Match`;
     if (tournamentSelectionDropdown) tournamentSelectionDropdown.value = key;
 }
 applyTournamentSettings(leagueConfig.selectedTournament);
@@ -234,7 +215,7 @@ if (tournamentSelectionDropdown) {
     });
 }
 
-// Apply Dark Mode Preference
+// Dark Mode Toggle
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 function applyTheme(isDark) {
     if (isDark) {
@@ -267,10 +248,34 @@ const standingsTable = document.querySelector('#league-view .standings-table');
 const noTeamsMsg = document.getElementById('no-teams-msg');
 const leagueLegendsContainer = document.getElementById('league-legends-container');
 
-// DOM Elements: Tournament
+// DOM Elements: Tournament & Bracket
 const uclStandingsBody = document.getElementById('ucl-standings-body');
 const uclStandingsTable = document.querySelector('#ucl-view .standings-table');
 const noUclTeamsMsg = document.getElementById('no-ucl-teams-msg');
+const endGroupStageBtn = document.getElementById('end-group-stage-btn');
+const tournamentBracketContainer = document.getElementById('tournament-bracket-container');
+const bracketLegsSubtag = document.getElementById('bracket-legs-subtag');
+
+// Bracket Score Modal Elements
+const bracketScoreModal = document.getElementById('bracket-score-modal');
+const closeBracketScoreModalBtn = document.getElementById('close-bracket-score-modal-btn');
+const bracketScoreForm = document.getElementById('bracket-score-form');
+const bracketRoundKeyInput = document.getElementById('bracket-round-key');
+const bracketMatchIndexInput = document.getElementById('bracket-match-index');
+const bracketLegNumberInput = document.getElementById('bracket-leg-number');
+const bracketScoreTitle = document.getElementById('bracket-score-title');
+const bracketScoreHomeLabel = document.getElementById('bracket-score-home-label');
+const bracketScoreAwayLabel = document.getElementById('bracket-score-away-label');
+const bracketHomeScoreInput = document.getElementById('bracket-home-score-input');
+const bracketAwayScoreInput = document.getElementById('bracket-away-score-input');
+const bracketPenaltiesBox = document.getElementById('bracket-penalties-box');
+const bracketPenaltiesWinnerSelect = document.getElementById('bracket-penalties-winner-select');
+
+// Format Settings Dropdowns (Feature 2)
+const groupStageFormatSelect = document.getElementById('group-stage-format-select');
+const semiFinalLegsSelect = document.getElementById('semi-final-legs-select');
+const quarterFinalLegsSelect = document.getElementById('quarter-final-legs-select');
+const finalLegsSelect = document.getElementById('final-legs-select');
 
 // DOM Elements: Matches
 const matchesList = document.getElementById('matches-list');
@@ -335,7 +340,6 @@ const progressTargetCount = document.getElementById('progress-target-count');
 const endSeasonBtn = document.getElementById('end-season-btn');
 const deleteEverythingBtn = document.getElementById('delete-everything-btn');
 
-// Logo Helper: returns <img> tag if custom logo exists, or fallback initial circle
 function renderLogoMarkup(teamName, className = 'table-team-logo') {
     const teamObj = teams.find(t => t.name === teamName) || uclTeams.find(t => t.name === teamName);
     const initial = teamName ? teamName.charAt(0).toUpperCase() : 'T';
@@ -346,21 +350,17 @@ function renderLogoMarkup(teamName, className = 'table-team-logo') {
     return `<span class="${className}">${escapeHtml(initial)}</span>`;
 }
 
-// 3-Letter Abbreviation Helper
 function getTeamAbbr(teamName) {
     if (!teamName) return 'TEA';
     const words = teamName.trim().split(/\s+/);
     if (words.length >= 3) {
         return (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
     } else if (words.length === 2) {
-        const first = words[0];
-        const second = words[1];
-        return (first.slice(0, 2) + second.slice(0, 1)).toUpperCase();
+        return (words[0].slice(0, 2) + words[1].slice(0, 1)).toUpperCase();
     }
     return teamName.slice(0, 3).toUpperCase();
 }
 
-// Standings Calculator for specific tournament type ('League' or 'Tournament')
 function calculateTableStats(teamArray, tournamentType) {
     const tableData = teamArray.map(team => ({
         name: team.name,
@@ -430,30 +430,17 @@ function calculateTableStats(teamArray, tournamentType) {
     return tableData;
 }
 
-// Generate Last 5 Form Circles HTML
 function generateFormCirclesHtml(formArray) {
     const recent = formArray.slice(-5);
     let html = '<div class="form-circles-group">';
 
     recent.forEach(result => {
         if (result === 'W') {
-            html += `
-                <span class="form-circle form-win" title="Win">
-                    <svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-            `;
+            html += `<span class="form-circle form-win" title="Win"><svg viewBox="0 0 12 12"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
         } else if (result === 'D') {
-            html += `
-                <span class="form-circle form-draw" title="Draw">
-                    <svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-            `;
+            html += `<span class="form-circle form-draw" title="Draw"><svg viewBox="0 0 12 12"><line x1="3" y1="6" x2="9" y2="6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg></span>`;
         } else if (result === 'L') {
-            html += `
-                <span class="form-circle form-loss" title="Loss">
-                    <svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-            `;
+            html += `<span class="form-circle form-loss" title="Loss"><svg viewBox="0 0 12 12"><line x1="3.5" y1="3.5" x2="8.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="8.5" y1="3.5" x2="3.5" y2="8.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/></svg></span>`;
         }
     });
 
@@ -466,15 +453,12 @@ function generateFormCirclesHtml(formArray) {
     return html;
 }
 
-// =========================================
-// RENDER HOME PAGE DASHBOARD CARDS
-// =========================================
+// Home Page Dashboard Cards
 function renderHomeDashboard() {
     if (!homeTop4List || !homePredictionsList || !homeSeasonDisplay) return;
 
     const leagueTableData = calculateTableStats(teams, 'League');
 
-    // 1. Table Card (Left): Top 4 teams
     homeTop4List.innerHTML = '';
     const top4 = leagueTableData.slice(0, 4);
 
@@ -498,16 +482,12 @@ function renderHomeDashboard() {
         });
     }
 
-    // Bottom link of Table card
     const remainingTeams = Math.max(0, leagueTableData.length - 4);
     if (homeTableMoreBtn) {
         homeTableMoreBtn.textContent = `+${remainingTeams} more`;
         homeTableMoreBtn.style.display = remainingTeams > 0 ? 'block' : 'none';
     }
 
-    // 2. Predictions Card (Right): Formula calculation
-    // Historical Score (70%): Total trophies * 2
-    // Form Score (30%): Last 5 matches (W=3, D=1, L=0)
     homePredictionsList.innerHTML = '';
 
     if (leagueTableData.length === 0) {
@@ -522,8 +502,6 @@ function renderHomeDashboard() {
                                   (Number(trophies.ccnn) || Number(trophies.league) || 0);
 
             const historicalScore = totalTrophies * 2;
-
-            // Form score from last 5 matches
             const recent5 = t.form.slice(-5);
             let formScore = 0;
             recent5.forEach(res => {
@@ -531,8 +509,6 @@ function renderHomeDashboard() {
                 else if (res === 'D') formScore += 1;
             });
 
-            // Weighted combination: 70% Historical + 30% Form
-            // Base score of 1 added to avoid divide-by-zero for teams starting fresh
             const rawScore = (historicalScore * 0.70) + (formScore * 0.30) + 1.0;
 
             return {
@@ -542,10 +518,7 @@ function renderHomeDashboard() {
             };
         });
 
-        // Compute Total score
         const totalSum = scoredTeams.reduce((acc, curr) => acc + curr.rawScore, 0);
-
-        // Sort by rawScore descending and take Top 3
         scoredTeams.sort((a, b) => b.rawScore - a.rawScore);
         const top3Predictions = scoredTeams.slice(0, 3);
 
@@ -566,12 +539,11 @@ function renderHomeDashboard() {
         });
     }
 
-    // 3. Season Card (Bottom Right)
     const currentSeasonNum = leagueConfig.seasonNumber || 1;
     homeSeasonDisplay.textContent = `Season ${currentSeasonNum}`;
 }
 
-// Render League Standings, Trophy Section, and League Progress Bar
+// Render League Standings
 function renderLeagueTable() {
     if (!standingsBody) return;
     standingsBody.innerHTML = '';
@@ -620,7 +592,6 @@ function renderLeagueTable() {
         standingsBody.appendChild(row);
     });
 
-    // Render League Trophy Card
     if (leagueTrophyWinnerDetails && leagueTrophyWinnerName && leagueTrophyActivePlaceholder) {
         if (leagueConfig.seasonEnded && leagueConfig.championTeam) {
             leagueTrophyWinnerName.textContent = leagueConfig.championTeam;
@@ -635,7 +606,6 @@ function renderLeagueTable() {
     updateLeaguePageProgress();
 }
 
-// Update Dynamic League Page Progress Bar Card
 function updateLeaguePageProgress() {
     const leagueMatchesPlayed = matches.filter(m => (m.type || 'League') === 'League' && m.status === 'FT').length;
     const totalTeams = teams.length;
@@ -654,7 +624,9 @@ function updateLeaguePageProgress() {
     if (leagueProgressTargetCount) leagueProgressTargetCount.textContent = totalScheduledTarget;
 }
 
-// Render Tournament Standings (UCL / World Cup / Euro / Asian Cup)
+// ========================================================
+// TOURNAMENT: GROUP STAGE & KNOCKOUT BRACKET SYSTEM
+// ========================================================
 function renderUclTable() {
     if (!uclStandingsBody) return;
     uclStandingsBody.innerHTML = '';
@@ -662,6 +634,7 @@ function renderUclTable() {
     if (uclTeams.length === 0) {
         if (uclStandingsTable) uclStandingsTable.style.display = 'none';
         if (noUclTeamsMsg) noUclTeamsMsg.style.display = 'block';
+        if (tournamentBracketContainer) tournamentBracketContainer.innerHTML = '';
         return;
     }
 
@@ -695,6 +668,296 @@ function renderUclTable() {
         `;
         uclStandingsBody.appendChild(row);
     });
+
+    renderKnockoutBracket(tableData);
+}
+
+// Generate Playoff Bracket according to rules:
+// - 1st place advances directly to Final
+// - 2nd vs 3rd play Semi-Final
+// - Semi-Final winner advances to Final against 1st place
+function generateKnockoutBracketFromStandings() {
+    const tableData = calculateTableStats(uclTeams, 'Tournament');
+    if (tableData.length < 3) {
+        alert('You need at least 3 teams in the tournament to generate a playoff bracket.');
+        return;
+    }
+
+    const first = tableData[0].name;
+    const second = tableData[1].name;
+    const third = tableData[2].name;
+
+    const semiLegs = Number(leagueConfig.semiFinalLegs) || 1;
+    const finalLegs = Number(leagueConfig.finalLegs) || 1;
+
+    tournamentBracket = {
+        semiFinal: {
+            title: 'Semi-Final (2nd vs 3rd)',
+            legs: semiLegs,
+            matches: [
+                {
+                    home: second,
+                    away: third,
+                    homeScore: null,
+                    awayScore: null,
+                    homeScoreLeg2: null,
+                    awayScoreLeg2: null,
+                    winner: null
+                }
+            ]
+        },
+        final: {
+            title: 'Final (1st Place vs Semi-Final Winner)',
+            legs: finalLegs,
+            directQualifier: first,
+            matches: [
+                {
+                    home: first,
+                    away: null, // Populated once Semi-Final completes
+                    homeScore: null,
+                    awayScore: null,
+                    homeScoreLeg2: null,
+                    awayScoreLeg2: null,
+                    winner: null
+                }
+            ]
+        }
+    };
+
+    saveAndRefresh();
+}
+
+if (endGroupStageBtn) {
+    endGroupStageBtn.addEventListener('click', () => {
+        if (confirm('Finalize Group Stage Standings and generate the Playoff Bracket?')) {
+            generateKnockoutBracketFromStandings();
+        }
+    });
+}
+
+function renderKnockoutBracket(currentGroupStandings) {
+    if (!tournamentBracketContainer) return;
+    tournamentBracketContainer.innerHTML = '';
+
+    if (!tournamentBracket) {
+        tournamentBracketContainer.innerHTML = `
+            <div class="empty-state" style="padding: 24px 10px;">
+                Complete your tournament group matches and tap <strong>'Finalize &amp; Generate Bracket'</strong> above.
+            </div>
+        `;
+        return;
+    }
+
+    if (bracketLegsSubtag) {
+        const semiLegs = tournamentBracket.semiFinal.legs;
+        const finalLegs = tournamentBracket.final.legs;
+        bracketLegsSubtag.textContent = `Semi: ${semiLegs} Leg(s) | Final: ${finalLegs} Leg(s)`;
+    }
+
+    // 1. Semi-Final Round Block
+    const semiBlock = document.createElement('div');
+    semiBlock.className = 'bracket-round-block';
+    
+    const semiMatch = tournamentBracket.semiFinal.matches[0];
+    const semiHomeWon = semiMatch.winner === semiMatch.home;
+    const semiAwayWon = semiMatch.winner === semiMatch.away;
+    const semiLegs = tournamentBracket.semiFinal.legs;
+
+    let semiScoreText = 'Click to Play';
+    if (semiMatch.winner) {
+        if (semiLegs === 2) {
+            const hTotal = (semiMatch.homeScore || 0) + (semiMatch.awayScoreLeg2 || 0);
+            const aTotal = (semiMatch.awayScore || 0) + (semiMatch.homeScoreLeg2 || 0);
+            semiScoreText = `Agg: ${hTotal} - ${aTotal}`;
+        } else {
+            semiScoreText = `${semiMatch.homeScore} - ${semiMatch.awayScore}`;
+        }
+    }
+
+    semiBlock.innerHTML = `
+        <div class="bracket-round-title">
+            <span>Semi-Final</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">(2nd vs 3rd)</span>
+        </div>
+        <div class="bracket-match-card" onclick="openBracketScoreModal('semiFinal', 0)">
+            <div class="bracket-team-line ${semiHomeWon ? 'winner' : ''}">
+                <div class="bracket-team-info">
+                    ${renderLogoMarkup(semiMatch.home, 'table-team-logo')}
+                    <span class="bracket-team-name">${escapeHtml(semiMatch.home)}</span>
+                    ${semiHomeWon ? '<span class="bracket-advancement-badge">ADVANCED</span>' : ''}
+                </div>
+                <span class="bracket-score-val">${semiMatch.homeScore !== null ? semiMatch.homeScore : '-'}</span>
+            </div>
+            <div class="bracket-team-line ${semiAwayWon ? 'winner' : ''}">
+                <div class="bracket-team-info">
+                    ${renderLogoMarkup(semiMatch.away, 'table-team-logo')}
+                    <span class="bracket-team-name">${escapeHtml(semiMatch.away)}</span>
+                    ${semiAwayWon ? '<span class="bracket-advancement-badge">ADVANCED</span>' : ''}
+                </div>
+                <span class="bracket-score-val">${semiMatch.awayScore !== null ? semiMatch.awayScore : '-'}</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; text-align: right;">
+                ${semiScoreText}
+            </div>
+        </div>
+    `;
+    tournamentBracketContainer.appendChild(semiBlock);
+
+    // 2. Direct Final Qualifier Notice (1st Place)
+    const directQualifierName = tournamentBracket.final.directQualifier;
+    const finalBlock = document.createElement('div');
+    finalBlock.className = 'bracket-round-block';
+
+    const finalMatch = tournamentBracket.final.matches[0];
+    const finalHomeWon = finalMatch.winner === finalMatch.home;
+    const finalAwayWon = finalMatch.winner === finalMatch.away;
+    const finalLegs = tournamentBracket.final.legs;
+
+    let finalScoreText = finalMatch.away ? 'Click to Play Final' : 'Awaiting Semi-Final Winner';
+    if (finalMatch.winner) {
+        if (finalLegs === 2) {
+            const hTotal = (finalMatch.homeScore || 0) + (finalMatch.awayScoreLeg2 || 0);
+            const aTotal = (finalMatch.awayScore || 0) + (finalMatch.homeScoreLeg2 || 0);
+            finalScoreText = `🏆 Champion: ${finalMatch.winner} (Agg ${hTotal}-${aTotal})`;
+        } else {
+            finalScoreText = `🏆 Champion: ${finalMatch.winner} (${finalMatch.homeScore}-${finalMatch.awayScore})`;
+        }
+    }
+
+    finalBlock.innerHTML = `
+        <div class="bracket-round-title">
+            <span>Tournament Final</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">(1st vs Semi Winner)</span>
+        </div>
+        <div class="bracket-direct-pass" style="margin-bottom: 8px;">
+            <span>Direct Final Seed (1st Place):</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                ${renderLogoMarkup(directQualifierName, 'table-team-logo')}
+                <strong>${escapeHtml(directQualifierName)}</strong>
+            </div>
+        </div>
+        <div class="bracket-match-card" onclick="${finalMatch.away ? `openBracketScoreModal('final', 0)` : 'alert(\'The Semi-Final must be played before playing the Final.\')'}">
+            <div class="bracket-team-line ${finalHomeWon ? 'winner' : ''}">
+                <div class="bracket-team-info">
+                    ${renderLogoMarkup(finalMatch.home, 'table-team-logo')}
+                    <span class="bracket-team-name">${escapeHtml(finalMatch.home)}</span>
+                    ${finalHomeWon ? '<span class="bracket-advancement-badge">CHAMPION</span>' : ''}
+                </div>
+                <span class="bracket-score-val">${finalMatch.homeScore !== null ? finalMatch.homeScore : '-'}</span>
+            </div>
+            <div class="bracket-team-line ${finalAwayWon ? 'winner' : ''}">
+                <div class="bracket-team-info">
+                    ${finalMatch.away ? renderLogoMarkup(finalMatch.away, 'table-team-logo') : '<span class="table-team-logo">?</span>'}
+                    <span class="bracket-team-name">${finalMatch.away ? escapeHtml(finalMatch.away) : 'TBD (Semi Winner)'}</span>
+                    ${finalAwayWon ? '<span class="bracket-advancement-badge">CHAMPION</span>' : ''}
+                </div>
+                <span class="bracket-score-val">${finalMatch.awayScore !== null ? finalMatch.awayScore : '-'}</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; text-align: right;">
+                ${finalScoreText}
+            </div>
+        </div>
+    `;
+    tournamentBracketContainer.appendChild(finalBlock);
+}
+
+// Open Knockout Bracket Score Modal
+window.openBracketScoreModal = function(roundKey, matchIndex) {
+    if (!tournamentBracket || !tournamentBracket[roundKey]) return;
+    const match = tournamentBracket[roundKey].matches[matchIndex];
+    if (!match || !match.home || !match.away) return;
+
+    bracketRoundKeyInput.value = roundKey;
+    bracketMatchIndexInput.value = matchIndex;
+    bracketScoreTitle.textContent = roundKey === 'semiFinal' ? 'Enter Semi-Final Score' : 'Enter Final Score';
+    bracketScoreHomeLabel.textContent = match.home;
+    bracketScoreAwayLabel.textContent = match.away;
+
+    bracketHomeScoreInput.value = match.homeScore !== null ? match.homeScore : '';
+    bracketAwayScoreInput.value = match.awayScore !== null ? match.awayScore : '';
+
+    // Penalty / sudden death tiebreaker options
+    bracketPenaltiesBox.style.display = 'none';
+    bracketPenaltiesWinnerSelect.innerHTML = `
+        <option value="${match.home}">${match.home}</option>
+        <option value="${match.away}">${match.away}</option>
+    `;
+
+    bracketScoreModal.classList.add('active');
+};
+
+if (closeBracketScoreModalBtn) {
+    closeBracketScoreModalBtn.addEventListener('click', () => {
+        bracketScoreModal.classList.remove('active');
+    });
+}
+
+// Save Knockout Score & Automatically Advance Winner
+if (bracketScoreForm) {
+    bracketScoreForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const roundKey = bracketRoundKeyInput.value;
+        const matchIndex = parseInt(bracketMatchIndexInput.value, 10);
+        const homeScore = parseInt(bracketHomeScoreInput.value, 10);
+        const awayScore = parseInt(bracketAwayScoreInput.value, 10);
+
+        if (isNaN(homeScore) || isNaN(awayScore) || homeScore < 0 || awayScore < 0) {
+            alert('Please enter valid scores.');
+            return;
+        }
+
+        const match = tournamentBracket[roundKey].matches[matchIndex];
+        match.homeScore = homeScore;
+        match.awayScore = awayScore;
+
+        let winner = null;
+        if (homeScore > awayScore) {
+            winner = match.home;
+        } else if (awayScore > homeScore) {
+            winner = match.away;
+        } else {
+            // Drawn match requires shootout winner
+            winner = bracketPenaltiesWinnerSelect.value || match.home;
+        }
+        match.winner = winner;
+
+        // If Semi-Final was completed, automatically advance the winner into the Final match
+        if (roundKey === 'semiFinal') {
+            tournamentBracket.final.matches[0].away = winner;
+        } else if (roundKey === 'final') {
+            // Champion crowned: award tournament trophy to manager
+            const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
+            alert(`🎉 ${winner} has won the ${tournDef.title}!`);
+
+            if (clubLeadership[winner]) {
+                if (!clubLeadership[winner].trophies) {
+                    clubLeadership[winner].trophies = { premierLeague: 0, laLiga: 0, serieA: 0, ccnn: 0 };
+                }
+                const activeTourn = leagueConfig.selectedTournament || 'ucl';
+                if (activeTourn === 'ucl') {
+                    clubLeadership[winner].trophies.ccnn = (clubLeadership[winner].trophies.ccnn || 0) + 1;
+                }
+            }
+        }
+
+        bracketScoreModal.classList.remove('active');
+        saveAndRefresh();
+    });
+}
+
+// Show Tiebreaker Select if scores are tied
+if (bracketHomeScoreInput && bracketAwayScoreInput) {
+    const checkTie = () => {
+        const h = parseInt(bracketHomeScoreInput.value, 10);
+        const a = parseInt(bracketAwayScoreInput.value, 10);
+        if (!isNaN(h) && !isNaN(a) && h === a) {
+            bracketPenaltiesBox.style.display = 'block';
+        } else {
+            bracketPenaltiesBox.style.display = 'none';
+        }
+    };
+    bracketHomeScoreInput.addEventListener('input', checkTie);
+    bracketAwayScoreInput.addEventListener('input', checkTie);
 }
 
 // Render Matches
@@ -858,7 +1121,6 @@ function renderManagers() {
     });
 }
 
-// Step Trophy Counter (+ / -) in Manager Modal
 window.stepTrophy = function(trophyKey, step) {
     const input = document.getElementById(`trophy-count-${trophyKey}`);
     if (input) {
@@ -868,7 +1130,6 @@ window.stepTrophy = function(trophyKey, step) {
     }
 };
 
-// Open Manager & Playstyle & Trophy Modal
 window.openManagerModal = function(teamName) {
     const leadership = clubLeadership[teamName] || {
         manager: '',
@@ -920,7 +1181,7 @@ if (editManagerForm) {
     });
 }
 
-// Settings Dashboard Progress Update
+// Commissioner Dashboard Render
 function updateCommissionerProgress() {
     const leagueMatchesPlayed = matches.filter(m => (m.type || 'League') === 'League' && m.status === 'FT').length;
     const totalTeams = teams.length;
@@ -939,7 +1200,6 @@ function updateCommissionerProgress() {
     if (progressTargetCount) progressTargetCount.textContent = totalScheduledTarget;
 }
 
-// Settings Dashboard Render
 function renderSettingsDashboard() {
     if (!teamList) return;
     teamList.innerHTML = '';
@@ -951,6 +1211,12 @@ function renderSettingsDashboard() {
     qualZoneSelect.value = leagueConfig.qualSpots || 4;
     matchesPerTeamInput.value = leagueConfig.matchesPerTeam || 14;
     if (seasonNumberInput) seasonNumberInput.value = leagueConfig.seasonNumber || 1;
+
+    // Feature 2: Format settings sync
+    if (groupStageFormatSelect) groupStageFormatSelect.value = leagueConfig.groupStageFormat || 'single';
+    if (semiFinalLegsSelect) semiFinalLegsSelect.value = leagueConfig.semiFinalLegs || 1;
+    if (quarterFinalLegsSelect) quarterFinalLegsSelect.value = leagueConfig.quarterFinalLegs || 1;
+    if (finalLegsSelect) finalLegsSelect.value = leagueConfig.finalLegs || 1;
 
     teams.forEach((team, index) => {
         const logoHtml = renderLogoMarkup(team.name, 'table-team-logo');
@@ -973,7 +1239,38 @@ function renderSettingsDashboard() {
     updateCommissionerProgress();
 }
 
-// Season Number Change Listener
+// Format settings event listeners
+if (groupStageFormatSelect) {
+    groupStageFormatSelect.addEventListener('change', (e) => {
+        leagueConfig.groupStageFormat = e.target.value;
+        saveAndRefresh();
+    });
+}
+if (semiFinalLegsSelect) {
+    semiFinalLegsSelect.addEventListener('change', (e) => {
+        leagueConfig.semiFinalLegs = parseInt(e.target.value, 10);
+        if (tournamentBracket && tournamentBracket.semiFinal) {
+            tournamentBracket.semiFinal.legs = leagueConfig.semiFinalLegs;
+        }
+        saveAndRefresh();
+    });
+}
+if (quarterFinalLegsSelect) {
+    quarterFinalLegsSelect.addEventListener('change', (e) => {
+        leagueConfig.quarterFinalLegs = parseInt(e.target.value, 10);
+        saveAndRefresh();
+    });
+}
+if (finalLegsSelect) {
+    finalLegsSelect.addEventListener('change', (e) => {
+        leagueConfig.finalLegs = parseInt(e.target.value, 10);
+        if (tournamentBracket && tournamentBracket.final) {
+            tournamentBracket.final.legs = leagueConfig.finalLegs;
+        }
+        saveAndRefresh();
+    });
+}
+
 if (seasonNumberInput) {
     seasonNumberInput.addEventListener('change', (e) => {
         const val = parseInt(e.target.value, 10);
@@ -984,7 +1281,7 @@ if (seasonNumberInput) {
     });
 }
 
-// Open Edit Team Modal
+// Edit Team Handlers
 window.openEditTeamModal = function(index) {
     const team = teams[index];
     if (!team) return;
@@ -1003,7 +1300,6 @@ if (closeEditTeamModalBtn) {
     });
 }
 
-// Save Edit Team Changes (Name & Logo)
 if (editTeamForm) {
     editTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1054,7 +1350,6 @@ if (editTeamForm) {
     });
 }
 
-// Update Match Creation Dropdown
 function updateTeamSelects() {
     if (!homeTeamSelect || !awayTeamSelect || !matchTypeSelect) return;
     homeTeamSelect.innerHTML = '<option value="" disabled selected>Select Home Team</option>';
@@ -1086,6 +1381,7 @@ function saveAndRefresh() {
     localStorage.setItem('ccnn_matches', JSON.stringify(matches));
     localStorage.setItem('ccnn_club_leadership', JSON.stringify(clubLeadership));
     localStorage.setItem('ccnn_config', JSON.stringify(leagueConfig));
+    localStorage.setItem('ccnn_bracket', JSON.stringify(tournamentBracket));
 
     renderHomeDashboard();
     renderLeagueTable();
@@ -1096,7 +1392,7 @@ function saveAndRefresh() {
     updateTeamSelects();
 }
 
-// Add Team with Logo Option (URL or File Upload)
+// Add Team
 if (addTeamForm) {
     addTeamForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1140,7 +1436,6 @@ if (addTeamForm) {
     });
 }
 
-// Delete Team
 window.deleteTeam = function(index) {
     const target = teams[index].name;
     if (confirm(`Delete team "${target}"? All their matches and tournament entries will be removed.`)) {
@@ -1151,11 +1446,12 @@ window.deleteTeam = function(index) {
         if (leagueConfig.championTeam === target) {
             leagueConfig.championTeam = null;
         }
+        tournamentBracket = null;
         saveAndRefresh();
     }
 };
 
-// Config changes
+// Config Settings
 if (maxTeamsSelect) {
     maxTeamsSelect.addEventListener('change', (e) => {
         const newMax = parseInt(e.target.value, 10);
@@ -1186,7 +1482,7 @@ if (matchesPerTeamInput) {
     });
 }
 
-// End Season: Crown Champion, Qualify top teams to secondary tournament, and reset scores
+// End Season
 if (endSeasonBtn) {
     endSeasonBtn.addEventListener('click', () => {
         const tournDef = TOURNAMENT_DEFINITIONS[leagueConfig.selectedTournament] || TOURNAMENT_DEFINITIONS['ucl'];
@@ -1205,7 +1501,6 @@ if (endSeasonBtn) {
                 logo: t.logo || ''
             }));
 
-            // Determine Champion & Award League Trophy to Manager
             if (finalLeagueStandings.length > 0) {
                 const champion = finalLeagueStandings[0].name;
                 leagueConfig.championTeam = champion;
@@ -1230,6 +1525,7 @@ if (endSeasonBtn) {
             }
 
             uclTeams = qualified;
+            tournamentBracket = null; // Clear previous bracket for fresh start
             matches = matches.filter(m => m.type === 'Tournament' || m.type === 'UCL');
 
             saveAndRefresh();
@@ -1251,6 +1547,7 @@ if (deleteEverythingBtn) {
             uclTeams = [];
             matches = [];
             clubLeadership = {};
+            tournamentBracket = null;
             leagueConfig = {
                 maxTeams: 8,
                 qualSpots: 4,
@@ -1260,7 +1557,11 @@ if (deleteEverythingBtn) {
                 selectedTournament: 'ucl',
                 seasonEnded: false,
                 championTeam: null,
-                seasonNumber: 1
+                seasonNumber: 1,
+                groupStageFormat: 'single',
+                semiFinalLegs: 1,
+                quarterFinalLegs: 1,
+                finalLegs: 1
             };
             applyTheme(false);
             applyLeagueBranding('ccnn');
@@ -1323,7 +1624,7 @@ if (createMatchForm) {
     });
 }
 
-// Score Input Modal
+// Score Input Modal (Regular & Group Matches)
 window.openScoreModal = function(index) {
     const match = matches[index];
     if (!match) return;
