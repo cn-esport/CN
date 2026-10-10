@@ -67,7 +67,7 @@
             </button>
             <div class="drawer-divider"></div>
             <button class="drawer-link drawer-settings-btn" data-target="settings-view">
-                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="drawer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Commissioner Settings</span>
             </button>
 
@@ -208,7 +208,7 @@
                 <h2 class="matches-title">Matches</h2>
             </div>
 
-            <!-- Matches Tab Switcher (Matches vs Results) -->
+            <!-- Matches Tab Switcher -->
             <div class="matches-tab-switcher">
                 <button class="matches-tab-btn active" id="filter-upcoming-btn">Matches</button>
                 <button class="matches-tab-btn" id="filter-results-btn">Results</button>
@@ -361,7 +361,7 @@
             <div id="no-managers-msg" class="empty-state" style="display: none;">Add teams in Settings to manage club leadership.</div>
         </section>
 
-        <!-- Edit Manager Modal (Full 8 Trophies Cabinet) -->
+        <!-- Edit Manager Modal -->
         <div id="manager-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3 class="modal-title">Edit Club Leadership</h3>
@@ -376,7 +376,6 @@
                         <input type="text" id="edit-playstyle-input" class="styled-text-input" placeholder="e.g., Possession / Counter-Attack" maxlength="30" required>
                     </div>
 
-                    <!-- Trophy Assignment Counters: Full set of 8 trophies -->
                     <div class="form-group">
                         <label style="margin-bottom: 8px;">Trophy Cabinet (Times Won)</label>
                         <div class="trophy-counter-grid">
@@ -667,7 +666,8 @@
                         <h3 class="card-title danger-title">Season Controls</h3>
                     </div>
                     <div class="danger-actions">
-                        <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Reset Scores)</button>
+                        <button id="end-season-btn" class="btn-warning">End Season (Crown Champion &amp; Qualify)</button>
+                        <button id="reset-season-btn" class="btn-secondary-action">Start New Season (Reset Points Table)</button>
                         <button id="delete-everything-btn" class="btn-danger">Delete Everything</button>
                     </div>
                 </div>
